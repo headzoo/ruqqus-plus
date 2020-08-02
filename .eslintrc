@@ -1,0 +1,89 @@
+{
+    "extends": ["eslint:recommended", "airbnb"],
+    "env": {
+        "browser": true,
+        "mocha": true,
+        "node": true,
+        "jest": true,
+        "jasmine": true
+    },
+    "parser": "babel-eslint",
+    "rules": {
+        "max-len": [
+            1,
+            {
+                "code": 120,
+                "ignoreComments": true,
+                "ignoreUrls": true,
+                "ignorePattern": "^import\\s.+"
+            }
+        ],
+        "camelcase": 0,
+        "quote-props": 0,
+        "object-curly-newline": 0,
+        "default-case": 0,
+        "arrow-body-style": 0,
+        "no-unreachable": 0,
+        "import/no-cycle": 0,
+        "no-underscore-dangle": 0,
+        "no-return-assign": 0,
+        "dot-notation": 0,
+        "template-curly-spacing": 0,
+        "key-spacing": [
+            2,
+            {
+                "singleLine": {
+                    "beforeColon": false,
+                    "afterColon": true
+                },
+                "multiLine": {
+                    "beforeColon": false,
+                    "afterColon": true,
+                    "align": "value"
+                }
+            }
+        ],
+        "no-multi-spaces": [
+            0,
+            {
+                "exceptions": {
+                    "VariableDeclarator": true
+                }
+            }
+        ],
+        "no-var": 2,
+        "vars-on-top": 0,
+        "comma-dangle": 0,
+        "new-cap": 0,
+        "no-console": 0,
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "indent": [
+            0,
+            2,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "valid-jsdoc": 0,
+        "import/no-unresolved": 0,
+        "import/extensions": 0,
+        "import/no-extraneous-dependencies": ["off"],
+        "import/prefer-default-export": "off",
+        "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
+        "class-methods-use-this": 0,
+        "strict": 0,
+        "no-param-reassign": 0,
+        "no-mixed-operators": "off"
+    },
+    "plugins": [],
+    "settings": {
+        "import/resolver": {
+            "babel-module": {  }
+        },
+        "import/extensions": [".js"]
+    },
+    "parserOptions": {},
+    "globals": {
+        "chrome": true
+    }
+}

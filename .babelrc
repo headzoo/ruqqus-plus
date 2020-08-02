@@ -1,0 +1,16 @@
+{
+    "presets": [
+        ["@babel/env", {
+            "useBuiltIns": "usage",
+            "corejs": "3.6.5",
+            "targets": "> 0.25%, not dead"
+        }]
+    ],
+    "plugins": [
+        ["@babel/plugin-proposal-class-properties"],
+        ["module-resolver", {
+            "root": ["./src/js"],
+            "extensions": [".js"]
+        }]
+    ]
+}

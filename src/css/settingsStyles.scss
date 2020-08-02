@@ -1,0 +1,29 @@
+$color-primary: #604DC6;
+$theme-colors: (
+        "primary": $color-primary,
+        "danger": #ff4136
+);
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~toastr/build/toastr.css";
+
+body {
+  padding: 0;
+  margin: 0;
+  color: #FFF;
+  background-color: #000;
+}
+
+header {
+  color: #FFF;
+  font-weight: 700;
+  background-color: $color-primary;
+}
+
+#toast-container {
+  margin-top: 15px !important;
+}
+
+#toast-container > .toast-success {
+  background-image: none !important;
+}

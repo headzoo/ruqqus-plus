@@ -1,0 +1,26 @@
+$color-primary: #604DC6;
+$theme-colors: (
+        "primary": $color-primary,
+        "danger": #ff4136
+);
+
+@import "~bootstrap/scss/bootstrap.scss";
+
+body {
+  width: 300px;
+  height: auto;
+  color: #FFF;
+  background-color: #000;
+}
+
+header {
+  color: #FFF;
+  font-weight: 700;
+  background-color: $color-primary;
+
+  h1 {
+    font-size: 1rem;
+    line-height: 1rem;
+    margin: 0;
+  }
+}
