@@ -9,17 +9,18 @@ injectScript(chrome.extension.getURL('js/contentInject.js'));
 chrome.storage.sync.get('settings', (value) => {
   const { settings } = value;
 
-  const activeMods = [];
+  const loaded = {};
   Object.keys(settings).forEach((key) => {
-    modules[key].execContent();
-    activeMods.push(key);
+    const mod = new modules[key]();
+    mod.execContentContext();
+    loaded[key] = mod;
   });
 
   // Let the contentInject.js script know which modules are active.
   setTimeout(() => {
     document.dispatchEvent(new CustomEvent('rp.modulesReady', {
       'detail': {
-        activeMods
+        activeMods: Object.keys(loaded)
       }
     }));
   }, 2000);

@@ -26,7 +26,7 @@ export default class PostsNewTabModule extends Module {
   /**
    * Called in the content script
    */
-  execContent = () => {
+  execContentContext = () => {
     this.listen('rp.change', this.execContent);
 
     const links = document.querySelectorAll('#posts .card-title a');

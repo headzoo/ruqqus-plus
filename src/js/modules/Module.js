@@ -23,13 +23,13 @@ export default class Module {
   /**
    * Called in the content script
    */
-  execContent = () => {
+  execContentContext = () => {
   };
 
   /**
    * Called in the context of the page
    */
-  execInject = () => {
+  execWindowContext = () => {
   };
 
   /**
@@ -40,4 +40,9 @@ export default class Module {
   getSettings = () => {
     return '';
   };
+
+  /**
+   * @param {*} settings
+   */
+  saveSettings = (settings) => {}
 }

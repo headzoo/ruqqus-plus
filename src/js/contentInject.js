@@ -8,7 +8,10 @@ import modules from './modules';
 document.addEventListener('rp.modulesReady', (e) => {
   const { activeMods } = e.detail;
 
+  const loaded = {};
   activeMods.forEach((key) => {
-    modules[key].execInject();
+    const mod = new modules[key]();
+    mod.execWindowContext();
+    loaded[key] = mod;
   });
 });

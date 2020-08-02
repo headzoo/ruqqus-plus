@@ -4,9 +4,9 @@ import PostsNewTabModule from './PostsNewTabModule';
 import BiggerButtonsModule from './BiggerButtonsModule';
 
 const mods = {
-  [constants.SETTING_INFINITE_SCROLL]: new InfiniteScrollModule(),
-  [constants.SETTING_POSTS_NEW_TAB]:   new PostsNewTabModule(),
-  [constants.SETTING_BIGGER_BUTTONS]:  new BiggerButtonsModule()
+  [constants.SETTING_INFINITE_SCROLL]: InfiniteScrollModule,
+  [constants.SETTING_POSTS_NEW_TAB]:   PostsNewTabModule,
+  [constants.SETTING_BIGGER_BUTTONS]:  BiggerButtonsModule
 };
 
 export default mods;

@@ -53,7 +53,7 @@ export default class InfiniteScrollModule extends Module {
   /**
    * Called in the content script
    */
-  execContent = () => {
+  execContentContext = () => {
     this.posts = document.getElementById('posts');
     if (!this.posts) {
       return;
@@ -82,36 +82,15 @@ export default class InfiniteScrollModule extends Module {
       rootMargin: '0px',
       threshold:  1.0
     });
-    const cards    = this.posts.querySelectorAll('.card');
+    const cards = this.posts.querySelectorAll('.card');
     observer.observe(cards[cards.length - 1]);
   };
 
   /**
    * Called in the context of the page
    */
-  execInject = () => {
-    const { upvote, downvote } = window;
-
-    // @see https://github.com/ruqqus/ruqqus/blob/7477b2d088560f2ac39e723821e8bd7be11087fa/ruqqus/assets/js/all_js.js#L1030
-    this.listen(EVENT_WIREUP_CARD, (e) => {
-      const card           = document.getElementById(e.detail.id);
-      const upvoteButton   = card.querySelector('.upvote-button');
-      const downvoteButton = card.querySelector('.downvote-button');
-
-      upvoteButton.addEventListener('click', upvote, false);
-      upvoteButton.addEventListener('keydown', (event) => {
-        if (event.keyCode === 13) {
-          upvote(event);
-        }
-      }, false);
-
-      downvoteButton.addEventListener('click', downvote, false);
-      downvoteButton.addEventListener('keydown', (event) => {
-        if (event.keyCode === 13) {
-          downvote(event);
-        }
-      }, false);
-    });
+  execWindowContext = () => {
+    this.listen(EVENT_WIREUP_CARD, this.handleWireupCard);
   };
 
   /**
@@ -145,5 +124,31 @@ export default class InfiniteScrollModule extends Module {
           this.dispatch('rp.change');
         });
     }
+  };
+
+  /**
+   * @param {CustomEvent} e
+   * @see https://github.com/ruqqus/ruqqus/blob/7477b2d088560f2ac39e723821e8bd7be11087fa/ruqqus/assets/js/all_js.js#L1030
+   */
+  handleWireupCard = (e) => {
+    const { upvote, downvote } = window;
+
+    const card           = document.getElementById(e.detail.id);
+    const upvoteButton   = card.querySelector('.upvote-button');
+    const downvoteButton = card.querySelector('.downvote-button');
+
+    upvoteButton.addEventListener('click', upvote, false);
+    upvoteButton.addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) {
+        upvote(event);
+      }
+    }, false);
+
+    downvoteButton.addEventListener('click', downvote, false);
+    downvoteButton.addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) {
+        downvote(event);
+      }
+    }, false);
   };
 }

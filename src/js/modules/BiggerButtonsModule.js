@@ -27,7 +27,7 @@ export default class BiggerButtonsModule extends Module {
   /**
    * Called in the content script
    */
-  execContent = () => {
+  execContentContext = () => {
     injectCSS(`
       .downvote-button::before,
       .upvote-button::before {
