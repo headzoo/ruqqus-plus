@@ -2,6 +2,9 @@ import Module from './Module';
 import * as constants from '../constants';
 import { injectCSS } from '../utils/web';
 
+/**
+ * Makes the up/down vote buttons bigger
+ */
 export default class BiggerButtonsModule extends Module {
   /**
    * @returns {string}
