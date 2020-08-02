@@ -6,9 +6,9 @@ import modules from './modules';
  */
 
 document.addEventListener('rp.modulesReady', (e) => {
-    const { activeMods } = e.detail;
+  const { activeMods } = e.detail;
 
-    activeMods.forEach((key) => {
-        modules[key].execInject();
-    });
+  activeMods.forEach((key) => {
+    modules[key].execInject();
+  });
 });

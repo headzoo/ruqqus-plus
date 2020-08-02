@@ -1,16 +1,27 @@
 /**
- * Inject internal script to available access to the window
+ * Inject script
  *
- * @param  {string} path
- * @param  {string} tag
- * @see    http://stackoverflow.com/questions/20499994/access-window-variable-from-content-script
+ * @param {string} path
  */
-export const injectScript = (path, tag) => {
-    const node   = document.getElementsByTagName(tag)[0];
-    const script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', path);
-    node.appendChild(script);
+export const injectScript = (path) => {
+  const body   = document.getElementsByTagName('body')[0];
+  const script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', path);
+  body.appendChild(script);
+};
+
+/**
+ * Inject css into the head
+ *
+ * @param {string} css
+ */
+export const injectCSS = (css) => {
+  const head = document.getElementsByTagName('head')[0];
+  const link = document.createElement('style');
+  link.setAttribute('type', 'text/css');
+  link.innerHTML = css;
+  head.appendChild(link);
 };
 
 /**
@@ -18,8 +29,8 @@ export const injectScript = (path, tag) => {
  * @returns {DocumentFragment}
  */
 export const createTemplateContent = (html) => {
-    const template = document.createElement('template');
-    template.innerHTML = html;
+  const template     = document.createElement('template');
+  template.innerHTML = html;
 
-    return template.content;
+  return template.content;
 };
