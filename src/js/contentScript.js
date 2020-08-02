@@ -1,8 +1,11 @@
 import { injectScript } from './utils/web';
 import modules from './modules';
 
+// contentInject.js has access to the ruqqus window object, which is needed
+// to access ruqqus functions and variables. (This script cannot access them.)
 injectScript(chrome.extension.getURL('js/contentInject.js'), 'body');
 
+// Loads the activated modules.
 chrome.storage.sync.get('settings', (value) => {
     const { settings } = value;
 
@@ -14,7 +17,7 @@ chrome.storage.sync.get('settings', (value) => {
 
     // Let the contentInject.js script know which modules are active.
     setTimeout(() => {
-        document.dispatchEvent(new CustomEvent('rp.activeMods', {
+        document.dispatchEvent(new CustomEvent('rp.modulesReady', {
             'detail': {
                 activeMods
             }

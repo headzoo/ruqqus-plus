@@ -1,6 +1,11 @@
 import modules from './modules';
 
-document.addEventListener('rp.activeMods', (e) => {
+/**
+ * This page is injected into ruqqus. Unlike contentScript.js, this script
+ * has access to the window object, which contains ruqqus functions and variables.
+ */
+
+document.addEventListener('rp.modulesReady', (e) => {
     const { activeMods } = e.detail;
 
     activeMods.forEach((key) => {

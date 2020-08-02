@@ -1,7 +1,7 @@
 {
     "name": "Ruqqus Plus",
     "version": "1.0",
-    "description": "Minor improvements for ruqqus.com",
+    "description": "Enhancements for ruqqus.com",
     "manifest_version": 2,
     "permissions": [
         "activeTab",
