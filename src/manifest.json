@@ -1,15 +1,10 @@
 {
     "name": "Ruqqus Plus",
-    "version": "1.0",
+    "version": "0.0.1",
     "description": "Enhancements for ruqqus.com",
     "manifest_version": 2,
     "permissions": [
-        "activeTab",
-        "tabs",
-        "declarativeContent",
-        "webNavigation",
-        "storage",
-        "<all_urls>"
+        "storage"
     ],
     "options_page": "html/settings.html",
     "background": {
