@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   chrome.storage.sync.get('user', (value) => {
     if (!value || !value.user) {
-      form.style.display = 'block';
+      // form.style.display = 'block';
     }
   });
 
