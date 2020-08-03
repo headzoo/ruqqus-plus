@@ -20,13 +20,14 @@ export default class PostsNewTabModule extends Module {
   execContentContext = () => {
     this.listen('rp.change', this.execContentContext);
 
-    const links = document.querySelectorAll('#posts .card-title a');
-    if (!links) {
-      return;
-    }
-
-    links.forEach((link) => {
-      link.setAttribute('target', '_blank');
+    const hrefs = [];
+    document.querySelectorAll('#posts .card-title a').forEach((link) => {
+      hrefs.push(link.getAttribute('href'));
+    });
+    hrefs.forEach((href) => {
+      document.querySelectorAll(`a[href="${href}"]`).forEach((link) => {
+        link.setAttribute('target', '_blank');
+      });
     });
   };
 }
