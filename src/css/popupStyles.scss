@@ -7,7 +7,7 @@ $theme-colors: (
 @import "~bootstrap/scss/bootstrap.scss";
 
 body {
-  width: 300px;
+  width: 240px;
   height: auto;
   color: #FFF;
   background-color: #000;
@@ -22,5 +22,38 @@ header {
     font-size: 1rem;
     line-height: 1rem;
     margin: 0;
+  }
+}
+
+#container-authed {
+  .avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+  }
+
+  .rep {
+    color: #805ad5;
+    font-size: 0.8rem;
+  }
+
+  .username {
+    line-height: 1rem;
+  }
+
+  .badge-count {
+    color: #FFF;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .fa-bell {
+    color: grey;
+    font-size: 1.5rem;
   }
 }

@@ -1,5 +1,5 @@
 import * as constants from './constants';
-import { isAuthenticated, fetchUser } from './utils/ruqqus';
+import { fetchMe, fetchUser } from './utils/ruqqus';
 
 chrome.runtime.onInstalled.addListener(() => {
   const settings = {
@@ -10,24 +10,74 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ settings });
 });
 
-chrome.storage.sync.get('auth', (value) => {
-  if (value) {
-    const { username } = value.auth;
+const userDetails = {
+  authed: false,
+  unread: 0,
+  user:   null
+};
 
-    isAuthenticated(username)
-      .then((authed) => {
-        if (!authed) {
-          chrome.storage.sync.set({ user: null });
-        } else {
-          fetchUser(username)
-            .then((user) => {
-              chrome.storage.sync.set({ user });
-            })
-            .catch((err) => {
-              console.error(err);
-              chrome.storage.sync.set({ user: null });
-            });
-        }
-      });
+const setUnread = (unread) => {
+  if (unread > 0) {
+    chrome.browserAction.setBadgeText({ text: unread.toString() });
+    chrome.browserAction.setBadgeBackgroundColor({ color: '#E53E3D' });
+  } else {
+    chrome.browserAction.setBadgeText({ text: '' });
   }
+};
+
+const resetUserDetails = () => {
+  userDetails.authed = false;
+  userDetails.unread = 0;
+  userDetails.user   = null;
+  setUnread(0);
+};
+
+const fetchAuth = () => {
+  fetchMe()
+    .then(({ authed, unread, username }) => {
+      if (!authed) {
+        resetUserDetails();
+      } else {
+        fetchUser(username)
+          .then((user) => {
+            console.log(unread);
+            userDetails.authed = authed;
+            userDetails.unread = unread;
+            userDetails.user   = user;
+            setUnread(unread);
+          })
+          .catch((err) => {
+            console.error(err);
+            resetUserDetails();
+          });
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      resetUserDetails();
+    });
+};
+
+fetchAuth();
+chrome.alarms.create('fetchAuth', { periodInMinutes: 1.0 });
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'fetchAuth') {
+    fetchAuth();
+  }
+});
+
+chrome.extension.onConnect.addListener((port) => {
+  port.onMessage.addListener((msg) => {
+    switch (msg.type) {
+      case constants.TYPE_UNREAD:
+        userDetails.unread = msg.unread;
+        setUnread(msg.unread);
+        break;
+    }
+  });
+
+  port.postMessage({
+    type: constants.TYPE_AUTH,
+    ...userDetails
+  });
 });
