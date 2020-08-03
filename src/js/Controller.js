@@ -15,6 +15,11 @@ export default class Controller {
   };
 
   /**
+   * Called when the extension is installed
+   */
+  onInstalled = () => {}
+
+  /**
    * Dispatches an event
    *
    * @param {string} event

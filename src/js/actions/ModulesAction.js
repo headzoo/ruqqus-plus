@@ -1,9 +1,13 @@
 import toastr from 'toastr';
 import forms from '../utils/forms';
 import { createTemplateContent } from '../utils/web';
-import modules from '../modules';
+import mods from '../modules';
 import Action from './Action';
+import * as constants from '../constants';
 
+/**
+ * Action that handles modules
+ */
 export default class ModulesAction extends Action {
   /**
    * @returns {string}
@@ -54,12 +58,12 @@ export default class ModulesAction extends Action {
         </label>
       </div>`;
 
-    chrome.storage.sync.get('settings', (value) => {
-      const { settings } = value;
+    chrome.storage.sync.get('modules', (value) => {
+      const { modules } = value;
 
       // Adds module settings to the form.
-      Object.keys(settings).forEach((key) => {
-        const mod   = new modules[key]();
+      Object.keys(modules).forEach((key) => {
+        const mod   = new mods[key]();
         const label = mod.getLabel();
         loaded[key] = mod;
 
@@ -68,25 +72,78 @@ export default class ModulesAction extends Action {
         modulesMount.appendChild(content);
       });
 
-      forms.deserialize(form, settings);
+      forms.deserialize(form, modules);
     });
 
     // Saves the settings.
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const settings = forms.serialize(form);
-      Object.keys(loaded).forEach((key) => {
-        if (settings[key]) {
-          loaded[key].saveSettings(settings);
-        }
-      });
-
-      chrome.storage.sync.set({ settings });
+      const modules = forms.serialize(form);
+      chrome.storage.sync.set({ modules });
       toastr.success('Settings have been saved.', '', {
         closeButton:   true,
         positionClass: 'toast-bottom-center'
       });
     });
   }
+
+  /**
+   * Called when the extension is installed
+   */
+  onInstalled = () => {
+    const modules = {
+      [constants.MOD_INFINITE_SCROLL]: 1,
+      [constants.MOD_POSTS_NEW_TAB]:   0,
+      [constants.MOD_BIGGER_BUTTONS]:  0
+    };
+
+    chrome.storage.sync.set({ modules }, () => {
+      Object.keys(mods).forEach((key) => {
+        const mod = new mods[key]();
+        mod.onInstalled();
+      });
+    });
+  };
+
+  /**
+   * Called from the content script
+   */
+  execContentContext = () => {
+    chrome.storage.sync.get('modules', (value) => {
+      const { modules } = value;
+
+      const actionModules = {};
+      Object.keys(modules).forEach((key) => {
+        const mod = new mods[key]();
+        mod.execContentContext();
+        actionModules[key] = mod;
+      });
+
+      // Let the contentInject.js script know which modules are active.
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('rp.modulesReady', {
+          'detail': {
+            activeModules: Object.keys(actionModules)
+          }
+        }));
+      }, 2000);
+    });
+  };
+
+  /**
+   * Called from the script injected into the page
+   */
+  execWindowContext = () => {
+    document.addEventListener('rp.modulesReady', (e) => {
+      const { activeModules } = e.detail;
+
+      const loadedModules = {};
+      activeModules.forEach((key) => {
+        const module = new mods[key]();
+        module.execWindowContext();
+        loadedModules[key] = module;
+      });
+    });
+  };
 }

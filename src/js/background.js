@@ -1,13 +1,12 @@
 import * as constants from './constants';
 import { fetchMe, fetchUser } from './utils/ruqqus';
+import actions from './actions';
 
 chrome.runtime.onInstalled.addListener(() => {
-  const settings = {
-    [constants.SETTING_INFINITE_SCROLL]: 1,
-    [constants.SETTING_POSTS_NEW_TAB]:   1,
-    [constants.SETTING_BIGGER_BUTTONS]:  0
-  };
-  chrome.storage.sync.set({ settings });
+  Object.keys(actions).forEach((key) => {
+    const action = new actions[key]();
+    action.onInstalled();
+  });
 });
 
 const userDetails = {

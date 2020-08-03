@@ -12,11 +12,4 @@ export default class Module extends Controller {
   getLabel = () => {
     throw new Error('getLabel not implemented.');
   }
-
-  /**
-   * Called with an object of all settings prior to saving them
-   *
-   * @param {*} settings
-   */
-  saveSettings = (settings) => {}
 }
