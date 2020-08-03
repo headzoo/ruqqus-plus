@@ -29,18 +29,18 @@
         "https://ruqqus.com/*"
       ],
       "css": [
-        "css/contentStyles.css"
+        "css/content-styles.css"
       ],
       "js": [
-        "js/contentScript.js"
+        "js/content-script.js"
       ],
       "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
-    "js/contentInject.js",
+    "js/content-inject.js",
     "images/loading.svg",
-    "css/userInfoStyles.css",
+    "css/user-info-styles.css",
     "html/about.html"
   ],
   "icons": {

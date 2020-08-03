@@ -12,4 +12,4 @@ Object.keys(actions).forEach((key) => {
 
 // contentInject.js has access to the ruqqus window object, which is needed
 // to access ruqqus functions and variables. (This script cannot access them.)
-injectScript(chrome.extension.getURL('js/contentInject.js'));
+injectScript(chrome.extension.getURL('js/content-inject.js'));
