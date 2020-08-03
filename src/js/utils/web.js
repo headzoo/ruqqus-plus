@@ -4,10 +4,11 @@
  * @param {string} path
  */
 export const injectScript = (path) => {
-  const body   = document.getElementsByTagName('body')[0];
   const script = document.createElement('script');
   script.setAttribute('type', 'text/javascript');
   script.setAttribute('src', path);
+
+  const body = document.getElementsByTagName('body')[0];
   body.appendChild(script);
 };
 
@@ -17,10 +18,26 @@ export const injectScript = (path) => {
  * @param {string} css
  */
 export const injectCSS = (css) => {
+  const style = document.createElement('style');
+  style.setAttribute('type', 'text/css');
+  style.innerHTML = css;
+
   const head = document.getElementsByTagName('head')[0];
-  const link = document.createElement('style');
+  head.appendChild(style);
+};
+
+/**
+ * Injects an external stylesheet
+ *
+ * @param {string} url
+ */
+export const injectStyleLink = (url) => {
+  const link = document.createElement('link');
+  link.setAttribute('rel', 'stylesheet');
   link.setAttribute('type', 'text/css');
-  link.innerHTML = css;
+  link.setAttribute('href', url);
+
+  const head = document.getElementsByTagName('head')[0];
   head.appendChild(link);
 };
 

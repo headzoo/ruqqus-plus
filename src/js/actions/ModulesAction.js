@@ -100,7 +100,8 @@ export default class ModulesAction extends Action {
     const modules = {
       [constants.MOD_INFINITE_SCROLL]: 1,
       [constants.MOD_POSTS_NEW_TAB]:   0,
-      [constants.MOD_BIGGER_BUTTONS]:  0
+      [constants.MOD_BIGGER_BUTTONS]:  0,
+      [constants.MOD_USER_INFO]:       1
     };
 
     chrome.storage.sync.set({ modules }, () => {

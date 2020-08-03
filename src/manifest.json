@@ -39,7 +39,8 @@
   ],
   "web_accessible_resources": [
     "js/contentInject.js",
-    "images/loading.svg"
+    "images/loading.svg",
+    "css/userInfoStyles.css"
   ],
   "icons": {
     "16": "images/icon-16.png",
