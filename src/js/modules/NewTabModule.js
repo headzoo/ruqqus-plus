@@ -17,7 +17,7 @@ export default class NewTabModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Open Posts and user profiles in new tab';
+    return 'Open posts and user profiles in new tab';
   };
 
   /**
