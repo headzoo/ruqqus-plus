@@ -65,7 +65,7 @@ export default class NewTabModule extends Module {
 ```
 
 #### Actions
-Actions encapsulate more complex logic than modules and may have more settings than simple on and off.
+Actions encapsulate more complex logic than modules and may have more settings than simple on and off. They can be found in the directory /src/js/actions. Modules are composed of classes and extend the `Action` class.
 
 A simple action which injects user configured CSS into all ruqqus pages looks like this:
 
