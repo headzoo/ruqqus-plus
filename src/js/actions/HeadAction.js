@@ -71,6 +71,9 @@ export default class HeadAction extends Action {
 
   /**
    * Called from the content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
     chrome.storage.sync.get('head', (values) => {

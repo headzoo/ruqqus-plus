@@ -13,7 +13,10 @@ export default class BiggerButtonsModule extends Module {
   };
 
   /**
-   * Called in the content script
+   * Called from the content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
     injectCSS(`

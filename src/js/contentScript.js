@@ -1,8 +1,8 @@
 import { injectScript } from './utils/web';
 import actions from './actions';
 
-// All of the extension functionality is encapsulated in actions. Initialize
-// the actions now.
+// All of the extension functionality is encapsulated in actions. The
+// ModuleAction initializes modules.
 const actionObjects = {};
 Object.keys(actions).forEach((key) => {
   const action = new actions[key]();

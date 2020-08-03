@@ -113,6 +113,9 @@ export default class ModulesAction extends Action {
 
   /**
    * Called from the content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
     // When the window context is ready we send the list of
@@ -139,6 +142,9 @@ export default class ModulesAction extends Action {
 
   /**
    * Called from the script injected into the page
+   *
+   * Code run from here has access to the ruqqus `window` object but not the
+   * chrome extension API.
    */
   execWindowContext = () => {
     this.listen('rp.ModulesAction.modulesReady', (e) => {

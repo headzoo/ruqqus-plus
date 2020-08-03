@@ -1,8 +1,6 @@
 import queryString from 'query-string';
 import Module from './Module';
 
-const EVENT_WIREUP_CARD = 'rp.InfiniteScrollModule.wireupCard';
-
 /**
  * Adds infinite scroll to post pages.
  */
@@ -32,6 +30,12 @@ export default class InfiniteScrollModule extends Module {
   posts = null;
 
   /**
+   * @type {HTMLElement}
+   * @private
+   */
+  loading = null;
+
+  /**
    * @returns {string}
    */
   getLabel = () => {
@@ -39,7 +43,10 @@ export default class InfiniteScrollModule extends Module {
   };
 
   /**
-   * Called in the content script
+   * Called from the content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
     this.posts = document.getElementById('posts');
@@ -58,6 +65,13 @@ export default class InfiniteScrollModule extends Module {
       return;
     }
 
+    pageLinks[0].style.display = 'none';
+    pageLinks[1].style.display = 'none';
+    this.loading = document.createElement('img');
+    this.loading.setAttribute('src', chrome.runtime.getURL('images/loading.svg'));
+    this.loading.setAttribute('style', 'display: none;');
+    pageLinks[1].parentNode.insertBefore(this.loading, pageLinks[1].nextSibling);
+
     const parsed = queryString.parse(href);
     this.page    = parsed.page;
     this.sort    = parsed.sort;
@@ -75,13 +89,18 @@ export default class InfiniteScrollModule extends Module {
   };
 
   /**
-   * Called in the context of the page
+   * Called from the script injected into the page
+   *
+   * Code run from here has access to the ruqqus `window` object but not the
+   * chrome extension API.
    */
   execWindowContext = () => {
-    this.listen(EVENT_WIREUP_CARD, this.handleWireupCard);
+    this.listen('rp.InfiniteScrollModule.wireupCard', this.handleWireupCard);
   };
 
   /**
+   * Called when the bottom of the page is reached
+   *
    * @param {IntersectionObserverEntry[]} entries
    * @param {IntersectionObserver} observer
    * @private
@@ -89,6 +108,7 @@ export default class InfiniteScrollModule extends Module {
   handleIntersect = (entries, observer) => {
     const entry = entries[0];
     if (entry.isIntersecting) {
+      this.loading.style.display = 'block';
       fetch(`?sort=${this.sort}&page=${this.page}&t=${this.type}`)
         .then((resp) => resp.text())
         .then((text) => {
@@ -99,7 +119,7 @@ export default class InfiniteScrollModule extends Module {
           if (cards && cards.length > 0) {
             cards.forEach((card) => {
               this.posts.appendChild(card);
-              this.dispatch(EVENT_WIREUP_CARD, {
+              this.dispatch('rp.InfiniteScrollModule.wireupCard', {
                 id: card.getAttribute('id')
               });
             });
@@ -110,11 +130,17 @@ export default class InfiniteScrollModule extends Module {
           }
 
           this.dispatch('rp.change');
+        })
+        .finally(() => {
+          this.loading.style.display = 'none';
         });
     }
   };
 
   /**
+   * Adds event listeners to new cards. This must be done from the window context to have
+   * access to the window.upvote() and window.downvote() functions.
+   *
    * @param {CustomEvent} e
    * @see https://github.com/ruqqus/ruqqus/blob/7477b2d088560f2ac39e723821e8bd7be11087fa/ruqqus/assets/js/all_js.js#L1030
    */

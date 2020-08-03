@@ -12,7 +12,10 @@ export default class PostsNewTabModule extends Module {
   };
 
   /**
-   * Called in the content script
+   * Called from the content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
     this.listen('rp.change', this.execContentContext);
