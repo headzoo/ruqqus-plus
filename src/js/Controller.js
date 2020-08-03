@@ -15,6 +15,12 @@ export default class Controller {
   };
 
   /**
+   * Called from the background script
+   */
+  execBackgroundContext = () => {
+  }
+
+  /**
    * Called when the extension is installed
    */
   onInstalled = () => {}

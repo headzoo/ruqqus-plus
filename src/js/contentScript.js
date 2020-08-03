@@ -7,9 +7,9 @@ injectScript(chrome.extension.getURL('js/contentInject.js'));
 
 // All of the extension functionality is encapsulated in actions. Initialize
 // the actions now.
-const activeActions = {};
+const actionObjects = {};
 Object.keys(actions).forEach((key) => {
   const action = new actions[key]();
   action.execContentContext();
-  activeActions[key] = action;
+  actionObjects[key] = action;
 });

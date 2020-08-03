@@ -10,37 +10,75 @@ window.addEventListener('DOMContentLoaded', () => {
   const bell              = notices.querySelector('.fa-bell');
   const badgeCount        = notices.querySelector('.badge-count');
 
+  /**
+   * @param {HTMLElement|Node} el
+   * @param {string} t
+   */
+  const show = (el, t = 'block !important') => {
+    el.style.display = t;
+  };
+
+  /**
+   * @param {HTMLElement|Node} el
+   */
+  const hide = (el) => {
+    el.style.display = 'none !important';
+  };
+
+  /**
+   * @param {{ authed: boolean, user: *, unread: number }} msg
+   */
+  const updatePage = (msg) => {
+    if (!msg.authed) {
+      hide(containerAuthed);
+      show(containerUnauthed);
+      hide(badgeCount);
+    } else {
+      hide(containerUnauthed);
+      show(containerAuthed, 'flex');
+
+      username.innerText = msg.user.username;
+      rep.innerText      = `${(parseInt(msg.user.post_rep, 10) + parseInt(msg.user.comment_rep, 10)).toString()  } Rep`;
+      avatar.src         = msg.user.profile_url;
+      if (msg.unread > 0) {
+        bell.classList.add('text-danger');
+        badgeCount.innerText = msg.unread;
+        show(badgeCount);
+      } else {
+        bell.classList.remove('text-danger');
+        hide(badgeCount);
+      }
+    }
+  };
+
+  chrome.storage.sync.get(['authed', 'user', 'unread'], (values) => {
+    const { authed, user, unread } = values;
+
+    updatePage({ authed, user, unread });
+  });
+
   const port = chrome.extension.connect({
-    name: 'state'
+    name: 'user'
   });
   port.onMessage.addListener((msg) => {
     switch (msg.type) {
       case constants.TYPE_AUTH:
-        if (!msg.authed) {
-          containerUnauthed.style.display = 'block';
-          containerAuthed.style.display   = 'none';
-        } else {
-          containerUnauthed.style.display = 'none';
-          containerAuthed.style.display   = 'block';
-          username.innerText              = msg.user.username;
-          rep.innerText                   = `${(parseInt(msg.user.post_rep, 10) + parseInt(msg.user.comment_rep, 10)).toString()  } Rep`;
-          avatar.src                      = msg.user.profile_url;
-          if (msg.unread > 0) {
-            bell.classList.add('text-danger');
-            badgeCount.style.display = 'block';
-            badgeCount.innerText     = msg.unread;
-          } else {
-            bell.classList.remove('text-danger');
-            badgeCount.style.display = 'none';
-          }
-        }
+        chrome.storage.sync.set({
+          authed: msg.authed,
+          user:   msg.user,
+          unread: msg.unread
+        });
+        updatePage(msg);
         break;
     }
   });
 
+  // Remove the unread count when the notice button is clicked because
+  // we're only checking for new unread messages once per minute but we
+  // don't want the red bell showing after the user read the notices.
   notices.addEventListener('click', () => {
     bell.classList.remove('text-danger');
-    badgeCount.style.display = 'none';
+    hide(badgeCount);
     port.postMessage({
       type:   constants.TYPE_UNREAD,
       unread: 0

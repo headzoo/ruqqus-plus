@@ -11,9 +11,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const actionObj = new actions[key]();
     actionObjects.push(actionObj);
 
+    const label = actionObj.getLabel();
+    if (!label) {
+      return;
+    }
+
     const sidebarItem = createTemplateContent(`
         <a href="#${key}" class="list-group-item">
-            ${actionObj.getLabel()}
+            ${label}
         </a>
     `);
     sidebarList.appendChild(sidebarItem);
