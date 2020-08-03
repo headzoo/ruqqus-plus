@@ -30,9 +30,8 @@ export default class UserInfoModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.listen('rp.change', this.wireupUserNames);
-
     injectStyleLink(chrome.runtime.getURL('css/user-info-styles.css'));
+    this.listen('rp.change', this.wireupUserNames);
     this.wireupUserNames();
   };
 
