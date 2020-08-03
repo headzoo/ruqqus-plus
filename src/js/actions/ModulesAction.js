@@ -1,14 +1,19 @@
 import toastr from 'toastr';
 import forms from '../utils/forms';
+import * as constants from '../utils/constants';
 import { createTemplateContent } from '../utils/web';
 import mods from '../modules';
 import Action from './Action';
-import * as constants from '../utils/constants';
 
 /**
  * Action that handles modules
  */
 export default class ModulesAction extends Action {
+  /**
+   * @type {{}}
+   */
+  activeModules = {};
+
   /**
    * @returns {string}
    */
@@ -110,24 +115,25 @@ export default class ModulesAction extends Action {
    * Called from the content script
    */
   execContentContext = () => {
+    // When the window context is ready we send the list of
+    // active modules.
+    this.listen('rp.ModulesAction.windowContextReady', () => {
+      this.dispatch('rp.ModulesAction.modulesReady', {
+        activeModules: Object.keys(this.activeModules)
+      });
+    });
+
     chrome.storage.sync.get('modules', (value) => {
       const { modules } = value;
 
-      const actionModules = {};
+      this.activeModules = {};
       Object.keys(modules).forEach((key) => {
-        const mod = new mods[key]();
-        mod.execContentContext();
-        actionModules[key] = mod;
+        if (modules[key]) {
+          const mod = new mods[key]();
+          mod.execContentContext();
+          this.activeModules[key] = mod;
+        }
       });
-
-      // Let the contentInject.js script know which modules are active.
-      setTimeout(() => {
-        document.dispatchEvent(new CustomEvent('rp.modulesReady', {
-          'detail': {
-            activeModules: Object.keys(actionModules)
-          }
-        }));
-      }, 2000);
     });
   };
 
@@ -135,7 +141,7 @@ export default class ModulesAction extends Action {
    * Called from the script injected into the page
    */
   execWindowContext = () => {
-    document.addEventListener('rp.modulesReady', (e) => {
+    this.listen('rp.ModulesAction.modulesReady', (e) => {
       const { activeModules } = e.detail;
 
       const loadedModules = {};
@@ -145,5 +151,6 @@ export default class ModulesAction extends Action {
         loadedModules[key] = module;
       });
     });
+    this.dispatch('rp.ModulesAction.windowContextReady');
   };
 }

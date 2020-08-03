@@ -21,6 +21,9 @@ export default class BiggerButtonsModule extends Module {
       .upvote-button::before {
         font-size: 1.5rem;
       }
+      .score {
+        font-size: 1rem;
+      }
     `);
   };
 }
