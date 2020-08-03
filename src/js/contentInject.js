@@ -1,4 +1,5 @@
 import modules from './modules';
+import actions from './actions';
 
 /**
  * This page is injected into ruqqus. Unlike contentScript.js, this script
@@ -6,12 +7,19 @@ import modules from './modules';
  */
 
 document.addEventListener('rp.modulesReady', (e) => {
-  const { activeMods } = e.detail;
+  const { activeModules } = e.detail;
 
-  const loaded = {};
-  activeMods.forEach((key) => {
-    const mod = new modules[key]();
-    mod.execWindowContext();
-    loaded[key] = mod;
+  const loadedModules = {};
+  activeModules.forEach((key) => {
+    const module = new modules[key]();
+    module.execWindowContext();
+    loadedModules[key] = module;
+  });
+
+  const loadedActions = {};
+  Object.keys(actions).forEach((key) => {
+    const action = new actions[key]();
+    action.execWindowContext();
+    loadedActions[key] = action;
   });
 });

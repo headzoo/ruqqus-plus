@@ -1,4 +1,5 @@
-$color-primary: #604DC6;
+@import "vars";
+
 $theme-colors: (
   "primary": $color-primary,
   "danger": #ff4136

@@ -1,4 +1,5 @@
-$color-primary: #604DC6;
+@import "vars";
+
 $theme-colors: (
   "primary": $color-primary,
   "danger": #ff4136
@@ -6,6 +7,11 @@ $theme-colors: (
 
 @import "~bootstrap/scss/bootstrap.scss";
 @import "~toastr/build/toastr.css";
+
+body,
+html {
+  height: 100%;
+}
 
 body {
   padding: 0;
@@ -17,7 +23,31 @@ body {
 header {
   color: #FFF;
   font-weight: 700;
+  text-align: center;
   background-color: $color-primary;
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+.sidebar {
+  width: 300px;
+  background-color: #1d1d1d;
+
+  .list-group-item {
+    color: #FFF;
+    background-color: transparent;
+    border-radius: 0;
+    border: 0;
+    transition: background-color 0.2s;
+
+    &:hover,
+    &.active {
+      text-decoration: none;
+      background-color: #292154;
+    }
+  }
 }
 
 #toast-container {

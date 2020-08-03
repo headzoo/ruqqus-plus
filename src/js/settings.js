@@ -1,59 +1,57 @@
-import toastr from 'toastr';
-import forms from './utils/forms';
 import { createTemplateContent } from './utils/web';
-import modules from './modules';
-
-const settingOnOffTemplate = `
-  <div class="custom-control custom-checkbox">
-    <input
-      type="checkbox"
-      name="%%name%%"
-      class="custom-control-input"
-      id="setting-%%name%%"
-    />
-    <label class="custom-control-label" for="setting-%%name%%">
-      %%label%%
-    </label>
-  </div>`;
+import actions from './actions';
 
 window.addEventListener('DOMContentLoaded', () => {
-  /** @type {HTMLFormElement} */
-  const form         = document.getElementById('settings-form');
-  const modulesMount = document.getElementById('module-settings-mount');
-  const loaded       = {};
+  const pagesMount  = document.getElementById('pages-mount');
+  const sidebarList = document.getElementById('sidebar-group');
 
-  chrome.storage.sync.get('settings', (value) => {
-    const { settings } = value;
+  // Add pages for each action.
+  const actionObjects = [];
+  Object.keys(actions).forEach((key, i) => {
+    const actionObj = new actions[key]();
+    actionObjects.push(actionObj);
 
-    // Adds module settings to the form.
-    Object.keys(settings).forEach((key) => {
-      const mod   = new modules[key]();
-      const label = mod.getLabel();
-      loaded[key] = mod;
+    const sidebarItem = createTemplateContent(`
+        <a href="#${key}" class="list-group-item">
+            ${actionObj.getLabel()}
+        </a>
+    `);
+    sidebarList.appendChild(sidebarItem);
 
-      const html    = settingOnOffTemplate.replace(/%%name%%/g, key).replace(/%%label%%/g, label);
-      const content = createTemplateContent(html);
-      modulesMount.appendChild(content);
-    });
-
-    forms.deserialize(form, settings);
+    const content = createTemplateContent(`
+      <div class="page" data-page="${key}" style="display: ${i === 0 ? 'block' : 'none'};">
+        ${actionObj.getSettingsHtml()}
+      </div>
+    `);
+    pagesMount.appendChild(content);
   });
 
-  // Saves the settings.
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  actionObjects.forEach((pageObj) => {
+    pageObj.onSettingsPageReady();
+  });
 
-    const settings = forms.serialize(form);
-    Object.keys(loaded).forEach((key) => {
-      if (settings[key]) {
-        loaded[key].saveSettings(settings);
-      }
-    });
+  // Switch pages when sidebar items are clicked.
+  const pagesContainers = document.querySelectorAll('.page');
+  const sidebarItems    = document.querySelectorAll('.sidebar .list-group-item');
 
-    chrome.storage.sync.set({ settings });
-    toastr.success('Settings have been saved.', '', {
-      closeButton:   true,
-      positionClass: 'toast-bottom-center'
+  sidebarItems[0].classList.add('active');
+
+  /**
+   * @param {*} e
+   */
+  const handleSidebarClick = (e) => {
+    sidebarItems.forEach((item) => {
+      item.classList.remove('active');
     });
+    const href = e.target.getAttribute('href').replace('#', '');
+    e.target.classList.add('active');
+
+    pagesContainers.forEach((page) => {
+      page.style.display = page.getAttribute('data-page') === href ? 'block' : 'none';
+    });
+  };
+
+  sidebarItems.forEach((item) => {
+    item.addEventListener('click', handleSidebarClick, false);
   });
 });
