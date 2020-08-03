@@ -1,6 +1,6 @@
 import Action from './Action';
 import { fetchMe, fetchUser } from '../utils/ruqqus';
-import * as constants from '../constants';
+import * as constants from '../utils/constants';
 
 /**
  * Manages the user account

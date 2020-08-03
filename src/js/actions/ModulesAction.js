@@ -3,7 +3,7 @@ import forms from '../utils/forms';
 import { createTemplateContent } from '../utils/web';
 import mods from '../modules';
 import Action from './Action';
-import * as constants from '../constants';
+import * as constants from '../utils/constants';
 
 /**
  * Action that handles modules

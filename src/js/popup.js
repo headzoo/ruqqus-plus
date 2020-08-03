@@ -1,4 +1,4 @@
-import * as constants from './constants';
+import * as constants from './utils/constants';
 
 window.addEventListener('DOMContentLoaded', () => {
   const containerAuthed   = document.getElementById('container-authed');
