@@ -102,6 +102,7 @@ export default class UserInfoModule extends Module {
       box.classList.add('rp-userInfo-box-dark');
     }
     box.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);
+    box.innerHTML = `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`;
     document.querySelector('body').appendChild(box);
 
     const userName = target.getAttribute('href').replace('/@', '');
