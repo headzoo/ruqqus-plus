@@ -60,7 +60,6 @@ export default class UserInfoModule extends Module {
           <div class="d-flex flex-column">
               <span id="container-authed-username" class="username mr-2">%%username%%</span>
               <div>
-                  <span class="rep">*</span>
                   <span id="container-authed-rep" class="rep">%%rep%% Rep</span>
               </div>
           </div>
