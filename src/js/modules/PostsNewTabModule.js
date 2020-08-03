@@ -1,5 +1,4 @@
 import Module from './Module';
-import * as constants from '../constants';
 
 /**
  * Opens posts in a new tab.
@@ -8,19 +7,8 @@ export default class PostsNewTabModule extends Module {
   /**
    * @returns {string}
    */
-  getSettings = () => {
-    return `
-      <div class="custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          name="${constants.SETTING_POSTS_NEW_TAB}"
-          class="custom-control-input"
-          id="setting-posts-new-tab"
-        />
-        <label class="custom-control-label" for="setting-posts-new-tab">
-          Open Posts In New Tab
-        </label>
-      </div>`;
+  getLabel = () => {
+    return 'Open Posts In New Tab';
   };
 
   /**

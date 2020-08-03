@@ -16,6 +16,9 @@ const userDetails = {
   user:   null
 };
 
+/**
+ * @param {number} unread
+ */
 const setUnread = (unread) => {
   if (unread > 0) {
     chrome.browserAction.setBadgeText({ text: unread.toString() });
@@ -25,6 +28,9 @@ const setUnread = (unread) => {
   }
 };
 
+/**
+ *
+ */
 const resetUserDetails = () => {
   userDetails.authed = false;
   userDetails.unread = 0;
@@ -32,8 +38,11 @@ const resetUserDetails = () => {
   setUnread(0);
 };
 
+/**
+ * @returns {Promise<{unread: number, authed: boolean, username: string}>}
+ */
 const fetchAuth = () => {
-  fetchMe()
+  return fetchMe()
     .then(({ authed, unread, username }) => {
       if (!authed) {
         resetUserDetails();
@@ -58,7 +67,6 @@ const fetchAuth = () => {
     });
 };
 
-fetchAuth();
 chrome.alarms.create('fetchAuth', { periodInMinutes: 1.0 });
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'fetchAuth') {
@@ -76,8 +84,11 @@ chrome.extension.onConnect.addListener((port) => {
     }
   });
 
-  port.postMessage({
-    type: constants.TYPE_AUTH,
-    ...userDetails
-  });
+  fetchAuth()
+    .then(() => {
+      port.postMessage({
+        type: constants.TYPE_AUTH,
+        ...userDetails
+      });
+    });
 });

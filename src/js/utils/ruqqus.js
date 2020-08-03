@@ -1,5 +1,8 @@
 import { createTemplateContent } from './web';
 
+/**
+ * @returns {Promise<{unread: number, authed: boolean, username: string}>}
+ */
 export const fetchMe = () => {
   return fetch('https://ruqqus.com/me')
     .then((resp) => resp.text())
@@ -26,6 +29,10 @@ export const fetchMe = () => {
     });
 };
 
+/**
+ * @param {string} username
+ * @returns {Promise<any>}
+ */
 export const fetchUser = (username) => {
   return fetch(`https://ruqqus.com/api/v1/user/${username}`)
     .then((resp) => {

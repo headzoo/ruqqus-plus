@@ -3,6 +3,36 @@
  */
 export default class Module {
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
+   * @returns {string}
+   */
+  getLabel = () => {
+    throw new Error('getLabel not implemented.');
+  }
+
+  /**
+   * Called with an object of all settings prior to saving them
+   *
+   * @param {*} settings
+   */
+  saveSettings = (settings) => {}
+
+  /**
+   * Called from the content script
+   */
+  execContentContext = () => {
+  };
+
+  /**
+   * Called from the script injected into the page
+   */
+  execWindowContext = () => {
+  };
+
+  /**
+   * Dispatches an event
+   *
    * @param {string} event
    * @param {*} detail
    */
@@ -13,36 +43,12 @@ export default class Module {
   };
 
   /**
+   * Listens for an event
+   *
    * @param {string} event
    * @param {Function} callback
    */
   listen = (event, callback) => {
     document.addEventListener(event, callback);
   };
-
-  /**
-   * Called in the content script
-   */
-  execContentContext = () => {
-  };
-
-  /**
-   * Called in the context of the page
-   */
-  execWindowContext = () => {
-  };
-
-  /**
-   * Returns the HTML that's displayed on the settings page for this module
-   *
-   * @returns {string}
-   */
-  getSettings = () => {
-    return '';
-  };
-
-  /**
-   * @param {*} settings
-   */
-  saveSettings = (settings) => {}
 }

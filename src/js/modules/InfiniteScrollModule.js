@@ -1,6 +1,5 @@
 import queryString from 'query-string';
 import Module from './Module';
-import * as constants from '../constants';
 
 const EVENT_WIREUP_CARD = 'rp.InfiniteScrollModule.wireupCard';
 
@@ -35,19 +34,8 @@ export default class InfiniteScrollModule extends Module {
   /**
    * @returns {string}
    */
-  getSettings = () => {
-    return `
-      <div class="custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          name="${constants.SETTING_INFINITE_SCROLL}"
-          class="custom-control-input"
-          id="setting-infinite-scroll"
-        />
-        <label class="custom-control-label" for="setting-infinite-scroll">
-          Infinite Scroll
-        </label>
-      </div>`;
+  getLabel = () => {
+    return 'Infinite Scroll';
   };
 
   /**
