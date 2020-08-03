@@ -19,7 +19,7 @@ Now the extension should be loaded as an unpacked extension. See [instructions f
 ### Developing
 Follow the build instructions to clone and install the dependencies, and run `yarn run watch` to compile source files while coding.
 
-The extension functionality is encapsulated with in actions and modules.
+The extension functionality is encapsulated with in actions and modules. New functionality can be added by adding more actions and modules.
 
 #### Modules
 Modules are simple bits of functionality that can be turned on or off from the extension settings page. They can be found in the directory `/src/js/modules`. Modules are composed of classes and extend the `Module` class.
@@ -64,8 +64,10 @@ export default class NewTabModule extends Module {
 }
 ```
 
+Now register the module by added the class to `/src/js/modules/index.js`.
+
 #### Actions
-Actions encapsulate more complex logic than modules and may have more settings than simple on and off. They can be found in the directory /src/js/actions. Modules are composed of classes and extend the `Action` class.
+Actions encapsulate more complex logic than modules and may have more settings than simple on and off. They can be found in the directory `/src/js/actions`. Modules are composed of classes and extend the `Action` class.
 
 A simple action which injects user configured CSS into all ruqqus pages looks like this:
 
@@ -166,3 +168,5 @@ export default class HeadAction extends Action {
   };
 }
 ```
+
+Now register the action by added the class to `/src/js/actions/index.js`.
