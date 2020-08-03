@@ -67,13 +67,15 @@ export default class ModulesAction extends Action {
 
       // Adds module settings to the form.
       Object.keys(modules).forEach((key) => {
-        const mod   = new mods[key]();
-        const label = mod.getLabel();
-        loaded[key] = mod;
+        if (mods[key]) {
+          const mod   = new mods[key]();
+          const label = mod.getLabel();
+          loaded[key] = mod;
 
-        const html    = settingOnOffTemplate.replace(/%%name%%/g, key).replace(/%%label%%/g, label);
-        const content = createTemplateContent(html);
-        modulesMount.appendChild(content);
+          const html    = settingOnOffTemplate.replace(/%%name%%/g, key).replace(/%%label%%/g, label);
+          const content = createTemplateContent(html);
+          modulesMount.appendChild(content);
+        }
       });
 
       forms.deserialize(form, modules);
@@ -129,7 +131,7 @@ export default class ModulesAction extends Action {
 
       this.activeModules = {};
       Object.keys(modules).forEach((key) => {
-        if (modules[key]) {
+        if (modules[key] && mods[key]) {
           const mod = new mods[key]();
           mod.execContentContext();
           this.activeModules[key] = mod;

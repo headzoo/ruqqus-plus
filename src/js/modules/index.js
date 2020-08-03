@@ -1,11 +1,11 @@
 import InfiniteScrollModule from './InfiniteScrollModule';
-import PostsNewTabModule from './PostsNewTabModule';
+import NewTabModule from './NewTabModule';
 import BiggerButtonsModule from './BiggerButtonsModule';
 import UserInfoModule from './UserInfoModule';
 
 export default {
   InfiniteScrollModule,
-  PostsNewTabModule,
+  NewTabModule,
   BiggerButtonsModule,
   UserInfoModule
 };

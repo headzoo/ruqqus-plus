@@ -3,7 +3,7 @@ import Module from './Module';
 /**
  * Opens posts in a new tab.
  */
-export default class PostsNewTabModule extends Module {
+export default class NewTabModule extends Module {
   /**
    * Returns 1 or 0
    *
@@ -17,7 +17,7 @@ export default class PostsNewTabModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Open Posts In New Tab';
+    return 'Open Posts and User Profiles In New Tab';
   };
 
   /**
@@ -37,6 +37,9 @@ export default class PostsNewTabModule extends Module {
       document.querySelectorAll(`a[href="${href}"]`).forEach((link) => {
         link.setAttribute('target', '_blank');
       });
+    });
+    document.querySelectorAll('.user-name').forEach((link) => {
+      link.setAttribute('target', '_blank');
     });
   };
 }
