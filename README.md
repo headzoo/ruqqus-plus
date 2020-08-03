@@ -154,15 +154,13 @@ export default class HeadAction extends Action {
     chrome.storage.sync.get('head', (values) => {
       const { head } = values;
 
-      if (head) {
-        const headEl = document.querySelector('head');
+      if (head && head.css) {
+        const style = document.createElement('style');
+        style.setAttribute('type', 'text/css');
+        style.innerHTML = head.css;
 
-        if (head.css) {
-          const style = document.createElement('style');
-          style.setAttribute('type', 'text/css');
-          style.innerHTML = head.css;
-          headEl.appendChild(style);
-        }
+        const headEl = document.querySelector('head');
+        headEl.appendChild(style);
       }
     });
   };
