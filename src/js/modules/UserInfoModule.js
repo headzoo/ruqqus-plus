@@ -1,3 +1,4 @@
+import moment from 'moment';
 import Module from './Module';
 import { fetchUser } from '../utils/ruqqus';
 import { injectStyleLink } from '../utils/web';
@@ -61,6 +62,8 @@ export default class UserInfoModule extends Module {
               <span id="container-authed-username" class="username mr-2">%%username%%</span>
               <div>
                   <span id="container-authed-rep" class="rep">%%rep%% Rep</span>
+                  &nbsp;&nbsp;
+                  <span id="container-joined" class="joined">joined %%joined%%</span>
               </div>
           </div>
       </div>
@@ -75,6 +78,18 @@ export default class UserInfoModule extends Module {
   }
 
   /**
+   * returns {boolean}
+   */
+  isDarkMode = () => {
+    const link = document.getElementById('css-link');
+    if (!link) {
+      return false;
+    }
+
+    return link.getAttribute('href').indexOf('dark') !== -1;
+  };
+
+  /**
    * @param {MouseEvent} e
    */
   handleMouseEnter = (e) => {
@@ -83,6 +98,9 @@ export default class UserInfoModule extends Module {
     const rect = target.getBoundingClientRect();
     const box  = document.createElement('div');
     box.classList.add('rp-userInfo-box');
+    if (this.isDarkMode()) {
+      box.classList.add('rp-userInfo-box-dark');
+    }
     box.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);
     document.querySelector('body').appendChild(box);
 
@@ -94,7 +112,8 @@ export default class UserInfoModule extends Module {
           return;
         }
 
-        user.rep = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
+        user.joined   = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
+        user.rep      = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
         box.innerHTML = this.getBoxTemplate(user);
       });
   };
