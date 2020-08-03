@@ -36,6 +36,15 @@ export default class InfiniteScrollModule extends Module {
   loading = null;
 
   /**
+   * Returns 1 or 0
+   *
+   * @returns {number}
+   */
+  static getDefaultSetting = () => {
+    return 1;
+  };
+
+  /**
    * @returns {string}
    */
   getLabel = () => {

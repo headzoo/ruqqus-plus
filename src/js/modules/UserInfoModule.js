@@ -7,6 +7,15 @@ import { injectStyleLink } from '../utils/web';
  */
 export default class UserInfoModule extends Module {
   /**
+   * Returns 1 or 0
+   *
+   * @returns {number}
+   */
+  static getDefaultSetting = () => {
+    return 1;
+  };
+
+  /**
    * @returns {string}
    */
   getLabel = () => {

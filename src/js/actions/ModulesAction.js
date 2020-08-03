@@ -1,6 +1,5 @@
 import toastr from 'toastr';
 import forms from '../utils/forms';
-import * as constants from '../utils/constants';
 import { createTemplateContent } from '../utils/web';
 import mods from '../modules';
 import Action from './Action';
@@ -97,12 +96,10 @@ export default class ModulesAction extends Action {
    * Called when the extension is installed
    */
   onInstalled = () => {
-    const modules = {
-      [constants.MOD_INFINITE_SCROLL]: 1,
-      [constants.MOD_POSTS_NEW_TAB]:   0,
-      [constants.MOD_BIGGER_BUTTONS]:  0,
-      [constants.MOD_USER_INFO]:       1
-    };
+    const modules = {};
+    Object.keys(mods).forEach((key) => {
+      modules[key] = mods[key].getDefaultSetting();
+    });
 
     chrome.storage.sync.set({ modules }, () => {
       Object.keys(mods).forEach((key) => {

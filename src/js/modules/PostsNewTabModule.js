@@ -5,6 +5,15 @@ import Module from './Module';
  */
 export default class PostsNewTabModule extends Module {
   /**
+   * Returns 1 or 0
+   *
+   * @returns {number}
+   */
+  static getDefaultSetting = () => {
+    return 0;
+  };
+
+  /**
    * @returns {string}
    */
   getLabel = () => {

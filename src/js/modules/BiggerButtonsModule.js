@@ -6,6 +6,15 @@ import { injectCSS } from '../utils/web';
  */
 export default class BiggerButtonsModule extends Module {
   /**
+   * Returns 1 or 0
+   *
+   * @returns {number}
+   */
+  static getDefaultSetting = () => {
+    return 0;
+  };
+
+  /**
    * @returns {string}
    */
   getLabel = () => {
