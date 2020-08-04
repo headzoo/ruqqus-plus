@@ -1,3 +1,4 @@
+import purePopup from '../utils/purePopup';
 import { setAttributes, insertAfter } from '../utils/web';
 import Module from './Module';
 
@@ -46,6 +47,7 @@ export default class TaggerModule extends Module {
     dbReq.onsuccess = (e) => {
       this.db = e.target.result;
       this.wireupUserNames();
+      this.listen('rp.change', this.wireupUserNames);
     };
     dbReq.onerror = (e) => {
       this.toastError(`Error initializing tagger action. ${e.target.errorCode}`);
@@ -64,31 +66,37 @@ export default class TaggerModule extends Module {
    * @returns {Promise<void>}
    */
   wireupUser = async (el) => {
+    if (el.getAttribute('data-rp-tagged')) {
+      return;
+    }
+    el.setAttribute('data-rp-tagged', 'true');
+
     const username = el.getAttribute('href').replace('/@', '');
     const tagIcon  = document.createElement('span');
     setAttributes(tagIcon, {
       'title':        'Tag User',
       'class':        'pointer',
       'data-rp-user': username,
-      'html':         '&nbsp;&nbsp;<i class="fas fa-tag"></i>&nbsp;'
+      'html':         '&nbsp;&nbsp;<i class="fas fa-tag"></i>'
     });
     insertAfter(el, tagIcon);
     tagIcon.addEventListener('click', this.handleTagClick);
 
-    const tags = await this.getUserTags(username);
-    if (tags !== -1) {
-      const tagWrap = document.createElement('span');
-      tagWrap.setAttribute('class', 'rp-user-tag-wrap');
-
-      const tagSpan = document.createElement('span');
-      setAttributes(tagSpan, {
-        'class':             'rp-user-tag',
-        'data-rp-user-tags': username,
-        'text':              tags.join(', ')
-      });
-      tagWrap.appendChild(tagSpan);
-      insertAfter(tagIcon, tagWrap);
+    const tags    = await this.getUserTags(username);
+    const tagWrap = document.createElement('span');
+    tagWrap.classList.add('rp-user-tag-wrap');
+    if (tags === -1) {
+      tagWrap.classList.add('rp-user-tag-wrap-empty');
     }
+
+    const tagSpan = document.createElement('span');
+    setAttributes(tagSpan, {
+      'class':             'rp-user-tag',
+      'data-rp-user-tags': username,
+      'text':              tags !== -1 ? tags.join(', ') : ''
+    });
+    tagWrap.appendChild(tagSpan);
+    insertAfter(tagIcon, tagWrap);
   }
 
   /**
@@ -129,27 +137,49 @@ export default class TaggerModule extends Module {
       promptValue = userTags.join(', ');
     }
 
-    const input = prompt('Comma separated list of tags', promptValue); // eslint-disable-line
-    if (input) {
-      const tags  = input.split(',').map((t) => t.trim());
-      const tx    = this.db.transaction(['userTags'], 'readwrite');
-      const store = tx.objectStore('userTags');
-
-      const row = { username, tags };
-      if (userTags !== -1) {
-        store.put(row);
-      } else {
-        store.add(row);
+    purePopup.prompt({
+      title:  `Tagging ${username}.`,
+      inputs: {
+        tags: 'Comma separated list of tags:'
+      },
+      values: {
+        tags: promptValue
       }
-      tx.oncomplete = () => {
-        this.tags[username] = tags;
-        document.querySelectorAll(`[data-rp-user-tags="${username}"]`).forEach((el) => {
-          el.innerText = tags.join(', ');
-        });
-      };
-      tx.onerror = (ev) => {
-        this.toastError(`Error saving tag. ${ev.target.errorCode}`);
-      };
-    }
+    }, (result) => {
+      if (result.confirm === 'ok') {
+        const input = result.tags;
+
+        const tx    = this.db.transaction(['userTags'], 'readwrite');
+        const store = tx.objectStore('userTags');
+
+        if (input) {
+          const tags = input.split(',').map((t) => t.trim());
+          const row  = { username, tags };
+          if (userTags !== -1) {
+            store.put(row);
+          } else {
+            store.add(row);
+          }
+
+          tx.oncomplete = () => {
+            this.tags[username] = tags;
+            document.querySelectorAll(`[data-rp-user-tags="${username}"]`).forEach((el) => {
+              el.innerText = tags.join(', ');
+              el.parentElement.classList.remove('rp-user-tag-wrap-empty');
+            });
+          };
+          tx.onerror = (ev) => {
+            this.toastError(`Error saving tag. ${ev.target.errorCode}`);
+          };
+        } else {
+          store.delete(username);
+          this.tags[username] = -1;
+          document.querySelectorAll(`[data-rp-user-tags="${username}"]`).forEach((el) => {
+            el.innerText = '';
+            el.parentElement.classList.add('rp-user-tag-wrap-empty');
+          });
+        }
+      }
+    });
   };
 }

@@ -1,5 +1,6 @@
 @import "vars";
 @import "~toastr/build/toastr.css";
+@import "pure-popup";
 
 .pointer {
   cursor: pointer;
@@ -9,11 +10,13 @@
   margin: 0 0.25rem;
   font-weight: 700;
 
-  &::before {
+  &:not(.rp-user-tag-wrap-empty)::before {
     content: '{';
+    margin-right: 0.25rem;
   }
 
-  &::after {
+  &:not(.rp-user-tag-wrap-empty)::after {
     content: '}';
+    margin-left: 0.25rem;
   }
 }
