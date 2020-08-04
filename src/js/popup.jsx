@@ -29,10 +29,8 @@ class App extends React.Component {
 
     return (
       <div>
-        <header className="p-2 mb-3">
-          <div className="container">
-            <h1>Ruqqus Plus</h1>
-          </div>
+        <header className="mb-3 text-center">
+          <img src="../images/icon-32.png" alt="Logo" />
         </header>
         <div className="container">
           {user && (
