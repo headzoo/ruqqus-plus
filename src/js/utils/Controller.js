@@ -5,6 +5,20 @@ import toastr from 'toastr';
  */
 export default class Controller {
   /**
+   * @returns {string}
+   */
+  getSettingsSidebarLabel = () => {
+    return '';
+  };
+
+  /**
+   * @returns {string}
+   */
+  getSettingsComponent = () => {
+    return '';
+  };
+
+  /**
    * Called from the content script
    *
    * The content script has access to the chrome extension API but does not

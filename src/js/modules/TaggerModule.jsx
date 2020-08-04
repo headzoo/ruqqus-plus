@@ -1,3 +1,4 @@
+import React from 'react';
 import purePopup from '../utils/purePopup';
 import { setAttributes, insertAfter } from '../utils/web';
 import Module from './Module';
@@ -30,6 +31,26 @@ export default class TaggerModule extends Module {
    */
   getLabel = () => {
     return 'User tagging';
+  };
+
+  /**
+   * @returns {string}
+   */
+  getSettingsSidebarLabel = () => {
+    return 'Tagged Users';
+  };
+
+  /**
+   * @returns {*}
+   */
+  getSettingsComponent = () => {
+    return () => {
+      return (
+        <div>
+          Not implemented yet.
+        </div>
+      );
+    };
   };
 
   /**
@@ -77,7 +98,7 @@ export default class TaggerModule extends Module {
       'title':        'Tag User',
       'class':        'pointer',
       'data-rp-user': username,
-      'html':         '&nbsp;&nbsp;<i class="fas fa-tag"></i>'
+      'html':         '&nbsp;&nbsp;<i class="fas fa-tag" />'
     });
     insertAfter(el, tagIcon);
     tagIcon.addEventListener('click', this.handleTagClick);

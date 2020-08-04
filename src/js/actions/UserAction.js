@@ -12,13 +12,6 @@ export default class UserAction extends Action {
   store = {};
 
   /**
-   * @returns {string}
-   */
-  getLabel = () => {
-    return '';
-  };
-
-  /**
    * Called from the background script
    *
    * @param {{ dispatch: Function, subscribe: Function, getState: Function }} store

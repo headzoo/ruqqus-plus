@@ -8,7 +8,7 @@ export default class HeadAction extends Action {
   /**
    * @returns {string}
    */
-  getLabel = () => {
+  getSettingsSidebarLabel = () => {
     return 'CSS/JS';
   };
 

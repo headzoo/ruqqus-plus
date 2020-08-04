@@ -14,7 +14,7 @@ export default class ModulesAction extends Action {
   /**
    * @returns {string}
    */
-  getLabel = () => {
+  getSettingsSidebarLabel = () => {
     return 'Modules';
   };
 
