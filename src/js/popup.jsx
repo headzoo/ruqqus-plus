@@ -1,69 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Loading } from './components';
-import * as constants from './utils/constants';
+import PropTypes from 'prop-types';
+import { Provider, connect } from 'react-redux';
+import { Store } from 'webext-redux';
+import { userActions } from './redux/actions';
 
 class App extends React.Component {
-  /**
-   * @param {*} props
-   */
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: true,
-      authed:  false,
-      user:    null,
-      unread:  0
-    };
-  }
-
-  /**
-   *
-   */
-  componentDidMount() {
-    chrome.storage.sync.get(['authed', 'user', 'unread'], (values) => {
-      const { authed, user, unread } = values;
-
-      this.setState({ authed, user, unread, loading: false });
-    });
-
-    this.port = chrome.extension.connect({
-      name: 'user'
-    });
-    this.port.onMessage.addListener((msg) => {
-      switch (msg.type) {
-        case constants.TYPE_AUTH:
-          const { authed, user, unread } = msg; // eslint-disable-line
-
-          user.rep = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
-          chrome.storage.sync.set({
-            authed,
-            user,
-            unread
-          });
-          this.setState({ authed, user, unread, loading: false });
-          break;
-      }
-    });
-  }
+  static propTypes = {
+    unread:   PropTypes.number.isRequired,
+    user:     PropTypes.object,
+    dispatch: PropTypes.func
+  };
 
   /**
    *
    */
   handleUnreadClick = () => {
-    this.setState({ unread: 0 });
-    this.port.postMessage({
-      type:   constants.TYPE_UNREAD,
-      unread: 0
-    });
+    const { dispatch } = this.props;
+
+    dispatch(userActions.setUnread(0));
   };
 
   /**
    * @returns {*}
    */
   render() {
-    const { authed, user, unread, loading } = this.state;
+    const { user, unread } = this.props;
 
     return (
       <div>
@@ -73,8 +35,7 @@ class App extends React.Component {
           </div>
         </header>
         <div className="container">
-          <Loading visible={loading} />
-          {authed && (
+          {user && (
             <div className="mb-3 d-flex justify-content-between align-items-center">
               <div className="d-flex justify-content-between align-items-center">
                 <img src={user.profile_url} alt="Avatar" className="avatar mr-2" />
@@ -82,7 +43,7 @@ class App extends React.Component {
                   <span className="username mr-2">{user.username}</span>
                   <div>
                     <span id="container-authed-rep" className="rep">
-                      {user.rep}&nbsp;Rep
+                      {parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10)}&nbsp;Rep
                     </span>
                   </div>
                 </div>
@@ -100,7 +61,7 @@ class App extends React.Component {
               </a>
             </div>
           )}
-          {!authed && (
+          {!user && (
             <div className="mb-2 hidden">
               <a href="https://ruqqus.com" target="_blank">
                 Log into ruqqus
@@ -124,7 +85,19 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('mount')
-);
+const mapStateToProps = (state) => ({
+  unread: state.user.unread,
+  user:   state.user.user
+});
+
+const Connected = connect(mapStateToProps)(App);
+const store = new Store();
+
+store.ready().then(() => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Connected />
+    </Provider>,
+    document.getElementById('mount')
+  );
+});

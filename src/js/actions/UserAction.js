@@ -1,16 +1,15 @@
 import Action from './Action';
 import { fetchMe, fetchUser } from '../utils/ruqqus';
-import * as constants from '../utils/constants';
+import { userActions } from '../redux/actions';
 
 /**
  * Manages the user account
  */
 export default class UserAction extends Action {
-  userDetails = {
-    authed: false,
-    unread: 0,
-    user:   null
-  };
+  /**
+   * @type {{ dispatch: Function, subscribe: Function, getState: Function }}
+   */
+  store = {};
 
   /**
    * @returns {string}
@@ -21,58 +20,42 @@ export default class UserAction extends Action {
 
   /**
    * Called from the background script
+   *
+   * @param {{ dispatch: Function, subscribe: Function, getState: Function }} store
    */
-  execBackgroundContext = () => {
+  execBackgroundContext = (store) => {
+    this.store = store;
+    this.store.subscribe(() => {
+      const { lastAction } = this.store.getState();
+
+      if (lastAction.type === userActions.USER_SET_UNREAD) {
+        this.setUnread(lastAction.unread);
+      }
+    });
+
     chrome.alarms.create('fetchAuth', { periodInMinutes: 1.0 });
     chrome.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'fetchAuth') {
         this.fetchAuth();
       }
     });
-
-    chrome.extension.onConnect.addListener((port) => {
-      port.onMessage.addListener((msg) => {
-        switch (msg.type) {
-          case constants.TYPE_UNREAD:
-            this.userDetails.unread = msg.unread;
-            this.setUnread(msg.unread);
-            break;
-        }
-      });
-
-      port.postMessage({
-        type: constants.TYPE_AUTH,
-        ...this.userDetails
-      });
-
-      this.fetchAuth()
-        .then(() => {
-          port.postMessage({
-            type: constants.TYPE_AUTH,
-            ...this.userDetails
-          });
-        });
-    });
-
     this.fetchAuth();
   };
 
   /**
-   * @returns {Promise<{unread: number, authed: boolean, username: string}>}
+   *
    */
   fetchAuth = () => {
-    return fetchMe()
+    fetchMe()
       .then(({ authed, unread, username }) => {
         if (!authed) {
           this.resetUserDetails();
         } else {
+          this.store.dispatch(userActions.setUnread(unread));
+
           fetchUser(username)
             .then((user) => {
-              console.log(unread, user.username);
-              this.userDetails.authed = authed;
-              this.userDetails.unread = unread;
-              this.userDetails.user   = user;
-              this.setUnread(unread);
+              this.store.dispatch(userActions.setUser(user));
             })
             .catch((err) => {
               console.error(err);
@@ -102,9 +85,7 @@ export default class UserAction extends Action {
    *
    */
   resetUserDetails = () => {
-    this.userDetails.authed = false;
-    this.userDetails.unread = 0;
-    this.userDetails.user   = null;
-    this.setUnread(0);
+    this.store.dispatch(userActions.setUnread(0));
+    this.store.dispatch(userActions.setUser(null));
   };
 }
