@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { Provider, connect } from 'react-redux';
 import { Store } from 'webext-redux';
 import { userActions } from './redux/actions';
+import { Loading } from './components';
 
 class App extends React.Component {
   static propTypes = {
     unread:   PropTypes.number.isRequired,
     user:     PropTypes.object,
+    loading:  PropTypes.bool.isRequired,
     dispatch: PropTypes.func
   };
 
@@ -25,7 +27,7 @@ class App extends React.Component {
    * @returns {*}
    */
   render() {
-    const { user, unread } = this.props;
+    const { loading, user, unread } = this.props;
 
     return (
       <div>
@@ -33,6 +35,7 @@ class App extends React.Component {
           <img src="../images/icon-32.png" alt="Logo" />
         </header>
         <div className="container">
+          <Loading visible={loading} />
           {user && (
             <div className="mb-3 d-flex justify-content-between align-items-center">
               <div className="d-flex justify-content-between align-items-center">
@@ -84,8 +87,9 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  unread: state.user.unread,
-  user:   state.user.user
+  unread:  state.user.unread,
+  user:    state.user.user,
+  loading: state.user.loading
 });
 
 const Connected = connect(mapStateToProps)(App);

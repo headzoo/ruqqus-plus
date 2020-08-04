@@ -48,6 +48,7 @@ export default class UserAction extends Action {
 
           fetchUser(username)
             .then((user) => {
+              this.store.dispatch(userActions.setLoading(false));
               this.store.dispatch(userActions.setUser(user));
             })
             .catch((err) => {
@@ -78,6 +79,7 @@ export default class UserAction extends Action {
    *
    */
   resetUserDetails = () => {
+    this.store.dispatch(userActions.setLoading(false));
     this.store.dispatch(userActions.setUnread(0));
     this.store.dispatch(userActions.setUser(null));
   };
