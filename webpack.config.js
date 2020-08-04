@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'development',
-    entry: glob.sync('./src/{js,css}/*.{js,scss}').reduce(function(obj, el) {
+    entry: glob.sync('./src/{js,jsx,css}/*.{js,jsx,scss}').reduce(function(obj, el) {
         obj[path.parse(el).name] = el;
         return obj
     }, {}),
@@ -17,10 +17,10 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /(node_modules)/,
                 resolve: {
-                    extensions: [".js"]
+                    extensions: [".js", ".jsx"]
                 },
                 use: {
                     loader: 'babel-loader'
