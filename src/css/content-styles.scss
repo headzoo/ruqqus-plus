@@ -1,5 +1,19 @@
 @import "vars";
+@import "~toastr/build/toastr.css";
 
-body {
-  background-color: red;
+.pointer {
+  cursor: pointer;
+}
+
+.rp-user-tag-wrap {
+  margin: 0 0.25rem;
+  font-weight: 700;
+
+  &::before {
+    content: '{';
+  }
+
+  &::after {
+    content: '}';
+  }
 }

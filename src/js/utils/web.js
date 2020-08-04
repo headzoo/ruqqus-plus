@@ -51,3 +51,27 @@ export const createTemplateContent = (html) => {
 
   return template.content;
 };
+
+/**
+ * @param {Element} ref
+ * @param {Element} node
+ */
+export const insertAfter = (ref, node) => {
+  ref.parentNode.insertBefore(node, ref.nextSibling);
+};
+
+/**
+ * @param {HTMLElement} el
+ * @param {{}} attribs
+ */
+export const setAttributes = (el, attribs) => {
+  Object.keys(attribs).forEach((key) => {
+    if (key === 'html') {
+      el.innerHTML = attribs[key];
+    } else if (key === 'text') {
+      el.innerText = attribs[key];
+    } else {
+      el.setAttribute(key, attribs[key]);
+    }
+  });
+};

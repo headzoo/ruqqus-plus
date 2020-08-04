@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+import { insertAfter } from '../utils/web';
 import Module from './Module';
 
 /**
@@ -79,7 +80,7 @@ export default class InfiniteScrollModule extends Module {
     this.loading = document.createElement('img');
     this.loading.setAttribute('src', chrome.runtime.getURL('images/loading.svg'));
     this.loading.setAttribute('style', 'display: none;');
-    pageLinks[1].parentNode.insertBefore(this.loading, pageLinks[1].nextSibling);
+    insertAfter(pageLinks[1], this.loading);
 
     const parsed = queryString.parse(href);
     this.page    = parsed.page;

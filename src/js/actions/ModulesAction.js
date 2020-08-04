@@ -98,15 +98,23 @@ export default class ModulesAction extends Action {
    * Called when the extension is installed
    */
   onInstalled = () => {
-    const modules = {};
-    Object.keys(mods).forEach((key) => {
-      modules[key] = mods[key].getDefaultSetting();
-    });
+    chrome.storage.sync.get('modules', (values) => {
+      const modules = values.modules || {};
 
-    chrome.storage.sync.set({ modules }, () => {
+      const newModules = {};
       Object.keys(mods).forEach((key) => {
-        const mod = new mods[key]();
-        mod.onInstalled();
+        if (!modules[key]) {
+          newModules[key] = mods[key].getDefaultSetting();
+        } else {
+          newModules[key] = modules[key];
+        }
+      });
+
+      chrome.storage.sync.set({ modules: newModules }, () => {
+        Object.keys(mods).forEach((key) => {
+          const mod = new mods[key]();
+          mod.onInstalled();
+        });
       });
     });
   };

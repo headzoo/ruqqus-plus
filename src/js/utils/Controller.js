@@ -1,3 +1,5 @@
+import toastr from 'toastr';
+
 /**
  * Base class for actions and modules
  */
@@ -51,5 +53,25 @@ export default class Controller {
    */
   listen = (event, callback) => {
     document.addEventListener(event, callback);
+  };
+
+  /**
+   * @param {string} message
+   */
+  toastError = (message) => {
+    toastr.error(message, '', {
+      closeButton:   true,
+      positionClass: 'toast-bottom-center'
+    });
+  };
+
+  /**
+   * @param {string} message
+   */
+  toastSuccess = (message) => {
+    toastr.success(message, '', {
+      closeButton:   true,
+      positionClass: 'toast-bottom-center'
+    });
   };
 }
