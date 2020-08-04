@@ -71,7 +71,7 @@ export default class TaggerModule extends Module {
       this.listen('rp.change', this.wireupUserNames);
     };
     dbReq.onerror = (e) => {
-      this.toastError(`Error initializing tagger action. ${e.target.errorCode}`);
+      this.toastError(`Error initializing tagger. ${e.target.errorCode}`);
     };
   };
 

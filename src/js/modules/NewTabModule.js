@@ -30,7 +30,7 @@ export default class NewTabModule extends Module {
     this.listen('rp.change', this.execContentContext);
 
     const hrefs = [];
-    document.querySelectorAll('#posts .card-title a').forEach((link) => {
+    document.querySelectorAll('.card-title a').forEach((link) => {
       hrefs.push(link.getAttribute('href'));
     });
     hrefs.forEach((href) => {

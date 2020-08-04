@@ -45,3 +45,20 @@ export const fetchUser = (username) => {
       return json;
     });
 };
+
+/**
+ * @param {string} pid
+ * @returns {Promise<any>}
+ */
+export const fetchPost = (pid) => {
+  return fetch(`https://ruqqus.com/api/v1/post/${pid}`)
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error(`Received status code ${resp.status}`);
+      }
+      return resp.json();
+    })
+    .then((json) => {
+      return json;
+    });
+};

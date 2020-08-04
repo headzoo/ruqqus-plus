@@ -28,6 +28,11 @@ export default class ModulesAction extends Action {
 
       useEffect(() => {
         chrome.storage.sync.get('modules', (value) => {
+          Object.keys(mods).forEach((key) => {
+            if (value.modules[key] === undefined) {
+              value.modules[key] = mods[key].getDefaultSetting();
+            }
+          });
           setModules(value.modules);
 
           const newLoaded = {};

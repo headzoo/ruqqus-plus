@@ -44,6 +44,7 @@ export default class UserAction extends Action {
         if (!authed) {
           this.resetUserDetails();
         } else {
+          this.store.dispatch(userActions.setUsername(username));
           this.store.dispatch(userActions.setUnread(unread));
 
           fetchUser(username)
@@ -82,5 +83,6 @@ export default class UserAction extends Action {
     this.store.dispatch(userActions.setLoading(false));
     this.store.dispatch(userActions.setUnread(0));
     this.store.dispatch(userActions.setUser(null));
+    this.store.dispatch(userActions.setUsername(''));
   };
 }
