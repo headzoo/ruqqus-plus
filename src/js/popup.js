@@ -3,6 +3,7 @@ import * as constants from './utils/constants';
 window.addEventListener('DOMContentLoaded', () => {
   const containerAuthed   = document.getElementById('container-authed');
   const containerUnauthed = document.getElementById('container-unauthed');
+  const containerLoading  = document.getElementById('container-loading');
   const username          = document.getElementById('container-authed-username');
   const avatar            = document.getElementById('container-authed-avatar');
   const rep               = document.getElementById('container-authed-rep');
@@ -12,30 +13,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
   /**
    * @param {HTMLElement|Node} el
-   * @param {string} t
    */
-  const show = (el, t = 'block !important') => {
-    el.style.display = t;
+  const show = (el) => {
+    el.classList.remove('hidden');
   };
 
   /**
    * @param {HTMLElement|Node} el
    */
   const hide = (el) => {
-    el.style.display = 'none !important';
+    el.classList.add('hidden');
   };
 
   /**
    * @param {{ authed: boolean, user: *, unread: number }} msg
    */
   const updatePage = (msg) => {
+    hide(containerLoading);
+
     if (!msg.authed) {
       hide(containerAuthed);
       show(containerUnauthed);
       hide(badgeCount);
     } else {
       hide(containerUnauthed);
-      show(containerAuthed, 'flex');
+      show(containerAuthed);
 
       username.innerText = msg.user.username;
       rep.innerText      = `${(parseInt(msg.user.post_rep, 10) + parseInt(msg.user.comment_rep, 10)).toString()  } Rep`;
