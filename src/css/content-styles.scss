@@ -6,17 +6,9 @@
   cursor: pointer;
 }
 
-.rp-user-tag-wrap {
+.rp-user-tag-wrap:not(.rp-user-tag-wrap-empty) {
   margin: 0 0.25rem;
+  padding: 0 0.25rem;
   font-weight: 700;
-
-  &:not(.rp-user-tag-wrap-empty)::before {
-    content: '{';
-    margin-right: 0.25rem;
-  }
-
-  &:not(.rp-user-tag-wrap-empty)::after {
-    content: '}';
-    margin-left: 0.25rem;
-  }
+  background-color: rgba(247, 6, 6, 0.25);
 }
