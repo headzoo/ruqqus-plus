@@ -83,7 +83,7 @@ export default class InfiniteScrollModule extends Module {
     insertAfter(pageLinks[1], this.loading);
 
     const parsed = queryString.parse(href);
-    this.page    = parsed.page;
+    this.page    = parseInt(parsed.page || 0, 10);
     this.sort    = parsed.sort;
     this.type    = parsed.t;
     if (!this.page) {
