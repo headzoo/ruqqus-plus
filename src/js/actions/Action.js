@@ -14,13 +14,7 @@ export default class Action extends Controller {
   /**
    * @returns {string}
    */
-  getSettingsHtml = () => {
+  getSettingsComponent = () => {
     return '';
-  };
-
-  /**
-   *
-   */
-  onSettingsPageReady = () => {
   };
 }

@@ -1,6 +1,4 @@
-import toastr from 'toastr';
-import forms from '../utils/forms';
-import { createTemplateContent } from '../utils/web';
+import React, { useEffect, useState } from 'react';
 import mods from '../modules';
 import Action from './Action';
 
@@ -21,78 +19,64 @@ export default class ModulesAction extends Action {
   };
 
   /**
-   * @returns {string}
+   * @returns {*}
    */
-  getSettingsHtml = () => {
-    return `
-      <form id="form-modules" class="pt-2">
-          <div class="mb-4">
-              <h3 class="mb-3">
-                  Modules
-              </h3>
-              <!-- Module settings are mounted here -->
-              <div id="mount-modules"></div>
+  getSettingsComponent = () => {
+    return () => {
+      const [loaded, setLoaded]   = useState({});
+      const [modules, setModules] = useState({});
+
+      useEffect(() => {
+        chrome.storage.sync.get('modules', (value) => {
+          setModules(value.modules);
+
+          const newLoaded = {};
+          Object.keys(modules).forEach((key) => {
+            if (mods[key]) {
+              newLoaded[key] = new mods[key]();
+            }
+          });
+          setLoaded(newLoaded);
+        });
+      }, [modules]);
+
+      /**
+       * @param {*} e
+       */
+      const handleCheckChange = (e) => {
+        const newModules = { ...modules };
+        newModules[e.target.name] = e.target.checked;
+        chrome.storage.sync.set({ modules: newModules }, () => {
+          setModules(newModules);
+        });
+      };
+
+      return (
+        <form className="pt-2">
+          <div className="mb-4">
+            <h3 className="mb-3">
+              Modules
+            </h3>
+            {Object.keys(loaded).map((key) => (
+              <div key={key} className="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  name={key}
+                  id={`setting-${key}`}
+                  className="custom-control-input"
+                  checked={!!modules[key]}
+                  onChange={handleCheckChange}
+                />
+                <label className="custom-control-label" htmlFor={`setting-${key}`}>
+                  {loaded[key].getLabel()}
+                </label>
+              </div>
+            ))}
           </div>
-          <button type="submit" class="btn btn-primary">
-              Save
-          </button>
-      </form>
-    `;
+        </form>
+      );
+    };
   };
-
-  /**
-   *
-   */
-  onSettingsPageReady = () => {
-    /** @type {HTMLFormElement} */
-    const form         = document.getElementById('form-modules');
-    const modulesMount = document.getElementById('mount-modules');
-    const loaded       = {};
-
-    const settingOnOffTemplate = `
-      <div class="custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          name="%%name%%"
-          class="custom-control-input"
-          id="setting-%%name%%"
-        />
-        <label class="custom-control-label" for="setting-%%name%%">
-          %%label%%
-        </label>
-      </div>`;
-
-    chrome.storage.sync.get('modules', (value) => {
-      const { modules } = value;
-
-      // Adds module settings to the form.
-      Object.keys(modules).forEach((key) => {
-        if (mods[key]) {
-          const mod   = new mods[key]();
-          const label = mod.getLabel();
-          loaded[key] = mod;
-
-          const html    = settingOnOffTemplate.replace(/%%name%%/g, key).replace(/%%label%%/g, label);
-          const content = createTemplateContent(html);
-          modulesMount.appendChild(content);
-        }
-      });
-
-      forms.deserialize(form, modules);
-    });
-
-    // Saves the settings.
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const modules = forms.serialize(form);
-      chrome.storage.sync.set({ modules });
-      toastr.success('Settings have been saved.', '', {
-        closeButton:   true,
-        positionClass: 'toast-bottom-center'
-      });
-    });
-  }
 
   /**
    * Called when the extension is installed

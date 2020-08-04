@@ -9,7 +9,8 @@ $theme-colors: (
 @import "~toastr/build/toastr.css";
 
 body,
-html {
+html,
+#mount {
   height: 100%;
 }
 
@@ -37,6 +38,7 @@ header {
     border-radius: 0;
     border: 0;
     transition: background-color 0.2s;
+    cursor: pointer;
 
     &:hover,
     &.active {
