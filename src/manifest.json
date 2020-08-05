@@ -7,7 +7,10 @@
     "alarms",
     "storage"
   ],
-  "options_page": "html/settings.html",
+  "options_ui": {
+    "page": "html/settings.html",
+    "open_in_tab": true
+  },
   "background": {
     "scripts": [
       "js/background.js"
