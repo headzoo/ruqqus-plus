@@ -27,10 +27,21 @@ export default class TaggerModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'User tagging';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Adds a button next to each username which lets you tag the user with lists of words.';
   };
 
   /**

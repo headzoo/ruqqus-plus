@@ -23,10 +23,21 @@ export default class BlockUserModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'Removes content from users which are blocked';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Adds a button to block users. Blocked user posts and comments will not be visible.';
   };
 
   /**

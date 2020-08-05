@@ -20,5 +20,14 @@ export default class Module extends Controller {
    */
   getLabel = () => {
     throw new Error('getLabel not implemented.');
-  }
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return '';
+  };
 }

@@ -32,10 +32,21 @@ export default class BetterSidebarModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
-    return 'Enhanced the ruqqus sidebar';
+    return 'Sidebar enhancements';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Lists all of your guilds in the sidebar with and provides an input to filter them.';
   };
 
   /**

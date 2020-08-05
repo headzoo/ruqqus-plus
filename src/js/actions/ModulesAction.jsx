@@ -78,6 +78,7 @@ export default class ModulesAction extends Action {
                 <label className="custom-control-label" htmlFor={`setting-${key}`}>
                   {loaded[key].getLabel()}
                 </label>
+                <div className="text-muted">{loaded[key].getHelp()}</div>
               </div>
             ))}
           </div>

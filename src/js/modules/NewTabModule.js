@@ -14,10 +14,21 @@ export default class NewTabModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'Open posts and user profiles in new tab';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Opens post and user links in a new tab.';
   };
 
   /**

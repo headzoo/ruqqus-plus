@@ -15,10 +15,21 @@ export default class BiggerButtonsModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'Bigger vote buttons';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Makes the vote buttons bigger.';
   };
 
   /**

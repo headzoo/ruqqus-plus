@@ -32,10 +32,21 @@ export default class PreviewPostModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'Adds a preview pane to the post submit page';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Adds a preview button to the submit a post page which lets you see the post with formatting.';
   };
 
   /**

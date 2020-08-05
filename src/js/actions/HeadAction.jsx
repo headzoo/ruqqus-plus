@@ -63,6 +63,9 @@ export default class HeadAction extends Action {
             <h3 className="mb-3">
               CSS/JS
             </h3>
+            <p>
+              Inject custom CSS and Javascript into every page on ruqqus.
+            </p>
             <div className="form-group">
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label htmlFor="form-css-css">

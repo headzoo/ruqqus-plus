@@ -34,10 +34,21 @@ export default class PostSaveModule extends Module {
   };
 
   /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
    * @returns {string}
    */
   getLabel = () => {
     return 'Save posts';
+  };
+
+  /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Adds a button to save posts. Saved posts are viewable from your profile.';
   };
 
   /**
