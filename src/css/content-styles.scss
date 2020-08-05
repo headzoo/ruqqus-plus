@@ -16,6 +16,11 @@
 .rp-preview-post-container {
   width: 100%;
   padding: 10px;
+  color: #718096;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #e2e4e7;
+  background-color: #f5f7fa;
 
   &:hover {
     border-color: #bfabea;
@@ -29,5 +34,5 @@
 .rp-preview-post-container-dark {
   color: #aaa;
   background-color: #383838;
-  border: 2px solid #292929;
+  border-color: #292929;
 }
