@@ -38,24 +38,29 @@ export default class ModulesAction extends Action {
             setModules(active);
 
             const newLoaded = {};
-            Object.keys(modules).forEach((key) => {
+            Object.keys(active).forEach((key) => {
               if (mods[key]) {
                 newLoaded[key] = new mods[key]();
               }
             });
             setLoaded(newLoaded);
           });
-      }, [modules]);
+      }, []);
 
       /**
        * @param {*} e
        */
       const handleCheckChange = (e) => {
+        const { name }   = e.target;
         const newModules = { ...modules };
-        newModules[e.target.name] = e.target.checked;
+        newModules[name] = e.target.checked;
+
         storage.set('modules', newModules)
           .then(() => {
             setModules(newModules);
+            const newLoaded = { ...loaded };
+            newLoaded[name] = new mods[name]();
+            setLoaded(newLoaded);
           });
       };
 

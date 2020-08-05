@@ -11,6 +11,7 @@ class Storage {
   set = (key, values, expiration = 0) => {
     return new Promise((resolve, reject) => {
       if (typeof values !== 'object' || Array.isArray(values)) {
+        console.log('error');
         reject(new Error('Storage value must be an object.'));
       }
 

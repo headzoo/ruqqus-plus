@@ -66,7 +66,7 @@ class App extends React.Component {
   handleStorageChange = (changes) => {
     if (changes.modules) {
       const { sidebarItems, pageComponents } = this.state;
-
+console.log(changes);
       const modules           = changes.modules.newValue;
       const newSidebarItems   = Object.assign({}, sidebarItems);   // eslint-disable-line
       const newPageComponents = Object.assign({}, pageComponents); // eslint-disable-line
@@ -107,7 +107,7 @@ class App extends React.Component {
    */
   render() {
     const { activePage, pageComponents, sidebarItems } = this.state;
-console.log(activePage, pageComponents);
+
     return (
       <>
         <header className="p-1">
