@@ -56,7 +56,7 @@ export default class PostSaveModule extends Module {
         this.db = db;
         this.wireupCards();
         this.listen('rp.change', this.wireupCards);
-    });
+      });
   };
 
   /**
@@ -82,7 +82,7 @@ export default class PostSaveModule extends Module {
             'html':          isSaved ? '<i class="fas fa-save"></i> UnSave' : '<i class="fas fa-save"></i> Save',
             'data-rp-saved': id
           });
-          anchor.addEventListener('click', this.handleSaveClick);
+          anchor.addEventListener('click', this.handleSaveClick, false);
           item.appendChild(anchor);
           el.appendChild(item);
         });

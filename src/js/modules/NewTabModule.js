@@ -41,5 +41,11 @@ export default class NewTabModule extends Module {
     document.querySelectorAll('.user-name').forEach((link) => {
       link.setAttribute('target', '_blank');
     });
+    document.querySelectorAll('.comment-text a').forEach((link) => {
+      link.setAttribute('target', '_blank');
+    });
+    document.querySelectorAll('.comment-actions a[href*="context"]').forEach((link) => {
+      link.setAttribute('target', '_blank');
+    });
   };
 }
