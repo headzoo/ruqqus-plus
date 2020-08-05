@@ -108,6 +108,31 @@ export const fetchMyGuilds = () => {
 };
 
 /**
+ * @returns {Promise<number>}
+ */
+export const fetchUnread = () => {
+  return fetch('https://ruqqus.com/me')
+    .then((resp) => resp.text())
+    .then((text) => {
+      const content = createTemplateContent(text);
+      const link    = content.querySelector('a[href^="/@"]');
+      let unread    = 0;
+
+      if (link) {
+        const notifications = content.querySelector('a[href="/notifications"]');
+        if (notifications) {
+          const badge = notifications.querySelector('.badge-count');
+          if (badge) {
+            unread = parseInt(badge.innerText, 10);
+          }
+        }
+      }
+
+      return unread;
+    });
+};
+
+/**
  * returns {boolean}
  */
 export const isDarkMode = () => {

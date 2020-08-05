@@ -1,5 +1,5 @@
 import Action from './Action';
-import { fetchMe } from '../utils/ruqqus';
+import { fetchUnread } from '../utils/ruqqus';
 
 /**
  * Manages the user account
@@ -18,26 +18,16 @@ export default class UserAction extends Action {
     chrome.alarms.create('fetchAuth', { periodInMinutes: 1.0 });
     chrome.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'fetchAuth') {
-        this.fetchAuth();
+        fetchUnread()
+          .then((unread) => {
+            this.setUnread(unread);
+          });
       }
     });
-    this.fetchAuth();
-  };
 
-  /**
-   *
-   */
-  fetchAuth = () => {
-    fetchMe()
-      .then(({ authed, unread }) => {
-        if (!authed) {
-          this.setUnread(0);
-        } else {
-          this.setUnread(unread);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
+    fetchUnread()
+      .then((unread) => {
+        this.setUnread(unread);
       });
   };
 
