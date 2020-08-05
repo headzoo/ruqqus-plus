@@ -66,7 +66,7 @@ export default class PostSaveModule extends Module {
     const postActions = document.querySelectorAll('.post-actions ul');
     postActions.forEach((el) => {
       const card = el.closest('.card');
-      if (card.querySelector('a[data-rp-saved]')) {
+      if (card && card.querySelector('a[data-rp-saved]')) {
         return;
       }
 
