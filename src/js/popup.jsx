@@ -35,8 +35,19 @@ class App extends React.Component {
           <img src="../images/icon-32.png" alt="Logo" />
         </header>
         <div className="container">
-          <Loading visible={loading} />
-          {user && (
+          {loading ? (
+            <div className="mb-3 d-flex justify-content-between align-items-center">
+              <Loading visible />
+              <a
+                className="position-relative"
+                href="https://ruqqus.com/notifications"
+                target="_blank"
+                onClick={this.handleUnreadClick}
+              >
+                <i className="fas fa-bell" />
+              </a>
+            </div>
+          ) : (
             <div className="mb-3 d-flex justify-content-between align-items-center">
               <div className="d-flex justify-content-between align-items-center">
                 <img src={user.profile_url} alt="Avatar" className="avatar mr-2" />
