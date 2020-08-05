@@ -1,4 +1,5 @@
 import toastr from 'toastr';
+import events from './events';
 
 /**
  * Base class for actions and modules
@@ -65,9 +66,7 @@ export default class Controller {
    * @param {*} detail
    */
   dispatch = (event, detail = {}) => {
-    document.dispatchEvent(new CustomEvent(event, {
-      detail
-    }));
+    return events.dispatch(event, detail);
   };
 
   /**
@@ -77,7 +76,7 @@ export default class Controller {
    * @param {Function} callback
    */
   listen = (event, callback) => {
-    document.addEventListener(event, callback);
+    return events.listen(event, callback);
   };
 
   /**

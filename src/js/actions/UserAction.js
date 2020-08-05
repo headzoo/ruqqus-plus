@@ -1,28 +1,17 @@
 import Action from './Action';
-import { fetchMe, fetchUser } from '../utils/ruqqus';
-import { userActions } from '../redux/actions';
+import { fetchMe } from '../utils/ruqqus';
 
 /**
  * Manages the user account
  */
 export default class UserAction extends Action {
   /**
-   * @type {{ dispatch: Function, subscribe: Function, getState: Function }}
-   */
-  store = {};
-
-  /**
    * Called from the background script
-   *
-   * @param {{ dispatch: Function, subscribe: Function, getState: Function }} store
    */
-  execBackgroundContext = (store) => {
-    this.store = store;
-    this.store.subscribe(() => {
-      const { lastAction } = this.store.getState();
-
-      if (lastAction.type === userActions.USER_SET_UNREAD) {
-        this.setUnread(lastAction.unread);
+  execBackgroundContext = () => {
+    chrome.runtime.onMessage.addListener((request) => {
+      if (request.event && request.event === 'rq.setUnread') {
+        this.setUnread(request.data.unread);
       }
     });
 
@@ -40,27 +29,15 @@ export default class UserAction extends Action {
    */
   fetchAuth = () => {
     fetchMe()
-      .then(({ authed, unread, username }) => {
+      .then(({ authed, unread }) => {
         if (!authed) {
-          this.resetUserDetails();
+          this.setUnread(0);
         } else {
-          this.store.dispatch(userActions.setUsername(username));
-          this.store.dispatch(userActions.setUnread(unread));
-
-          fetchUser(username)
-            .then((user) => {
-              this.store.dispatch(userActions.setLoading(false));
-              this.store.dispatch(userActions.setUser(user));
-            })
-            .catch((err) => {
-              console.error(err);
-              this.resetUserDetails();
-            });
+          this.setUnread(unread);
         }
       })
       .catch((err) => {
         console.error(err);
-        this.resetUserDetails();
       });
   };
 
@@ -74,15 +51,5 @@ export default class UserAction extends Action {
     } else {
       chrome.browserAction.setBadgeText({ text: '' });
     }
-  };
-
-  /**
-   *
-   */
-  resetUserDetails = () => {
-    this.store.dispatch(userActions.setLoading(false));
-    this.store.dispatch(userActions.setUnread(0));
-    this.store.dispatch(userActions.setUser(null));
-    this.store.dispatch(userActions.setUsername(''));
   };
 }

@@ -1,33 +1,59 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import { Provider, connect } from 'react-redux';
-import { Store } from 'webext-redux';
-import { userActions } from './redux/actions';
 import { Loading } from './components';
+import { fetchMe, fetchUser } from './utils/ruqqus';
+import events from './utils/events';
 
 class App extends React.Component {
-  static propTypes = {
-    unread:   PropTypes.number.isRequired,
-    user:     PropTypes.object,
-    loading:  PropTypes.bool.isRequired,
-    dispatch: PropTypes.func
-  };
+  /**
+   * @param {*} props
+   */
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      unread:  0,
+      user:    null,
+      loading: true
+    };
+  }
+
+  /**
+   *
+   */
+  componentDidMount() {
+    fetchMe()
+      .then(({ authed, unread, username }) => {
+        if (authed) {
+          fetchUser(username)
+            .then((user) => {
+              this.setState({ unread, user, loading: false });
+            });
+        } else {
+          this.setState({ loading: false });
+        }
+      });
+  }
 
   /**
    *
    */
   handleUnreadClick = () => {
-    const { dispatch } = this.props;
+    this.setState({ unread: 0 });
 
-    dispatch(userActions.setUnread(0));
+    // Let the background script (UserAction) know about zeroing out
+    // the unread count so it can change the badge text.
+    chrome.runtime.sendMessage({
+      event: 'rq.setUnread',
+      data:  { unread: 0 }
+    });
   };
 
   /**
    * @returns {*}
    */
   render() {
-    const { loading, user, unread } = this.props;
+    const { loading, user, unread } = this.state;
 
     return (
       <div>
@@ -100,20 +126,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  unread:  state.user.unread,
-  user:    state.user.user,
-  loading: state.user.loading
-});
-
-const Connected = connect(mapStateToProps)(App);
-const store = new Store();
-
-store.ready().then(() => {
-  ReactDOM.render(
-    <Provider store={store}>
-      <Connected />
-    </Provider>,
-    document.getElementById('mount')
-  );
-});
+ReactDOM.render(
+  <App />,
+  document.getElementById('mount')
+);

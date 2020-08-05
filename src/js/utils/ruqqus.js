@@ -34,7 +34,7 @@ export const fetchMe = () => {
             }
 
             const resp = { authed, username, unread };
-            storage.set('fetchMe', resp, 30 * 1000)
+            storage.set('fetchMe', resp, 300 * 1000)
               .then(() => {
                 resolve(resp);
               });

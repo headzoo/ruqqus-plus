@@ -132,7 +132,7 @@ export default class ModulesAction extends Action {
       });
     });
 
-    storage.get('modules')
+    storage.get('modules', {})
       .then((modules) => {
         // Find modules which have been recently added but not found in
         // the settings.
