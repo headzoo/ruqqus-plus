@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Module from './Module';
-import { fetchUser } from '../utils/ruqqus';
+import { fetchUser, isDarkMode } from '../utils/ruqqus';
 import { injectStyleLink } from '../utils/web';
 
 /**
@@ -77,18 +77,6 @@ export default class UserInfoModule extends Module {
   }
 
   /**
-   * returns {boolean}
-   */
-  isDarkMode = () => {
-    const link = document.getElementById('css-link');
-    if (!link) {
-      return false;
-    }
-
-    return link.getAttribute('href').indexOf('dark') !== -1;
-  };
-
-  /**
    * @param {MouseEvent} e
    */
   handleMouseEnter = (e) => {
@@ -97,7 +85,7 @@ export default class UserInfoModule extends Module {
     const rect = target.getBoundingClientRect();
     const box  = document.createElement('div');
     box.classList.add('rp-userInfo-box');
-    if (this.isDarkMode()) {
+    if (isDarkMode()) {
       box.classList.add('rp-userInfo-box-dark');
     }
     box.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);

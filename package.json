@@ -28,6 +28,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.5",
     "glob": "^7.1.6",
+    "marked": "^1.1.1",
     "mini-css-extract-plugin": "^0.9.0",
     "moment": "^2.27.0",
     "prop-types": "^15.7.2",

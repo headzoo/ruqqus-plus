@@ -12,3 +12,22 @@
   font-weight: 700;
   background-color: rgba(247, 6, 6, 0.25);
 }
+
+.rp-preview-post-container {
+  width: 100%;
+  padding: 10px;
+
+  &:hover {
+    border-color: #bfabea;
+  }
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.rp-preview-post-container-dark {
+  color: #aaa;
+  background-color: #383838;
+  border: 2px solid #292929;
+}

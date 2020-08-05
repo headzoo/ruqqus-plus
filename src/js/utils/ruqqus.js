@@ -62,3 +62,15 @@ export const fetchPost = (pid) => {
       return json;
     });
 };
+
+/**
+ * returns {boolean}
+ */
+export const isDarkMode = () => {
+  const link = document.getElementById('css-link');
+  if (!link) {
+    return false;
+  }
+
+  return link.getAttribute('href').indexOf('dark') !== -1;
+};

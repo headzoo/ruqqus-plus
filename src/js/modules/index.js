@@ -4,6 +4,7 @@ import BiggerButtonsModule from './BiggerButtonsModule';
 import UserInfoModule from './UserInfoModule';
 import TaggerModule from './TaggerModule';
 import PostSaveModule from './PostSaveModule';
+import PreviewPostModule from './PreviewPostModule';
 
 export default {
   InfiniteScrollModule,
@@ -11,5 +12,6 @@ export default {
   BiggerButtonsModule,
   PostSaveModule,
   UserInfoModule,
+  PreviewPostModule,
   TaggerModule
 };
