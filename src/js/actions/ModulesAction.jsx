@@ -28,7 +28,7 @@ export default class ModulesAction extends Action {
       const [modules, setModules] = useState({});
 
       useEffect(() => {
-        storage.get('modules')
+        storage.get('modules', {})
           .then((active) => {
             Object.keys(mods).forEach((key) => {
               if (active[key] === undefined) {

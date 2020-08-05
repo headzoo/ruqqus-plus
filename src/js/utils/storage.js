@@ -31,7 +31,7 @@ class Storage {
   get = (key, defaultValue = undefined) => {
     return new Promise((resolve) => {
       chrome.storage.sync.get(key, (resp) => {
-        if (resp[key] === undefined) {
+        if (!resp || resp[key] === undefined) {
           resolve(defaultValue);
           return;
         }

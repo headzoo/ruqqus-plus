@@ -21,7 +21,7 @@ class App extends React.Component {
   /**
    *
    */
-  async componentDidMount() {
+  componentDidMount() {
     let activePage       = '';
     const sidebarItems   = {};
     const pageComponents = {};
@@ -36,26 +36,28 @@ class App extends React.Component {
       if (i === 0) {
         activePage = key;
       }
-      sidebarItems[key] = label;
+      sidebarItems[key]   = label;
       pageComponents[key] = actionObj.getSettingsComponent();
     });
 
-    const modules = await storage.get('modules', {});
-    Object.keys(modules).forEach((key) => {
-      if (modules[key] && mods[key]) {
-        const moduleObj = new mods[key]();
-        const label     = moduleObj.getSettingsSidebarLabel();
-        if (!label) {
-          return;
-        }
+    storage.get('modules', {})
+      .then((modules) => {
+        Object.keys(modules).forEach((key) => {
+          if (modules[key] && mods[key]) {
+            const moduleObj = new mods[key]();
+            const label     = moduleObj.getSettingsSidebarLabel();
+            if (!label) {
+              return;
+            }
 
-        sidebarItems[key]   = label;
-        pageComponents[key] = moduleObj.getSettingsComponent();
-      }
-    });
+            sidebarItems[key]   = label;
+            pageComponents[key] = moduleObj.getSettingsComponent();
+          }
+        });
 
-    this.setState({ activePage, sidebarItems, pageComponents });
-    storage.onChanged(this.handleStorageChange);
+        this.setState({ activePage, sidebarItems, pageComponents });
+        storage.onChanged(this.handleStorageChange);
+      });
   }
 
   /**
@@ -105,7 +107,7 @@ class App extends React.Component {
    */
   render() {
     const { activePage, pageComponents, sidebarItems } = this.state;
-
+console.log(activePage, pageComponents);
     return (
       <>
         <header className="p-1">
