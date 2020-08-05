@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import storage from '../utils/storage';
 import Action from './Action';
 
 /**
@@ -23,12 +24,13 @@ export default class HeadAction extends Action {
       const [js, setJs]   = useState('');
 
       useEffect(() => {
-        chrome.storage.sync.get('head', (value) => {
-          if (value.head) {
-            setCss(value.head.css || '');
-            setJs(value.head.js || '');
-          }
-        });
+        storage.get('head')
+          .then((head) => {
+            if (head) {
+              setCss(head.css || '');
+              setJs(head.js || '');
+            }
+          });
       }, []);
 
       /**
@@ -38,9 +40,10 @@ export default class HeadAction extends Action {
         e.preventDefault();
 
         const head = { css, js };
-        chrome.storage.sync.set({ head }, () => {
-          self.toastSuccess('Settings have been saved.');
-        });
+        storage.set('head', head)
+          .then(() => {
+            self.toastSuccess('Settings have been saved.');
+          });
       };
 
       /**
@@ -112,25 +115,24 @@ export default class HeadAction extends Action {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    chrome.storage.sync.get('head', (values) => {
-      const { head } = values;
+    storage.get('head')
+      .then((head) => {
+        if (head) {
+          const headEl = document.querySelector('head');
 
-      if (head) {
-        const headEl = document.querySelector('head');
+          if (head.css) {
+            const style = document.createElement('style');
+            style.setAttribute('type', 'text/css');
+            style.innerHTML = head.css;
+            headEl.appendChild(style);
+          }
 
-        if (head.css) {
-          const style = document.createElement('style');
-          style.setAttribute('type', 'text/css');
-          style.innerHTML = head.css;
-          headEl.appendChild(style);
+          if (head.js) {
+            const script     = document.createElement('script');
+            script.innerHTML = head.js;
+            headEl.appendChild(script);
+          }
         }
-
-        if (head.js) {
-          const script     = document.createElement('script');
-          script.innerHTML = head.js;
-          headEl.appendChild(script);
-        }
-      }
-    });
+      });
   };
 }

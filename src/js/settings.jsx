@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import actions from './actions';
 import mods from './modules';
+import storage from './utils/storage';
 
 class App extends React.Component {
   /**
@@ -20,7 +21,7 @@ class App extends React.Component {
   /**
    *
    */
-  componentDidMount() {
+  async componentDidMount() {
     let activePage       = '';
     const sidebarItems   = {};
     const pageComponents = {};
@@ -39,25 +40,22 @@ class App extends React.Component {
       pageComponents[key] = actionObj.getSettingsComponent();
     });
 
-    chrome.storage.onChanged.addListener(this.handleStorageChange);
-    chrome.storage.sync.get('modules', (value) => {
-      const { modules } = value;
-
-      Object.keys(modules).forEach((key) => {
-        if (modules[key] && mods[key]) {
-          const moduleObj = new mods[key]();
-          const label     = moduleObj.getSettingsSidebarLabel();
-          if (!label) {
-            return;
-          }
-
-          sidebarItems[key] = label;
-          pageComponents[key] = moduleObj.getSettingsComponent();
+    const modules = await storage.get('modules', {});
+    Object.keys(modules).forEach((key) => {
+      if (modules[key] && mods[key]) {
+        const moduleObj = new mods[key]();
+        const label     = moduleObj.getSettingsSidebarLabel();
+        if (!label) {
+          return;
         }
-      });
 
-      this.setState({ activePage, sidebarItems, pageComponents });
+        sidebarItems[key]   = label;
+        pageComponents[key] = moduleObj.getSettingsComponent();
+      }
     });
+
+    this.setState({ activePage, sidebarItems, pageComponents });
+    storage.onChanged(this.handleStorageChange);
   }
 
   /**

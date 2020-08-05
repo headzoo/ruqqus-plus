@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import storage from '../utils/storage';
 import mods from '../modules';
 import Action from './Action';
 
@@ -27,22 +28,23 @@ export default class ModulesAction extends Action {
       const [modules, setModules] = useState({});
 
       useEffect(() => {
-        chrome.storage.sync.get('modules', (value) => {
-          Object.keys(mods).forEach((key) => {
-            if (value.modules[key] === undefined) {
-              value.modules[key] = mods[key].getDefaultSetting();
-            }
-          });
-          setModules(value.modules);
+        storage.get('modules')
+          .then((active) => {
+            Object.keys(mods).forEach((key) => {
+              if (active[key] === undefined) {
+                active[key] = mods[key].getDefaultSetting();
+              }
+            });
+            setModules(active);
 
-          const newLoaded = {};
-          Object.keys(modules).forEach((key) => {
-            if (mods[key]) {
-              newLoaded[key] = new mods[key]();
-            }
+            const newLoaded = {};
+            Object.keys(modules).forEach((key) => {
+              if (mods[key]) {
+                newLoaded[key] = new mods[key]();
+              }
+            });
+            setLoaded(newLoaded);
           });
-          setLoaded(newLoaded);
-        });
       }, [modules]);
 
       /**
@@ -51,9 +53,10 @@ export default class ModulesAction extends Action {
       const handleCheckChange = (e) => {
         const newModules = { ...modules };
         newModules[e.target.name] = e.target.checked;
-        chrome.storage.sync.set({ modules: newModules }, () => {
-          setModules(newModules);
-        });
+        storage.set('modules', newModules)
+          .then(() => {
+            setModules(newModules);
+          });
       };
 
       return (
@@ -87,25 +90,25 @@ export default class ModulesAction extends Action {
    * Called when the extension is installed
    */
   onInstalled = () => {
-    chrome.storage.sync.get('modules', (values) => {
-      const modules = values.modules || {};
-
-      const newModules = {};
-      Object.keys(mods).forEach((key) => {
-        if (!modules[key]) {
-          newModules[key] = mods[key].getDefaultSetting();
-        } else {
-          newModules[key] = modules[key];
-        }
-      });
-
-      chrome.storage.sync.set({ modules: newModules }, () => {
+    storage.get('modules')
+      .then((active) => {
+        const newModules = {};
         Object.keys(mods).forEach((key) => {
-          const mod = new mods[key]();
-          mod.onInstalled();
+          if (!active[key]) {
+            newModules[key] = mods[key].getDefaultSetting();
+          } else {
+            newModules[key] = active[key];
+          }
         });
+
+        storage.set('modules', newModules)
+          .then(() => {
+            Object.keys(mods).forEach((key) => {
+              const mod = new mods[key]();
+              mod.onInstalled();
+            });
+          });
       });
-    });
   };
 
   /**
@@ -123,31 +126,30 @@ export default class ModulesAction extends Action {
       });
     });
 
-    chrome.storage.sync.get('modules', (value) => {
-      const { modules } = value;
-
-      // Find modules which have been recently added but not found in
-      // the settings.
-      let isChanged = false;
-      Object.keys(mods).forEach((key) => {
-        if (modules[key] === undefined) {
-          modules[key] = mods[key].getDefaultSetting();
-          isChanged = true;
+    storage.get('modules')
+      .then((modules) => {
+        // Find modules which have been recently added but not found in
+        // the settings.
+        let isChanged = false;
+        Object.keys(mods).forEach((key) => {
+          if (modules[key] === undefined) {
+            modules[key] = mods[key].getDefaultSetting();
+            isChanged = true;
+          }
+        });
+        if (isChanged) {
+          storage.set('modules', modules);
         }
-      });
-      if (isChanged) {
-        chrome.storage.sync.set({ modules });
-      }
 
-      this.activeModules = {};
-      Object.keys(modules).forEach((key) => {
-        if (modules[key] && mods[key]) {
-          const mod = new mods[key]();
-          mod.execContentContext();
-          this.activeModules[key] = mod;
-        }
+        this.activeModules = {};
+        Object.keys(modules).forEach((key) => {
+          if (modules[key] && mods[key]) {
+            const mod = new mods[key]();
+            mod.execContentContext();
+            this.activeModules[key] = mod;
+          }
+        });
       });
-    });
   };
 
   /**

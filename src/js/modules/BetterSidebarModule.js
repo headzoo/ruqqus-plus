@@ -1,6 +1,7 @@
 import Module from './Module';
 import { fetchMyGuilds } from '../utils/ruqqus';
 import { createElement } from '../utils/web';
+import storage from '../utils/storage';
 
 /**
  * Enhanced the ruqqus sidebar
@@ -46,33 +47,25 @@ export default class BetterSidebarModule extends Module {
   execContentContext = () => {
     this.sidebar = document.querySelector('.sidebar-left');
     if (this.sidebar) {
-      // Add filter now to reduce flicker caused by delay in fetching guilds
       this.updateFilter();
 
-      // Guilds are cached for 10 minutes.
-      chrome.storage.sync.get(['guilds'], (resp) => {
-        if (resp.guilds) {
-          const { items, time } = resp.guilds;
-          const diff = ((new Date()).getTime() - time) / 1000;
-          if (diff < 600) {
-            this.guilds = items;
+      // Guilds are cached in storage for 10 minutes.
+      storage.get('guilds')
+        .then((guilds) => {
+          if (guilds) {
+            this.guilds = guilds.guilds;
             this.updateSidebar();
-            return;
+          } else {
+            fetchMyGuilds()
+              .then((g) => {
+                this.guilds = g;
+                storage.set('guilds', { guilds: g }, 600 * 1000)
+                  .then(() => {
+                    this.updateSidebar();
+                  });
+              });
           }
-        }
-
-        fetchMyGuilds()
-          .then((guilds) => {
-            this.guilds = guilds;
-            chrome.storage.sync.set({
-              guilds: {
-                items: guilds,
-                time:  (new Date()).getTime()
-              }
-            });
-            this.updateSidebar();
-          });
-      });
+        });
     }
   }
 
