@@ -63,6 +63,7 @@ export const insertAfter = (ref, node) => {
 /**
  * @param {HTMLElement} el
  * @param {{}} attribs
+ * @returns {HTMLElement}
  */
 export const setAttributes = (el, attribs) => {
   Object.keys(attribs).forEach((key) => {
@@ -70,8 +71,24 @@ export const setAttributes = (el, attribs) => {
       el.innerHTML = attribs[key];
     } else if (key === 'text') {
       el.innerText = attribs[key];
+    } else if (key === 'on') {
+      Object.keys(attribs[key]).forEach((onKey) => {
+        el.addEventListener(onKey, attribs[key][onKey], false);
+      });
     } else {
       el.setAttribute(key, attribs[key]);
     }
   });
+
+  return el;
+};
+
+/**
+ * @param {string} tag
+ * @param {{}} attribs
+ * @returns {HTMLElement}
+ */
+export const createElement = (tag, attribs) => {
+  const el = document.createElement(tag);
+  return setAttributes(el, attribs);
 };

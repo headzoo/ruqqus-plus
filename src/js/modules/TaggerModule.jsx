@@ -1,6 +1,6 @@
 import React from 'react';
 import purePopup from '../utils/purePopup';
-import { setAttributes, insertAfter } from '../utils/web';
+import { createElement, insertAfter } from '../utils/web';
 import Module from './Module';
 
 /**
@@ -93,15 +93,16 @@ export default class TaggerModule extends Module {
     el.setAttribute('data-rp-tagged', 'true');
 
     const username = el.getAttribute('href').replace('/@', '');
-    const tagIcon  = document.createElement('span');
-    setAttributes(tagIcon, {
+    const tagIcon  = createElement('span', {
       'title':        'Tag User',
-      'class':        'pointer',
+      'class':        'rp-pointer',
       'data-rp-user': username,
-      'html':         '&nbsp;&nbsp;<i class="fas fa-tag" />'
+      'html':         '&nbsp;&nbsp;<i class="fas fa-tag" />',
+      'on':           {
+        'click': this.handleTagClick
+      }
     });
     insertAfter(el, tagIcon);
-    tagIcon.addEventListener('click', this.handleTagClick);
 
     const tags    = await this.getUserTags(username);
     const tagWrap = document.createElement('span');
@@ -110,8 +111,7 @@ export default class TaggerModule extends Module {
       tagWrap.classList.add('rp-user-tag-wrap-empty');
     }
 
-    const tagSpan = document.createElement('span');
-    setAttributes(tagSpan, {
+    const tagSpan = createElement('span', {
       'class':             'rp-user-tag',
       'data-rp-user-tags': username,
       'text':              tags !== -1 ? tags.join(', ') : ''

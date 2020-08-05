@@ -64,6 +64,36 @@ export const fetchPost = (pid) => {
 };
 
 /**
+ * @returns {Promise<[]>}
+ */
+export const fetchMyGuilds = () => {
+  return fetch('https://ruqqus.com/mine')
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error(`Received status code ${resp.status}`);
+      }
+      return resp.text();
+    })
+    .then((text) => {
+      const html = createTemplateContent(text);
+
+      const guilds = [];
+      html.querySelectorAll('.card-body').forEach((body) => {
+        const title  = body.querySelector('.card-title');
+        const avatar = body.querySelector('img');
+        if (title && avatar) {
+          guilds.push({
+            name:   title.innerText.trim(),
+            avatar: avatar.getAttribute('src')
+          });
+        }
+      });
+
+      return guilds;
+    });
+};
+
+/**
  * returns {boolean}
  */
 export const isDarkMode = () => {

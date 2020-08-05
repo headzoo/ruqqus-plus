@@ -126,6 +126,19 @@ export default class ModulesAction extends Action {
     chrome.storage.sync.get('modules', (value) => {
       const { modules } = value;
 
+      // Find modules which have been recently added but not found in
+      // the settings.
+      let isChanged = false;
+      Object.keys(mods).forEach((key) => {
+        if (modules[key] === undefined) {
+          modules[key] = mods[key].getDefaultSetting();
+          isChanged = true;
+        }
+      });
+      if (isChanged) {
+        chrome.storage.sync.set({ modules });
+      }
+
       this.activeModules = {};
       Object.keys(modules).forEach((key) => {
         if (modules[key] && mods[key]) {

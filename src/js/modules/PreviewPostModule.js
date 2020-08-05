@@ -1,7 +1,7 @@
 import marked from 'marked';
 import Module from './Module';
 import { isDarkMode } from '../utils/ruqqus';
-import { setAttributes } from '../utils/web';
+import { createElement } from '../utils/web';
 
 /**
  * Adds a preview pane to the post submit page
@@ -51,15 +51,16 @@ export default class PreviewPostModule extends Module {
 
     const label   = document.querySelector('label[for="body"]');
     this.textarea = document.getElementById('post-text');
-    this.link     = document.createElement('a');
-    setAttributes(this.link, {
+    this.link     = createElement('a', {
       'style': 'float: right;',
       'class': 'mt-3',
       'href':  'javascript:void(0)', // eslint-disable-line
-      'html':  '<i class="fas fa-eye"></i> Preview'
+      'html':  '<i class="fas fa-eye"></i> Preview',
+      'on':    {
+        'click': this.handleLinkClick
+      }
     });
     label.parentNode.insertBefore(this.link, label);
-    this.link.addEventListener('click', this.handleLinkClick, false);
   };
 
   /**
@@ -72,8 +73,7 @@ export default class PreviewPostModule extends Module {
       const container = this.textarea.closest('.input-group');
       const html      = marked(this.textarea.value);
 
-      const div = document.createElement('div');
-      setAttributes(div, {
+      const div = createElement('div', {
         'class': 'rp-preview-post-container rounded',
         'html':  html
       });

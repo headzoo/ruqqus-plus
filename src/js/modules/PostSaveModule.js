@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
-import { setAttributes, createTemplateContent } from '../utils/web';
+import { setAttributes, createElement, createTemplateContent } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import postTemplate from './templates/post';
 
@@ -73,16 +73,17 @@ export default class PostSaveModule extends Module {
       const id = card.getAttribute('id').replace('post-', '');
       this.isSaved(id)
         .then((isSaved) => {
-          const item = document.createElement('li');
-          item.classList.add('list-inline-item');
-
-          const anchor = document.createElement('a');
-          setAttributes(anchor, {
+          const item = createElement('li', {
+            'class': 'list-inline-item'
+          });
+          const anchor = createElement('a', {
             'href':          'javascript:void(0)', // eslint-disable-line
             'html':          isSaved ? '<i class="fas fa-save"></i> UnSave' : '<i class="fas fa-save"></i> Save',
-            'data-rp-saved': id
+            'data-rp-saved': id,
+            'on':            {
+              click: this.handleSaveClick
+            }
           });
-          anchor.addEventListener('click', this.handleSaveClick, false);
           item.appendChild(anchor);
           el.appendChild(item);
         });
@@ -147,11 +148,10 @@ export default class PostSaveModule extends Module {
     let item  = null;
     const nav = document.querySelector('.settings-nav');
     if (nav && !nav.querySelector('.rp-nav-link')) {
-      item = document.createElement('li');
-      item.classList.add('nav-item');
-      item.innerHTML = `
-        <img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" style="margin-top: 5px" />
-      `;
+      item = createElement('li', {
+        'class': 'nav-item',
+        'html':  `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" style="margin-top: 5px" />`
+      });
       nav.appendChild(item);
     }
 
@@ -159,13 +159,14 @@ export default class PostSaveModule extends Module {
       .then(({ username }) => {
         if (username && document.location.pathname === `/@${username}`) {
           if (item) {
-            const anchor = document.createElement('a');
-            setAttributes(anchor, {
+            const anchor = createElement('a', {
               'class': 'nav-link rp-nav-link',
               'href':  '#',
-              'text':  'Saved Posts'
+              'text':  'Saved Posts',
+              'on':    {
+                'click': this.handleNavClick
+              }
             });
-            anchor.addEventListener('click', this.handleNavClick, false);
 
             item.innerHTML = '';
             item.appendChild(anchor);

@@ -2,8 +2,12 @@
 @import "~toastr/build/toastr.css";
 @import "pure-popup";
 
-.pointer {
+.rp-pointer {
   cursor: pointer;
+}
+
+.rp-hidden {
+  display: none;
 }
 
 .rp-user-tag-wrap:not(.rp-user-tag-wrap-empty) {
