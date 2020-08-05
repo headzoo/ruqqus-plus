@@ -96,7 +96,7 @@ export default class ModulesAction extends Action {
    * Called when the extension is installed
    */
   onInstalled = () => {
-    storage.get('modules')
+    storage.get('modules', {})
       .then((active) => {
         const newModules = {};
         Object.keys(mods).forEach((key) => {
