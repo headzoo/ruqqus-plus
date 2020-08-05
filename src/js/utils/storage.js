@@ -33,6 +33,7 @@ class Storage {
       chrome.storage.sync.get(key, (resp) => {
         if (resp[key] === undefined) {
           resolve(defaultValue);
+          return;
         }
 
         const values = resp[key];

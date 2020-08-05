@@ -1,32 +1,46 @@
 import { createTemplateContent } from './web';
-
+import storage from './storage';
 /**
  * @returns {Promise<{unread: number, authed: boolean, username: string}>}
  */
 export const fetchMe = () => {
-  return fetch('https://ruqqus.com/me')
-    .then((resp) => resp.text())
-    .then((text) => {
-      const content = createTemplateContent(text);
-      const link    = content.querySelector('a[href^="/@"]');
-      const authed  = !!link;
-      let username  = '';
-      let unread    = 0;
-
-      if (authed) {
-        username = link.getAttribute('href').replace('/@', '');
-
-        const notifications = content.querySelector('a[href="/notifications"]');
-        if (notifications) {
-          const badge = notifications.querySelector('.badge-count');
-          if (badge) {
-            unread = parseInt(badge.innerText, 10);
-          }
+  return new Promise((resolve) => {
+    storage.get('fetchMe')
+      .then((details) => {
+        if (details) {
+          resolve(details);
+          return;
         }
-      }
 
-      return { authed, username, unread };
-    });
+        fetch('https://ruqqus.com/me')
+          .then((resp) => resp.text())
+          .then((text) => {
+            const content = createTemplateContent(text);
+            const link    = content.querySelector('a[href^="/@"]');
+            const authed  = !!link;
+            let username  = '';
+            let unread    = 0;
+
+            if (authed) {
+              username = link.getAttribute('href').replace('/@', '');
+
+              const notifications = content.querySelector('a[href="/notifications"]');
+              if (notifications) {
+                const badge = notifications.querySelector('.badge-count');
+                if (badge) {
+                  unread = parseInt(badge.innerText, 10);
+                }
+              }
+            }
+
+            const resp = { authed, username, unread };
+            storage.set('fetchMe', resp, 30 * 1000)
+              .then(() => {
+                resolve(resp);
+              });
+          });
+      });
+  });
 };
 
 /**

@@ -6,6 +6,7 @@ import TaggerModule from './TaggerModule';
 import PostSaveModule from './PostSaveModule';
 import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
+import BlockUserModule from './BlockUserModule';
 
 export default {
   InfiniteScrollModule,
@@ -15,5 +16,6 @@ export default {
   UserInfoModule,
   PreviewPostModule,
   TaggerModule,
-  BetterSidebarModule
+  BetterSidebarModule,
+  BlockUserModule
 };

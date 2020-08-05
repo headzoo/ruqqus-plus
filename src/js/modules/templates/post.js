@@ -1,5 +1,5 @@
 export default `
-<div id="post-{{id}}" class="card upvoted">
+<div id="post-{{id}}" class="card">
    <div class="d-flex flex-row-reverse flex-md-row flex-nowrap justify-content-end">
       <div class="card-header bg-transparent border-0 d-flex flex-row flex-nowrap pl-2 pl-md-0 p-0 mr-md-2">
          <div class="position-relative d-none d-md-block" style="z-index: 3;">

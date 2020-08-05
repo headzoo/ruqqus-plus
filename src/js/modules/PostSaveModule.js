@@ -78,6 +78,7 @@ export default class PostSaveModule extends Module {
           });
           const anchor = createElement('a', {
             'href':          'javascript:void(0)', // eslint-disable-line
+            'title':         isSaved ? 'UnSave this post' : 'Save this post',
             'html':          isSaved ? '<i class="fas fa-save"></i> UnSave' : '<i class="fas fa-save"></i> Save',
             'data-rp-saved': id,
             'on':            {
@@ -184,7 +185,10 @@ export default class PostSaveModule extends Module {
     e.preventDefault();
     this.isProfile = true;
 
-    document.querySelector('.pagination').remove();
+    const pagination = document.querySelector('.pagination');
+    if (pagination) {
+      pagination.remove();
+    }
     document.querySelector('.rp-nav-link').classList.add('active');
     const active = document.querySelector('.nav-link.active');
     if (active) {
