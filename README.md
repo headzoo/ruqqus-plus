@@ -19,7 +19,7 @@ Now the extension should be loaded as an unpacked extension. See [instructions f
 ### Developing
 In order to add additional functionality follow the building steps above. Use the `yarn run watch` command instead of `yarn run build` to automatically compile your changes as you make them. [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid) is recommended to quickly reload your changes.
 
-The extension is written in ES6, React, and SCSS.
+The extension is written in ES6, React, SCSS and Bootstrap.
 
 Most of the functionality is encapsulated within modules which can be found in the `/src/js/modules` directory. Modules as just classes that expose a few methods that the extension calls at different points in the extension lifecycle. A module to add `target="_blank"` to post links might look like this.
 
