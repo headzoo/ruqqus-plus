@@ -68,6 +68,25 @@ The following is the full list of module methods the extension will call.
 ```js
 export default class Module {
   /**
+   * Returns whether the module should be enabled by default. Should
+   * return a truthy or falsy value.
+   *
+   * @returns {number}
+   */
+  static getDefaultSetting = () => {
+    return 0;
+  };
+
+  /**
+   * Returns the label displayed next to the checkbox on the settings page
+   *
+   * @returns {string}
+   */
+  getLabel = () => {
+    return 'Does something';
+  }
+
+  /**
    * All modules have on/off checkboxes on the extension settings page, but
    * modules may also have advanced settings which are reachable from the
    * settings page sidebar. This method returns the label used in the sidebar.
