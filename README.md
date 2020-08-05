@@ -114,8 +114,8 @@ export default class Module {
 
       useEffect(() => {
         chrome.storage.sync.get('mySettings', (resp) => {
-          if (resp.value) {
-            setValue(resp.value);
+          if (resp.mySettings.value) {
+            setValue(resp.mySettings.value);
           }
         });
       }, []);
@@ -136,7 +136,7 @@ export default class Module {
         <form className="pt-2">
           <div className="mb-4">
             <h3 className="mb-3">
-              CSS/JS
+              My Module
             </h3>
             <div className="form-group">
               <label htmlFor="form-value">
