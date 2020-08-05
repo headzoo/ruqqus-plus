@@ -61,4 +61,119 @@ export default class NewTabModule extends Module {
 }
 ```
 
-Once create the module must be registered by adding it to `/src/js/modules/index.js`.
+Once created the module must be registered by adding it to `/src/js/modules/index.js`.
+
+The following is the full list of module methods the extension will call.
+
+```js
+export default class Module {
+  /**
+   * All modules have on/off checkboxes on the extension settings page, but
+   * modules may also have advanced settings which are reachable from the
+   * settings page sidebar. This method returns the label used in the sidebar.
+   *
+   * @returns {string} Return a falsy value when the module does not have settings
+   */
+  getSettingsSidebarLabel = () => {
+    return 'Tagged Users';
+  };
+
+  /**
+   * Returns the advanced settings form when applicable. The method must return
+   * a React component.
+   *
+   * @returns {*}
+   */
+  getSettingsComponent = () => {
+    const self = this;
+
+    // Returns a React functional component. Alternatively the method
+    // can return a component defined somewhere else like
+    // return MyComponent;
+    return () => {
+      const [value, setValue] = useState('');
+
+      useEffect(() => {
+        chrome.storage.sync.get('mySettings', (resp) => {
+          if (resp.value) {
+            setValue(resp.value);
+          }
+        });
+      }, []);
+
+      /**
+       * @param {Event} e
+       */
+      const handleSaveClick = (e) => {
+        e.preventDefault();
+
+        const mySettings = { value };
+        chrome.storage.sync.set({ mySettings }, () => {
+          self.toastSuccess('Settings have been saved.');
+        });
+      };
+
+      return (
+        <form className="pt-2">
+          <div className="mb-4">
+            <h3 className="mb-3">
+              CSS/JS
+            </h3>
+            <div className="form-group">
+              <label htmlFor="form-value">
+                Enter a value
+              </label>
+              <input
+                id="form-value"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+            </div>
+          </div>
+          <button type="submit" className="btn btn-primary" onClick={handleSaveClick}>
+            Save
+          </button>
+        </form>
+      );
+    };
+  };
+
+  /**
+   * Called from the extension content script
+   *
+   * The content script has access to the chrome extension API but does not
+   * have access to the ruqqus `window` object. For example you can't access
+   * window.upvote() from here.
+   *
+   * This is usually where your code will go.
+   */
+  execContentContext = () => {
+    chrome.storage.sync.get('mySettings', (resp) => {
+      if (resp.value) {
+        console.log(resp.value);
+      }
+    });
+  };
+
+  /**
+   * Called from the script injected into the page
+   *
+   * Code from here has access to the ruqqus `window` object but not the
+   * chrome extension API.
+   */
+  execWindowContext = () => {
+  };
+
+  /**
+   * Called from the background script
+   */
+  execBackgroundContext = () => {
+  }
+
+  /**
+   * Called when the extension is installed
+   */
+  onInstalled = () => {
+  }
+}
+```

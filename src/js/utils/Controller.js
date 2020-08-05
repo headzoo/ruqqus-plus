@@ -5,24 +5,34 @@ import toastr from 'toastr';
  */
 export default class Controller {
   /**
-   * @returns {string}
+   * All modules have on/off checkboxes on the extension settings page, but
+   * modules may also have advanced settings which are reachable from the
+   * settings page sidebar. This method returns the label used in the sidebar.
+   *
+   * @returns {string} Return a falsy value when the module does not have advanced settings
    */
   getSettingsSidebarLabel = () => {
     return '';
   };
 
   /**
-   * @returns {string}
+   * Returns the advanced settings form when applicable. The method must return
+   * a React component.
+   *
+   * @returns {*}
    */
   getSettingsComponent = () => {
-    return '';
+    return null;
   };
 
   /**
-   * Called from the content script
+   * Called from the extension content script
    *
    * The content script has access to the chrome extension API but does not
-   * have access to the ruqqus `window` object.
+   * have access to the ruqqus `window` object. For example you can't access
+   * window.upvote() from here.
+   *
+   * This is usually where your code will go.
    */
   execContentContext = () => {
   };
@@ -30,7 +40,7 @@ export default class Controller {
   /**
    * Called from the script injected into the page
    *
-   * Code run from here has access to the ruqqus `window` object but not the
+   * Code from here has access to the ruqqus `window` object but not the
    * chrome extension API.
    */
   execWindowContext = () => {
@@ -45,7 +55,8 @@ export default class Controller {
   /**
    * Called when the extension is installed
    */
-  onInstalled = () => {}
+  onInstalled = () => {
+  }
 
   /**
    * Dispatches an event
