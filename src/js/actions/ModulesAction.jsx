@@ -67,9 +67,6 @@ export default class ModulesAction extends Action {
       return (
         <form className="pt-2">
           <div className="mb-4">
-            <h3 className="mb-3">
-              Modules
-            </h3>
             {Object.keys(loaded).map((key) => (
               <div key={key} className="custom-control custom-checkbox">
                 <input
@@ -132,21 +129,8 @@ export default class ModulesAction extends Action {
       });
     });
 
-    storage.get('modules', {})
+    this.getModules()
       .then((modules) => {
-        // Find modules which have been recently added but not found in
-        // the settings.
-        let isChanged = false;
-        Object.keys(mods).forEach((key) => {
-          if (modules[key] === undefined) {
-            modules[key] = mods[key].getDefaultSetting();
-            isChanged = true;
-          }
-        });
-        if (isChanged) {
-          storage.set('modules', modules);
-        }
-
         this.activeModules = {};
         Object.keys(modules).forEach((key) => {
           if (modules[key] && mods[key]) {
@@ -176,5 +160,43 @@ export default class ModulesAction extends Action {
       });
     });
     this.dispatch('rp.ModulesAction.windowContextReady');
+  };
+
+  /**
+   * Called from the background script
+   */
+  execBackgroundContext = () => {
+    this.getModules()
+      .then((modules) => {
+        Object.keys(modules).forEach((key) => {
+          if (modules[key] && mods[key]) {
+            const mod = new mods[key]();
+            mod.execBackgroundContext();
+          }
+        });
+      });
+  };
+
+  /**
+   * @returns {Promise}
+   */
+  getModules = () => {
+    return storage.get('modules', {})
+      .then((modules) => {
+        // Find modules which have been recently added but not found in
+        // the settings.
+        let isChanged = false;
+        Object.keys(mods).forEach((key) => {
+          if (modules[key] === undefined) {
+            modules[key] = mods[key].getDefaultSetting();
+            isChanged = true;
+          }
+        });
+        if (isChanged) {
+          storage.set('modules', modules);
+        }
+
+        return modules;
+      });
   };
 }

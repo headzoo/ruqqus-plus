@@ -40,3 +40,27 @@
   background-color: #383838;
   border-color: #292929;
 }
+
+#toast-container {
+  margin-top: 15px !important;
+
+  & > div {
+    padding-left: 15px !important;
+  }
+}
+
+#toast-container > .toast-success {
+  background-image: none !important;
+}
+
+#toast-container > .toast-error {
+  background-image: none !important;
+}
+
+.toast-success {
+  background-color: #51A351;
+}
+
+.toast-error {
+  background-color: #BD362F;
+}

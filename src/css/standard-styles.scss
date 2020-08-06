@@ -11,7 +11,7 @@ $theme-colors: (
 body,
 html,
 #mount {
-  height: 100%;
+  min-height: 100vh;
 }
 
 body {
@@ -30,6 +30,7 @@ header {
 
 .sidebar {
   width: 300px;
+  min-width: 300px;
   background-color: #1d1d1d;
 
   .list-group-item {
@@ -48,10 +49,36 @@ header {
   }
 }
 
+.settings-page {
+  h3 {
+    background-color: #2b2b2b;
+  }
+}
+
+.settings-theme-active {
+  border: 1px solid $color-primary;
+}
+
 #toast-container {
   margin-top: 15px !important;
+
+  & > div {
+    padding-left: 15px !important;
+  }
 }
 
 #toast-container > .toast-success {
   background-image: none !important;
+}
+
+#toast-container > .toast-error {
+  background-image: none !important;
+}
+
+.toast-success {
+  background-color: #51A351;
+}
+
+.toast-error {
+  background-color: #BD362F;
 }

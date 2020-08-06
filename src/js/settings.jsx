@@ -57,6 +57,8 @@ class App extends React.Component {
 
         this.setState({ activePage, sidebarItems, pageComponents });
         storage.onChanged(this.handleStorageChange);
+
+        // this.setState({ activePage: 'ThemeModule' });
       });
   }
 
@@ -66,7 +68,7 @@ class App extends React.Component {
   handleStorageChange = (changes) => {
     if (changes.modules) {
       const { sidebarItems, pageComponents } = this.state;
-console.log(changes);
+
       const modules           = changes.modules.newValue;
       const newSidebarItems   = Object.assign({}, sidebarItems);   // eslint-disable-line
       const newPageComponents = Object.assign({}, pageComponents); // eslint-disable-line
@@ -115,7 +117,7 @@ console.log(changes);
             <img src="../images/icon-48.png" alt="Logo" />
           </div>
         </header>
-        <div className="d-flex h-100">
+        <div className="d-flex flex-grow-1">
           <nav className="sidebar">
             <ul id="sidebar-group" className="list-group">
               {Object.keys(sidebarItems).map((key) => (
@@ -129,9 +131,14 @@ console.log(changes);
               ))}
             </ul>
           </nav>
-          <div className="pl-4 pr-4 flex-grow-1">
-            <div className="page">
-              {pageComponents[activePage] && React.createElement(pageComponents[activePage])}
+          <div className="flex-grow-1">
+            <div className="settings-page">
+              <h3 className="pl-4 pr-4 pt-2 pb-2 mb-3">
+                {sidebarItems[activePage]}
+              </h3>
+              <div className="pl-4 pr-4 pb-4">
+                {pageComponents[activePage] && React.createElement(pageComponents[activePage])}
+              </div>
             </div>
           </div>
         </div>

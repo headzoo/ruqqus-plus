@@ -46,13 +46,20 @@ export default class TaggerModule extends Module {
   };
 
   /**
-   * @returns {string}
+   * All modules have on/off checkboxes on the extension settings page, but
+   * modules may also have advanced settings which are reachable from the
+   * settings page sidebar. This method returns the label used in the sidebar.
+   *
+   * @returns {string} Return a falsy value when the module does not have settings
    */
   getSettingsSidebarLabel = () => {
     return 'Tagged Users';
   };
 
   /**
+   * Returns the advanced settings form when applicable. The method must return
+   * a React component.
+   *
    * @returns {*}
    */
   getSettingsComponent = () => {

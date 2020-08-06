@@ -58,12 +58,22 @@ export default class HeadAction extends Action {
         }
       };
 
+      /**
+       * @param {*} e
+       */
+      const handleKeyDown = (e) => {
+        if (e.keyCode === 9 || e.which === 9) {
+          e.preventDefault();
+          const { target } = e;
+          const s = target.selectionStart;
+          target.value = `${target.value.substring(0, target.selectionStart)}\t${target.value.substring(target.selectionEnd)}`;
+          target.selectionEnd = s + 1;
+        }
+      };
+
       return (
         <form id="form-css" className="pt-2">
           <div className="mb-4">
-            <h3 className="mb-3">
-              CSS/JS
-            </h3>
             <p>
               Inject custom CSS and Javascript into every page on ruqqus.
             </p>
@@ -80,6 +90,7 @@ export default class HeadAction extends Action {
                 aria-describedby="form-css-css-help"
                 value={css}
                 onChange={handleChange}
+                onKeyDown={handleKeyDown}
               />
               <small id="form-css-css-help" className="form-text text-muted">
                 CSS added to every page of the site.
@@ -98,6 +109,7 @@ export default class HeadAction extends Action {
                 aria-describedby="form-css-js-help"
                 value={js}
                 onChange={handleChange}
+                onKeyDown={handleKeyDown}
               />
               <small id="form-css-js-help" className="form-text text-muted">
                 Javascript added to every page of the site.
