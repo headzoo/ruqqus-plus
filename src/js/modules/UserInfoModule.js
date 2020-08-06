@@ -93,29 +93,36 @@ export default class UserInfoModule extends Module {
   handleMouseEnter = (e) => {
     const { target } = e;
 
-    const rect = target.getBoundingClientRect();
-    const box  = createElement('div', {
-      'class': 'rp-userInfo-box',
-      'style': `top: ${rect.top + 20}px; left: ${rect.left}px`,
-      'html':  `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`
-    });
-    if (isDarkMode()) {
-      box.classList.add('rp-userInfo-box-dark');
-    }
-    document.querySelector('body').appendChild(box);
-
-    const userName = target.getAttribute('href').replace('/@', '');
-    fetchUser(userName)
-      .then((user) => {
-        if (!user) {
-          this.handleMouseLeave();
-          return;
-        }
-
-        user.joined = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
-        user.rep    = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
-        setHTML(box, this.getBoxTemplate(user));
+    const userName    = target.getAttribute('href').replace('/@', '');
+    const rect        = target.getBoundingClientRect();
+    const existingBox = document.querySelector(`[data-userInfo-username="${userName}"]`);
+    if (existingBox) {
+      existingBox.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);
+      existingBox.style.display = 'block';
+    } else {
+      const box  = createElement('div', {
+        'class':                  'rp-userInfo-box',
+        'style':                  `top: ${rect.top + 20}px; left: ${rect.left}px`,
+        'html':                   `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`,
+        'data-userInfo-username': userName
       });
+      if (isDarkMode()) {
+        box.classList.add('rp-userInfo-box-dark');
+      }
+      document.querySelector('body').appendChild(box);
+
+      fetchUser(userName)
+        .then((user) => {
+          if (!user) {
+            this.handleMouseLeave();
+            return;
+          }
+
+          user.joined = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
+          user.rep    = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
+          setHTML(box, this.getBoxTemplate(user));
+        });
+    }
   };
 
   /**
@@ -123,7 +130,7 @@ export default class UserInfoModule extends Module {
    */
   handleMouseLeave = () => {
     querySelectorEach('.rp-userInfo-box', (el) => {
-      el.remove();
+      el.style.display = 'none';
     });
   };
 }
