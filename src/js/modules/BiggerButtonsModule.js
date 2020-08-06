@@ -6,12 +6,13 @@ import { injectCSS } from '../utils/web';
  */
 export default class BiggerButtonsModule extends Module {
   /**
-   * Returns 1 or 0
+   * Returns whether the module should be enabled by default. Should
+   * return a truthy or falsy value.
    *
-   * @returns {number}
+   * @returns {boolean}
    */
   static getDefaultSetting = () => {
-    return 0;
+    return false;
   };
 
   /**

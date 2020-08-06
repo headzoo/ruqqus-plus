@@ -23,12 +23,13 @@ export default class BetterSidebarModule extends Module {
   sidebar = null;
 
   /**
-   * Returns 1 or 0
+   * Returns whether the module should be enabled by default. Should
+   * return a truthy or falsy value.
    *
-   * @returns {number}
+   * @returns {boolean}
    */
   static getDefaultSetting = () => {
-    return 0;
+    return false;
   };
 
   /**

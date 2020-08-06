@@ -86,6 +86,15 @@ export default class Module {
   }
 
   /**
+   * Returns the help text displayed under the label on the settings page
+   *
+   * @returns {string}
+   */
+  getHelp = () => {
+    return 'Explains what something does.';
+  };
+
+  /**
    * All modules have on/off checkboxes on the extension settings page, but
    * modules may also have advanced settings which are reachable from the
    * settings page sidebar. This method returns the label used in the sidebar.

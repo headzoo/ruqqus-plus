@@ -37,12 +37,13 @@ export default class InfiniteScrollModule extends Module {
   loading = null;
 
   /**
-   * Returns 1 or 0
+   * Returns whether the module should be enabled by default. Should
+   * return a truthy or falsy value.
    *
-   * @returns {number}
+   * @returns {boolean}
    */
   static getDefaultSetting = () => {
-    return 1;
+    return true;
   };
 
   /**

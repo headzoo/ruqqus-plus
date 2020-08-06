@@ -8,12 +8,13 @@ import { injectStyleLink, createElement, setHTML, querySelectorEach } from '../u
  */
 export default class UserInfoModule extends Module {
   /**
-   * Returns 1 or 0
+   * Returns whether the module should be enabled by default. Should
+   * return a truthy or falsy value.
    *
-   * @returns {number}
+   * @returns {boolean}
    */
   static getDefaultSetting = () => {
-    return 1;
+    return true;
   };
 
   /**
