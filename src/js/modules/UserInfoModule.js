@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchUser, isDarkMode } from '../utils/ruqqus';
-import { injectStyleLink, createElement, setHTML } from '../utils/web';
+import { injectStyleLink, createElement, setHTML, querySelectorEach } from '../utils/web';
 
 /**
  * Displays user information when hovering over their username
@@ -50,12 +50,11 @@ export default class UserInfoModule extends Module {
    *
    */
   wireupUserNames = () => {
-    const userNames = document.querySelectorAll('.user-name');
-    userNames.forEach((userName) => {
-      if (!userName.getAttribute('data-rp-user-info')) {
-        userName.setAttribute('data-rp-user-info', 'true');
-        userName.addEventListener('mouseenter', this.handleMouseEnter, false);
-        userName.addEventListener('mouseleave', this.handleMouseLeave, false);
+    querySelectorEach('.user-name', (el) => {
+      if (!el.getAttribute('data-rp-user-info')) {
+        el.setAttribute('data-rp-user-info', 'true');
+        el.addEventListener('mouseenter', this.handleMouseEnter, false);
+        el.addEventListener('mouseleave', this.handleMouseLeave, false);
       }
     });
   };
@@ -122,11 +121,8 @@ export default class UserInfoModule extends Module {
    *
    */
   handleMouseLeave = () => {
-    const box = document.querySelectorAll('.rp-userInfo-box');
-    if (box) {
-      box.forEach((b) => {
-        b.remove();
-      });
-    }
+    querySelectorEach('.rp-userInfo-box', (el) => {
+      el.remove();
+    });
   };
 }

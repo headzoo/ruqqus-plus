@@ -1,6 +1,6 @@
 import Module from './Module';
 import { fetchMyGuilds } from '../utils/ruqqus';
-import { createElement } from '../utils/web';
+import { createElement, querySelectorEach } from '../utils/web';
 import storage from '../utils/storage';
 
 /**
@@ -182,13 +182,13 @@ export default class BetterSidebarModule extends Module {
       if (value === '') {
         toggle.classList.remove('rp-hidden');
         recommends[0].classList.remove('rp-hidden');
-        mine.querySelectorAll('.guild-recommendations-item').forEach((item) => {
+        querySelectorEach(mine, '.guild-recommendations-item', (item) => {
           item.classList.remove('rp-hidden');
         });
       } else {
         toggle.classList.add('rp-hidden');
         recommends[0].classList.add('rp-hidden');
-        mine.querySelectorAll('.guild-recommendations-item').forEach((item) => {
+        querySelectorEach(mine, '.guild-recommendations-item', (item) => {
           if (item.querySelector('a').getAttribute('href').toLowerCase().indexOf(value) === -1) {
             item.classList.add('rp-hidden');
           } else {

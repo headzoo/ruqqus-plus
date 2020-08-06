@@ -108,3 +108,29 @@ export const createElement = (tag, attribs) => {
   const el = document.createElement(tag);
   return setAttributes(el, attribs);
 };
+
+/**
+ * @param {Element|DocumentFragment|string} context
+ * @param {string|Function} selector
+ * @param {Function} callback
+ */
+export const querySelectorEach = (context, selector, callback = null) => {
+  if (typeof context === 'object') {
+    context.querySelectorAll(selector).forEach(callback);
+  } else {
+    document.querySelectorAll(context).forEach(selector);
+  }
+};
+
+/**
+ * @param {Element|string} context
+ * @param {string|*} selector
+ * @param {{}} attribs
+ */
+export const querySelectorAttribs = (context, selector, attribs = {}) => {
+  const isObj = typeof context === 'object';
+  const base  = isObj ? context : document;
+  base.querySelectorAll(isObj ? selector : context).forEach((el) => {
+    setAttributes(el, isObj ? attribs : selector);
+  });
+};

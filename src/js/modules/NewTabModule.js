@@ -1,4 +1,5 @@
 import Module from './Module';
+import { querySelectorEach, querySelectorAttribs } from '../utils/web';
 
 /**
  * Opens posts in a new tab.
@@ -40,28 +41,30 @@ export default class NewTabModule extends Module {
   execContentContext = () => {
     this.listen('rp.change', this.execContentContext);
 
+    // Ensure post links get target="_blank" everywhere they appear on the page.
     const hrefs = [];
     document.querySelectorAll('.card-title a').forEach((link) => {
       hrefs.push(link.getAttribute('href'));
     });
     hrefs.forEach((href) => {
-      document.querySelectorAll(`a[href="${href}"]`).forEach((link) => {
-        link.setAttribute('target', '_blank');
+      querySelectorAttribs(`a[href="${href}"]`, {
+        'target': '_blank'
       });
     });
-    document.querySelectorAll('.user-name').forEach((link) => {
-      link.setAttribute('target', '_blank');
+
+    querySelectorAttribs('.user-name', {
+      'target': '_blank'
     });
-    document.querySelectorAll('.comment-text a').forEach((link) => {
-      link.setAttribute('target', '_blank');
+    querySelectorAttribs('.comment-text a', {
+      'target': '_blank'
     });
-    document.querySelectorAll('.comment-actions a').forEach((link) => {
+    querySelectorAttribs('.post-meta-guild a', {
+      'target': '_blank'
+    });
+    querySelectorEach('.comment-actions a', (link) => {
       if (link.innerText === 'Context') {
         link.setAttribute('target', '_blank');
       }
-    });
-    document.querySelectorAll('.post-meta-guild a').forEach((link) => {
-      link.setAttribute('target', '_blank');
     });
   };
 }

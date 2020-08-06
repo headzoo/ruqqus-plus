@@ -1,6 +1,6 @@
 import Module from './Module';
 import purePopup from '../utils/purePopup';
-import { createElement } from '../utils/web';
+import { createElement, querySelectorEach } from '../utils/web';
 
 /**
  * Adds a block user button to posts and comments
@@ -75,11 +75,11 @@ export default class BlockUserModule extends Module {
 
     const posts = document.querySelector('.posts');
     if (posts) {
-      posts.querySelectorAll('.card').forEach(this.wireupCard);
+      querySelectorEach(posts, '.card', this.wireupCard);
     }
     const comments = document.querySelector('.comment-section');
     if (comments) {
-      comments.querySelectorAll('.comment').forEach(this.wireupComment);
+      querySelectorEach(comments, '.comment', this.wireupComment);
     }
   }
 
@@ -165,12 +165,12 @@ export default class BlockUserModule extends Module {
    * @param {string} username
    */
   removeUserCards = (username) => {
-    document.querySelectorAll('.posts .card').forEach((card) => {
+    querySelectorEach('.posts .card', (card) => {
       if (card.querySelector('.user-name').innerText.trim() === username) {
         card.remove();
       }
     });
-    document.querySelectorAll('.comment').forEach((comment) => {
+    querySelectorEach('.comment', (comment) => {
       if (comment.querySelector('.user-name').innerText.trim() === username) {
         comment.remove();
       }

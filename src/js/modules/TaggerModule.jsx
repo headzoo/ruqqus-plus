@@ -1,6 +1,6 @@
 import React from 'react';
 import purePopup from '../utils/purePopup';
-import { createElement, insertAfter } from '../utils/web';
+import { createElement, insertAfter, querySelectorEach } from '../utils/web';
 import Module from './Module';
 
 /**
@@ -90,7 +90,7 @@ export default class TaggerModule extends Module {
    *
    */
   wireupUserNames = async () => {
-    document.querySelectorAll('.user-name').forEach(this.wireupUser);
+    querySelectorEach('.user-name', this.wireupUser);
   };
 
   /**
@@ -195,7 +195,7 @@ export default class TaggerModule extends Module {
 
           tx.oncomplete = () => {
             this.tags[username] = tags;
-            document.querySelectorAll(`[data-rp-user-tags="${username}"]`).forEach((el) => {
+            querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
               el.innerText = tags.join(', ');
               el.parentElement.classList.remove('rp-user-tag-wrap-empty');
             });
@@ -206,7 +206,7 @@ export default class TaggerModule extends Module {
         } else {
           store.delete(username);
           this.tags[username] = -1;
-          document.querySelectorAll(`[data-rp-user-tags="${username}"]`).forEach((el) => {
+          querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
             el.innerText = '';
             el.parentElement.classList.add('rp-user-tag-wrap-empty');
           });

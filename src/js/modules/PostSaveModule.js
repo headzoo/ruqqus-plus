@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
-import { setHTML, createElement, createTemplateContent } from '../utils/web';
+import { setHTML, createElement, createTemplateContent, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import postTemplate from './templates/post';
 
@@ -74,8 +74,7 @@ export default class PostSaveModule extends Module {
    *
    */
   wireupCards = () => {
-    const postActions = document.querySelectorAll('.post-actions ul');
-    postActions.forEach((el) => {
+    querySelectorEach('.post-actions ul', (el) => {
       const card = el.closest('.card');
       if (card && card.querySelector('a[data-rp-saved]')) {
         return;

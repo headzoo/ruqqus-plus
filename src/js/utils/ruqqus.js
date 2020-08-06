@@ -1,4 +1,4 @@
-import { createTemplateContent } from './web';
+import { createTemplateContent, querySelectorEach } from './web';
 import storage from './storage';
 /**
  * @returns {Promise<{unread: number, authed: boolean, username: string}>}
@@ -92,7 +92,7 @@ export const fetchMyGuilds = () => {
       const html = createTemplateContent(text);
 
       const guilds = [];
-      html.querySelectorAll('.card-body').forEach((body) => {
+      querySelectorEach(html, '.card-body', (body) => {
         const title  = body.querySelector('.card-title');
         const avatar = body.querySelector('img');
         if (title && avatar) {
