@@ -204,3 +204,7 @@ export default class Module {
   }
 }
 ```
+
+### Contributors
+[PauloBoks](https://github.com/PauloBoks)
+
