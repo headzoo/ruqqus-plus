@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Loading } from './components';
 import { fetchMe, fetchUser } from './utils/ruqqus';
-import events from './utils/events';
 
 class App extends React.Component {
   /**
@@ -82,9 +81,9 @@ class App extends React.Component {
                     <div className="d-flex flex-column">
                       <span className="username mr-2">{user.username}</span>
                       <div>
-                    <span id="container-authed-rep" className="rep">
-                      {parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10)}&nbsp;Rep
-                    </span>
+                        <span id="container-authed-rep" className="rep">
+                          {parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10)}&nbsp;Rep
+                        </span>
                       </div>
                     </div>
                   </div>
