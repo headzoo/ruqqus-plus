@@ -60,5 +60,8 @@ export default class NewTabModule extends Module {
         link.setAttribute('target', '_blank');
       }
     });
+    document.querySelectorAll('.post-meta-guild a').forEach((link) => {
+      link.setAttribute('target', '_blank');
+    });
   };
 }
