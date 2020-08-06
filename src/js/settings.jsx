@@ -133,7 +133,7 @@ class App extends React.Component {
           </nav>
           <div className="flex-grow-1">
             <div className="settings-page">
-              <h3 className="pl-4 pr-4 pt-2 pb-2 mb-3">
+              <h3 className="pl-4 pr-4 pt-2 pb-2 mb-4">
                 {sidebarItems[activePage]}
               </h3>
               <div className="pl-4 pr-4 pb-4">

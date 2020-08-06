@@ -149,8 +149,19 @@ export default class ThemeModuleSettings extends React.PureComponent {
     if (!theme.version || theme.version.trim() === '') {
       return 'Theme must have a version';
     }
+    const match = theme.version.match(/^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/);
+    if (!match) {
+      return 'Version must match x.x.x for example 1.33.5';
+    }
     if (!theme.author || theme.author.trim() === '') {
       return 'Theme must have an author';
+    }
+    if (theme.website) {
+      try {
+        new URL(theme.website); // eslint-disable-line
+      } catch (error) {
+        return 'Invalid website URL.';
+      }
     }
 
     return false;
@@ -327,6 +338,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           <input
             name="name"
             id="theme-name"
+            maxLength={50}
             className="form-control"
             aria-describedby="theme-name-help"
             value={createValues.name}
@@ -343,6 +355,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           <input
             name="version"
             id="theme-version"
+            maxLength={10}
             className="form-control"
             aria-describedby="theme-version-help"
             value={createValues.version}
@@ -359,6 +372,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           <input
             name="author"
             id="theme-author"
+            maxLength={25}
             className="form-control"
             aria-describedby="theme-author-help"
             value={createValues.author}
@@ -376,6 +390,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
             name="website"
             id="theme-website"
             className="form-control"
+            maxLength={100}
             aria-describedby="theme-website-help"
             value={createValues.website}
             onChange={handleChange}
@@ -393,6 +408,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
             className="form-control"
             id="theme-description"
             rows="3"
+            maxLength={500}
             aria-describedby="theme-description-help"
             value={createValues.description}
             onChange={handleChange}
@@ -617,7 +633,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
     }
 
     return (
-      <div className="pt-2">
+      <div>
         <input
           ref={this.uploadRef}
           type="file"
