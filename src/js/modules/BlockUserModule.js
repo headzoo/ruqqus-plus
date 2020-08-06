@@ -1,18 +1,11 @@
 import Module from './Module';
-import storage from '../utils/storage';
 import purePopup from '../utils/purePopup';
-import { createElement, setHTML } from '../utils/web';
-import { fetchMe } from '../utils/ruqqus';
+import { createElement } from '../utils/web';
 
 /**
- * Removes content from users which are blocked
+ * Adds a block user button to posts and comments
  */
 export default class BlockUserModule extends Module {
-  /**
-   * @type {string[]}
-   */
-  blockedUsers = [];
-
   /**
    * Returns 1 or 0
    *
@@ -28,7 +21,7 @@ export default class BlockUserModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Removes content from users which are blocked';
+    return 'Adds a block user button';
   };
 
   /**
@@ -37,7 +30,38 @@ export default class BlockUserModule extends Module {
    * @returns {string}
    */
   getHelp = () => {
-    return 'Adds a button to block users. Blocked user posts and comments will not be visible.';
+    return 'Makes it easier to block users by adding a button user button to posts and comments.';
+  };
+
+  /**
+   * Called from the script injected into the page
+   *
+   * Code from here has access to the ruqqus `window` object but not the
+   * chrome extension API.
+   */
+  execWindowContext = () => {
+    this.listen('rq.blockUser', (data) => {
+      const { username } = data.detail;
+
+      const formkey = window.formkey();
+      if (!formkey) {
+        this.toastError('Error, unable to block user.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('formkey', formkey);
+
+      fetch('https://ruqqus.com/settings/block', {
+        body:   formData,
+        method: 'post'
+      })
+        .then((resp) => resp.text())
+        .then((text) => {
+          console.log(text);
+        });
+    });
   };
 
   /**
@@ -49,39 +73,14 @@ export default class BlockUserModule extends Module {
   execContentContext = () => {
     this.listen('rp.change', this.execContentContext);
 
-    storage.get('blockedUsers', { usernames: [] })
-      .then((blockedUsers) => {
-        this.blockedUsers = blockedUsers.usernames;
-
-        if (document.location.pathname.indexOf('/@') !== -1) {
-          this.handleProfile();
-          return;
-        }
-
-        const posts = document.querySelector('.posts');
-        if (posts) {
-          posts.querySelectorAll('.card').forEach((card) => {
-            const username = card.querySelector('.user-name').innerText.trim();
-            if (this.blockedUsers.indexOf(username) !== -1) {
-              card.remove();
-            } else {
-              this.wireupCard(card);
-            }
-          });
-        }
-
-        const comments = document.querySelector('.comment-section');
-        if (comments) {
-          comments.querySelectorAll('.comment').forEach((card) => {
-            const username = card.querySelector('.user-name').innerText.trim();
-            if (this.blockedUsers.indexOf(username) !== -1) {
-              card.remove();
-            } else {
-              this.wireupComment(card);
-            }
-          });
-        }
-      });
+    const posts = document.querySelector('.posts');
+    if (posts) {
+      posts.querySelectorAll('.card').forEach(this.wireupCard);
+    }
+    const comments = document.querySelector('.comment-section');
+    if (comments) {
+      comments.querySelectorAll('.comment').forEach(this.wireupComment);
+    }
   }
 
   /**
@@ -152,14 +151,12 @@ export default class BlockUserModule extends Module {
     const username = card.querySelector('.user-name').innerText.trim();
     purePopup.confirm({ title: `Are you sure you want to block ${username}?` }, ({ confirm }) => {
       if (confirm === 'ok') {
-        if (this.blockedUsers.indexOf(username) === -1) {
-          this.blockedUsers.push(username);
-          storage.set('blockedUsers', { usernames: this.blockedUsers })
-            .then(() => {
-              this.removeUserCards(username);
-              this.toastSuccess(`User ${username} blocked.`);
-            });
-        }
+        // Block needs to happen from the window context in order to access
+        // the window.formkey() function. The window context is listening for
+        // this event.
+        this.dispatch('rq.blockUser', { username });
+        this.removeUserCards(username);
+        this.toastSuccess(`User ${username} blocked.`);
       }
     });
   };
@@ -179,105 +176,4 @@ export default class BlockUserModule extends Module {
       }
     });
   }
-
-  /**
-   *
-   */
-  handleProfile = () => {
-    let item;
-    const nav = document.querySelector('.settings-nav');
-    if (nav && !nav.querySelector('.rp-nav-link')) {
-      item = createElement('li', {
-        'class': 'nav-item',
-        'html':  `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" style="margin-top: 5px" />`
-      });
-      nav.appendChild(item);
-    }
-
-    fetchMe()
-      .then(({ username }) => {
-        if (username && document.location.pathname === `/@${username}`) {
-          if (item) {
-            const anchor = createElement('a', {
-              'class': 'nav-link rp-nav-blocked-link',
-              'href':  '#',
-              'text':  'Blocked Users',
-              'on':    {
-                'click': this.handleNavClick
-              }
-            });
-
-            setHTML(item, '');
-            item.appendChild(anchor);
-          }
-        } else if (item) {
-          item.remove();
-        }
-      });
-  };
-
-  /**
-   * @param {Event} e
-   */
-  handleNavClick = (e) => {
-    e.preventDefault();
-
-    document.querySelector('.rp-nav-blocked-link').classList.add('active');
-    const active = document.querySelector('.nav-link.active');
-    if (active) {
-      active.classList.remove('active');
-    }
-
-    const pagination = document.querySelector('.pagination');
-    if (pagination) {
-      pagination.remove();
-    }
-
-    const posts = document.querySelector('.posts');
-    setHTML(posts, '');
-    this.blockedUsers.forEach((username) => {
-      const card = createElement('div', {
-        'class':                'card',
-        'data-rp-blocked-user': username
-      });
-      const div = createElement('div', {
-        'html': `<span>${username}</span>&nbsp;`
-      });
-      card.appendChild(div);
-      const anchor = createElement('a', {
-        'href': 'javascript:void(0)', // eslint-disable-line
-        'html': 'Unblock',
-        'on':   {
-          'click': this.handleUnblockClick
-        }
-      });
-      div.appendChild(anchor);
-      posts.appendChild(card);
-    });
-  };
-
-  /**
-   * @param {Event} e
-   */
-  handleUnblockClick = (e) => {
-    e.preventDefault();
-
-    const { currentTarget } = e;
-    const card     = currentTarget.closest('.card');
-    const username = card.getAttribute('data-rp-blocked-user');
-
-    purePopup.confirm({ title: `Are you sure you want to unblock ${username}?` }, ({ confirm }) => {
-      if (confirm === 'ok') {
-        const index = this.blockedUsers.indexOf(username);
-        if (index !== -1) {
-          this.blockedUsers.splice(index, 1);
-          storage.set('blockedUsers', { usernames: this.blockedUsers })
-            .then(() => {
-              card.remove();
-              this.toastSuccess(`User ${username} unblocked.`);
-            });
-        }
-      }
-    });
-  };
 }
