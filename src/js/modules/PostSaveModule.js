@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
-import { setAttributes, createElement, createTemplateContent } from '../utils/web';
+import { setHTML, createElement, createTemplateContent } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import postTemplate from './templates/post';
 
@@ -123,7 +123,7 @@ export default class PostSaveModule extends Module {
             } else {
               const link = document.querySelector(`a[data-rp-saved="${id}"]`);
               if (link) {
-                link.innerHTML = '<i class="fas fa-save"></i> Save';
+                setHTML(link, '<i class="fas fa-save"></i> Save');
               }
             }
           };
@@ -141,7 +141,7 @@ export default class PostSaveModule extends Module {
                   this.toastSuccess('Post saved!');
                   const link = document.querySelector(`a[data-rp-saved="${id}"]`);
                   if (link) {
-                    link.innerHTML = '<i class="fas fa-save"></i> UnSave';
+                    setHTML(link, '<i class="fas fa-save"></i> UnSave');
                   }
                 };
                 req.onerror = (ev) => {
@@ -157,7 +157,7 @@ export default class PostSaveModule extends Module {
    *
    */
   handleProfile = () => {
-    let item  = null;
+    let item;
     const nav = document.querySelector('.settings-nav');
     if (nav && !nav.querySelector('.rp-nav-link')) {
       item = createElement('li', {
@@ -180,7 +180,7 @@ export default class PostSaveModule extends Module {
               }
             });
 
-            item.innerHTML = '';
+            setHTML(item, '');
             item.appendChild(anchor);
           }
         } else if (item) {
@@ -214,7 +214,7 @@ export default class PostSaveModule extends Module {
       const { result } = ev.target;
 
       const posts = document.querySelector('.posts');
-      posts.innerHTML = '';
+      setHTML(posts, '');
       result.forEach((record) => {
         const u     = new URL(record.url);
         record.host = u.hostname;

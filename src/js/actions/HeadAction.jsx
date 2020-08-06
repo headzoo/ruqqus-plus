@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createElement } from '../utils/web';
 import storage from '../utils/storage';
 import Action from './Action';
 
@@ -124,15 +125,17 @@ export default class HeadAction extends Action {
           const headEl = document.querySelector('head');
 
           if (head.css) {
-            const style = document.createElement('style');
-            style.setAttribute('type', 'text/css');
-            style.innerHTML = head.css;
+            const style = createElement('style', {
+              'type': 'text/css',
+              'html': head.css
+            });
             headEl.appendChild(style);
           }
 
           if (head.js) {
-            const script     = document.createElement('script');
-            script.innerHTML = head.js;
+            const script = createElement('script', {
+              'html': head.js
+            });
             headEl.appendChild(script);
           }
         }

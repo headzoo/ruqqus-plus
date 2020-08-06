@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { insertAfter } from '../utils/web';
+import { insertAfter, createElement } from '../utils/web';
 import Module from './Module';
 
 /**
@@ -134,8 +134,9 @@ export default class InfiniteScrollModule extends Module {
       fetch(`https://ruqqus.com/?sort=${this.sort}&page=${this.page}&t=${this.type}`)
         .then((resp) => resp.text())
         .then((text) => {
-          const template     = document.createElement('template');
-          template.innerHTML = text;
+          const template = createElement('template', {
+            'html': text
+          });
 
           const cards = template.content.querySelectorAll('#posts .card');
           if (cards && cards.length > 0) {

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchUser, isDarkMode } from '../utils/ruqqus';
-import { injectStyleLink } from '../utils/web';
+import { injectStyleLink, createElement, setHTML } from '../utils/web';
 
 /**
  * Displays user information when hovering over their username
@@ -94,13 +94,14 @@ export default class UserInfoModule extends Module {
     const { target } = e;
 
     const rect = target.getBoundingClientRect();
-    const box  = document.createElement('div');
-    box.classList.add('rp-userInfo-box');
+    const box  = createElement('div', {
+      'class': 'rp-userInfo-box',
+      'style': `top: ${rect.top + 20}px; left: ${rect.left}px`,
+      'html':  `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`
+    });
     if (isDarkMode()) {
       box.classList.add('rp-userInfo-box-dark');
     }
-    box.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);
-    box.innerHTML = `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`;
     document.querySelector('body').appendChild(box);
 
     const userName = target.getAttribute('href').replace('/@', '');
@@ -111,9 +112,9 @@ export default class UserInfoModule extends Module {
           return;
         }
 
-        user.joined   = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
-        user.rep      = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
-        box.innerHTML = this.getBoxTemplate(user);
+        user.joined = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
+        user.rep    = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
+        setHTML(box, this.getBoxTemplate(user));
       });
   };
 

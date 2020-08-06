@@ -1,3 +1,19 @@
+import DOMPurify from 'dompurify';
+
+/**
+ * @param {Element} el
+ * @param {string} html
+ * @returns {Element}
+ */
+export const setHTML = (el, html) => {
+  el.innerHTML = DOMPurify.sanitize(html, {
+    // Allow "chrome-extension://" urls
+    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|xxx|chrome-extension):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+  });
+
+  return el;
+};
+
 /**
  * Inject script
  *
@@ -20,7 +36,7 @@ export const injectScript = (path) => {
 export const injectCSS = (css) => {
   const style = document.createElement('style');
   style.setAttribute('type', 'text/css');
-  style.innerHTML = css;
+  style.innerText = css;
 
   const head = document.getElementsByTagName('head')[0];
   head.appendChild(style);
@@ -46,8 +62,8 @@ export const injectStyleLink = (url) => {
  * @returns {DocumentFragment}
  */
 export const createTemplateContent = (html) => {
-  const template     = document.createElement('template');
-  template.innerHTML = html;
+  const template = document.createElement('template');
+  setHTML(template, html);
 
   return template.content;
 };
@@ -68,7 +84,7 @@ export const insertAfter = (ref, node) => {
 export const setAttributes = (el, attribs) => {
   Object.keys(attribs).forEach((key) => {
     if (key === 'html') {
-      el.innerHTML = attribs[key];
+      setHTML(el, attribs[key]);
     } else if (key === 'text') {
       el.innerText = attribs[key];
     } else if (key === 'on') {

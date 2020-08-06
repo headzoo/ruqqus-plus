@@ -1,7 +1,7 @@
 import marked from 'marked';
 import Module from './Module';
 import { isDarkMode } from '../utils/ruqqus';
-import { createElement } from '../utils/web';
+import { createElement, setHTML } from '../utils/web';
 
 /**
  * Adds a preview pane to the post submit page
@@ -95,13 +95,13 @@ export default class PreviewPostModule extends Module {
       this.textarea.style.display = 'none';
       container.appendChild(div);
 
-      this.isPreviewing   = true;
-      this.link.innerHTML = '<i class="fas fa-edit"></i> Edit';
+      this.isPreviewing = true;
+      setHTML(this.link, '<i class="fas fa-edit"></i> Edit');
     } else {
       document.querySelector('.rp-preview-post-container').remove();
-      this.textarea.style.display = 'block';
-      this.link.innerHTML         = '<i class="fas fa-eye"></i> Preview';
       this.isPreviewing           = false;
+      this.textarea.style.display = 'block';
+      setHTML(this.link, '<i class="fas fa-eye"></i> Preview');
     }
   };
 }

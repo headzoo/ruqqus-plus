@@ -1,7 +1,7 @@
 import Module from './Module';
 import storage from '../utils/storage';
 import purePopup from '../utils/purePopup';
-import { createElement } from '../utils/web';
+import { createElement, setHTML } from '../utils/web';
 import { fetchMe } from '../utils/ruqqus';
 
 /**
@@ -184,7 +184,7 @@ export default class BlockUserModule extends Module {
    *
    */
   handleProfile = () => {
-    let item  = null;
+    let item;
     const nav = document.querySelector('.settings-nav');
     if (nav && !nav.querySelector('.rp-nav-link')) {
       item = createElement('li', {
@@ -207,7 +207,7 @@ export default class BlockUserModule extends Module {
               }
             });
 
-            item.innerHTML = '';
+            setHTML(item, '');
             item.appendChild(anchor);
           }
         } else if (item) {
@@ -234,7 +234,7 @@ export default class BlockUserModule extends Module {
     }
 
     const posts = document.querySelector('.posts');
-    posts.innerHTML = '';
+    setHTML(posts, '');
     this.blockedUsers.forEach((username) => {
       const card = createElement('div', {
         'class':                'card',
