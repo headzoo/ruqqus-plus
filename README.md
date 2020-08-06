@@ -1,20 +1,19 @@
 Ruqqus Plus
 ===========
-Chrome extension that provides enhancements for ruqqus.com.
+Browser extension that provides enhancements for ruqqus.com.
 
 https://ruqqus.com/+RuqqusPlus
 
 ### Building
-Yarn or npm will be needed to build the extension. Run the following commands (replacing `yarn` with `npm` where applicable).
+Yarn (> 1.22.x) or npm (> 6.x) will be needed to build the extension. Clone the repository to a directory and run the following commands (replacing `yarn` with `npm` where applicable).
 
 ```
-git clone git@github.com:headzoo/ruqqus-plus.git
-cd ruqqus-plus
 yarn install
 yarn run build
 ```
+Which creates a directory name `/build` containing the built extension.
 
-Now the extension should be loaded as an unpacked extension. See [instructions for loading unpacked extensions](https://webkul.com/blog/how-to-install-the-unpacked-extension-in-chrome/). The created `/ruqqus-plus/build` directory should be loaded.
+Chrome users should load the unpacked extension from the `/build` directory. See [instructions for loading unpacked extensions](https://webkul.com/blog/how-to-install-the-unpacked-extension-in-chrome/).
 
 ### Developing
 In order to add additional functionality follow the building steps above. Use the `yarn run watch` command instead of `yarn run build` to automatically compile your changes as you make them. [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid) is recommended to quickly reload your changes.
