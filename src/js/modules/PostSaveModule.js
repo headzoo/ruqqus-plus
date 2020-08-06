@@ -77,7 +77,7 @@ export default class PostSaveModule extends Module {
   wireupCards = () => {
     querySelectorEach('.post-actions ul', (el) => {
       const card = el.closest('.card');
-      if (card && card.querySelector('a[data-rp-saved]')) {
+      if (!card || (card && card.querySelector('a[data-rp-saved]'))) {
         return;
       }
 
@@ -109,48 +109,50 @@ export default class PostSaveModule extends Module {
     const { currentTarget } = e;
 
     const card = currentTarget.closest('.card');
-    const id   = card.getAttribute('id').replace('post-', '');
-    this.isSaved(id)
-      .then((isSaved) => {
-        if (isSaved) {
-          const tx    = this.db.transaction(['posts'], 'readwrite');
-          const store = tx.objectStore('posts');
-          const req   = store.delete(id);
-          req.onsuccess = () => {
-            this.toastSuccess('Post unsaved!');
-            if (this.isProfile) {
-              card.remove();
-            } else {
-              const link = document.querySelector(`a[data-rp-saved="${id}"]`);
-              if (link) {
-                setHTML(link, '<i class="fas fa-save"></i> Save');
+    if (card) {
+      const id = card.getAttribute('id').replace('post-', '');
+      this.isSaved(id)
+        .then((isSaved) => {
+          if (isSaved) {
+            const tx    = this.db.transaction(['posts'], 'readwrite');
+            const store = tx.objectStore('posts');
+            const req   = store.delete(id);
+            req.onsuccess = () => {
+              this.toastSuccess('Post unsaved!');
+              if (this.isProfile) {
+                card.remove();
+              } else {
+                const link = document.querySelector(`a[data-rp-saved="${id}"]`);
+                if (link) {
+                  setHTML(link, '<i class="fas fa-save"></i> Save');
+                }
               }
-            }
-          };
-          req.onerror = (ev) => {
-            this.toastError(`Error unsaving post. ${ev.target.errorCode}`);
-          };
-        } else {
-          fetchPost(id)
-            .then((details) => {
-              if (details) {
-                const tx    = this.db.transaction(['posts'], 'readwrite');
-                const store = tx.objectStore('posts');
-                const req   = store.add(details);
-                req.onsuccess = () => {
-                  this.toastSuccess('Post saved!');
-                  const link = document.querySelector(`a[data-rp-saved="${id}"]`);
-                  if (link) {
-                    setHTML(link, '<i class="fas fa-save"></i> UnSave');
-                  }
-                };
-                req.onerror = (ev) => {
-                  this.toastError(`Error saving post. ${ev.target.errorCode}`);
-                };
-              }
-            });
-        }
-      });
+            };
+            req.onerror = (ev) => {
+              this.toastError(`Error unsaving post. ${ev.target.errorCode}`);
+            };
+          } else {
+            fetchPost(id)
+              .then((details) => {
+                if (details) {
+                  const tx    = this.db.transaction(['posts'], 'readwrite');
+                  const store = tx.objectStore('posts');
+                  const req   = store.add(details);
+                  req.onsuccess = () => {
+                    this.toastSuccess('Post saved!');
+                    const link = document.querySelector(`a[data-rp-saved="${id}"]`);
+                    if (link) {
+                      setHTML(link, '<i class="fas fa-save"></i> UnSave');
+                    }
+                  };
+                  req.onerror = (ev) => {
+                    this.toastError(`Error saving post. ${ev.target.errorCode}`);
+                  };
+                }
+              });
+          }
+        });
+    }
   };
 
   /**

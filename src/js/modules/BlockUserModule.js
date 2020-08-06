@@ -105,9 +105,12 @@ export default class BlockUserModule extends Module {
       return;
     }
 
-    const item   = this.createBlockLink(comment, 'comment');
-    const parent = comment.querySelector('.comment-actions ul .dropdown').parentElement;
-    parent.parentElement.insertBefore(item, parent);
+    const item     = this.createBlockLink(comment, 'comment');
+    const dropdown = comment.querySelector('.comment-actions ul .dropdown');
+    if (dropdown) {
+      const parent = dropdown.parentElement;
+      parent.parentElement.insertBefore(item, parent);
+    }
   };
 
   /**
