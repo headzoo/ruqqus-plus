@@ -56,6 +56,19 @@ export default class ThemeModule extends Module {
   }
 
   /**
+   * Called when the extension is installed
+   */
+  onInstalled = () => {
+    ThemeModule.getDatabase()
+      .then((db) => {
+        const tx    = db.transaction(['themes'], 'readwrite');
+        const store = tx.objectStore('themes');
+        const json  = require('./data/spacy.json'); // eslint-disable-line
+        store.add(json);
+      });
+  }
+
+  /**
    * Called from the extension content script
    *
    * The content script has access to the chrome extension API but does not
@@ -83,7 +96,7 @@ export default class ThemeModule extends Module {
     chrome.runtime.onConnect.addListener((port) => {
       port.onMessage.addListener((msg) => {
         if (msg.event && msg.event === 'rq.getActiveTheme') {
-          this.getDatabase()
+          ThemeModule.getDatabase()
             .then((db) => {
               const tx    = db.transaction(['themes'], 'readwrite');
               const store = tx.objectStore('themes');
@@ -112,7 +125,7 @@ export default class ThemeModule extends Module {
   /**
    * @returns {Promise<IDBDatabase>}
    */
-  getDatabase = () => {
+  static getDatabase = () => {
     return new Promise((resolve) => {
       const dbReq = indexedDB.open('ThemeModule', 5);
       dbReq.onupgradeneeded = (e) => {

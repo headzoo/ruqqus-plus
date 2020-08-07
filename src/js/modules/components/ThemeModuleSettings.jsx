@@ -3,6 +3,7 @@ import toastr from 'toastr';
 import { themes } from 'ruqqus-plus-shared';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import ThemeModule from '../ThemeModule';
 
 const ThemeCard = styled.div`
   background-color: #1d1d1d;
@@ -75,7 +76,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
    *
    */
   setInstalledState = () => {
-    this.getDatabase()
+    ThemeModule.getDatabase()
       .then((db) => {
         const tx    = db.transaction(['themes'], 'readwrite');
         const store = tx.objectStore('themes');
@@ -107,24 +108,6 @@ export default class ThemeModuleSettings extends React.PureComponent {
     toastr.error(message, '', {
       closeButton:   true,
       positionClass: 'toast-bottom-center'
-    });
-  };
-
-  /**
-   * @returns {Promise<IDBDatabase>}
-   */
-  getDatabase = () => {
-    return new Promise((resolve) => {
-      const dbReq = indexedDB.open('ThemeModule', 5);
-      dbReq.onupgradeneeded = (e) => {
-        e.target.result.createObjectStore('themes', { keyPath: 'uuid' });
-      };
-      dbReq.onsuccess = (e) => {
-        resolve(e.target.result);
-      };
-      dbReq.onerror = (e) => {
-        this.toastError(`Error initializing theme module. ${e.target.errorCode}`);
-      };
     });
   };
 
@@ -182,7 +165,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           }
         }
 
-        this.getDatabase()
+        ThemeModule.getDatabase()
           .then((db) => {
             const tx     = db.transaction(['themes'], 'readwrite');
             const store  = tx.objectStore('themes');
@@ -243,7 +226,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
         return;
       }
 
-      this.getDatabase()
+      ThemeModule.getDatabase()
         .then((db) => {
           const record = { ...createValues };
           const tx     = db.transaction(['themes'], 'readwrite');
@@ -421,7 +404,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
      * @param {*} theme
      */
     const handleActivateClick = (theme) => {
-      this.getDatabase()
+      ThemeModule.getDatabase()
         .then((db) => {
           if (theme.active) {
             theme.active = false;
@@ -504,7 +487,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
         return;
       }
 
-      this.getDatabase()
+      ThemeModule.getDatabase()
         .then((db) => {
           const tx      = db.transaction(['themes'], 'readwrite');
           const store   = tx.objectStore('themes');
