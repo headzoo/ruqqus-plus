@@ -63,7 +63,7 @@ export default class ThemeModule extends Module {
       .then((db) => {
         const tx    = db.transaction(['themes'], 'readwrite');
         const store = tx.objectStore('themes');
-        const json  = require('./data/spacy.json'); // eslint-disable-line
+        const json  = require('./data/spacey.json'); // eslint-disable-line
         store.add(json);
       });
   }
