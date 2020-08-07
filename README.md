@@ -4,6 +4,7 @@ Browser extension that provides enhancements for ruqqus.com.
 
 https://ruqqus.com/+RuqqusPlus
 
+[Download Chrome Extension](https://chrome.google.com/webstore/detail/ruqqus-plus/ldjlnflajiicdcmcdnmmmcidpodmijia)
 [Download firefox addon](https://addons.mozilla.org/en-US/firefox/addon/ruqqus-plus/)
 
 ### Building
