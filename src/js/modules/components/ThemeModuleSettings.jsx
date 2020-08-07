@@ -1,5 +1,6 @@
 import React from 'react';
 import toastr from 'toastr';
+import { themes } from 'ruqqus-plus-shared';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -139,39 +140,6 @@ export default class ThemeModuleSettings extends React.PureComponent {
   };
 
   /**
-   * @param {*} theme
-   * @param {boolean} checkUUID
-   * @returns {boolean|string}
-   */
-  validateTheme = (theme, checkUUID = true) => {
-    if (checkUUID && !theme.uuid) {
-      return 'Theme missing UUID';
-    }
-    if (!theme.name || theme.name.trim() === '') {
-      return 'Theme must have a name.';
-    }
-    if (!theme.version || theme.version.trim() === '') {
-      return 'Theme must have a version';
-    }
-    const match = theme.version.match(/^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/);
-    if (!match) {
-      return 'Version must match x.x.x for example 1.33.5';
-    }
-    if (!theme.author || theme.author.trim() === '') {
-      return 'Theme must have an author';
-    }
-    if (theme.website) {
-      try {
-        new URL(theme.website); // eslint-disable-line
-      } catch (error) {
-        return 'Invalid website URL.';
-      }
-    }
-
-    return false;
-  };
-
-  /**
    *
    */
   handleUploadClick = () => {
@@ -197,7 +165,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           this.toastError('Invalid theme file.');
           return;
         }
-        const error = this.validateTheme(theme);
+        const error = themes.validateThemeJSON(theme);
         if (error) {
           this.toastError(error);
           return;
@@ -269,7 +237,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
      *
      */
     const handleSaveClick = () => {
-      const error = this.validateTheme(createValues, false);
+      const error = themes.validateThemeJSON(createValues, false);
       if (error) {
         this.toastError(error);
         return;
