@@ -114,9 +114,9 @@ export default class ThemeModuleSettings extends React.PureComponent {
    */
   getDatabase = () => {
     return new Promise((resolve) => {
-      const dbReq = indexedDB.open('ThemeModule', 4);
+      const dbReq = indexedDB.open('ThemeModule', 5);
       dbReq.onupgradeneeded = (e) => {
-        e.target.result.createObjectStore('themes', { keyPath: 'id' });
+        e.target.result.createObjectStore('themes', { keyPath: 'uuid' });
       };
       dbReq.onsuccess = (e) => {
         resolve(e.target.result);
@@ -140,9 +140,13 @@ export default class ThemeModuleSettings extends React.PureComponent {
 
   /**
    * @param {*} theme
+   * @param {boolean} checkUUID
    * @returns {boolean|string}
    */
-  validateTheme = (theme) => {
+  validateTheme = (theme, checkUUID = true) => {
+    if (checkUUID && !theme.uuid) {
+      return 'Theme missing UUID';
+    }
     if (!theme.name || theme.name.trim() === '') {
       return 'Theme must have a name.';
     }
@@ -200,12 +204,11 @@ export default class ThemeModuleSettings extends React.PureComponent {
         }
 
         delete theme.active;
-        delete theme.__ruqqus_plus_theme;
         theme.is_uploaded = true;
 
         let found = false;
         for (let i = 0; i < installed.length; i++) {
-          if (installed[i].id === theme.id) {
+          if (installed[i].uuid === theme.uuid) {
             found = true;
             break;
           }
@@ -266,7 +269,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
      *
      */
     const handleSaveClick = () => {
-      const error = this.validateTheme(createValues);
+      const error = this.validateTheme(createValues, false);
       if (error) {
         this.toastError(error);
         return;
@@ -279,10 +282,10 @@ export default class ThemeModuleSettings extends React.PureComponent {
           const store  = tx.objectStore('themes');
 
           let req;
-          if (record.id) {
+          if (record.uuid) {
             req = store.put(record);
           } else {
-            record.id     = uuidv4();
+            record.uuid   = uuidv4();
             record.active = false;
             req = store.add(record);
           }
@@ -537,7 +540,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
         .then((db) => {
           const tx      = db.transaction(['themes'], 'readwrite');
           const store   = tx.objectStore('themes');
-          const request = store.delete(theme.id);
+          const request = store.delete(theme.uuid);
           request.onsuccess = () => {
             this.toastSuccess('Theme deleted!');
             this.setInstalledState();
@@ -557,7 +560,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
 
           return (
             <div key={theme.id} className="col-3">
-              <ThemeCard className={`card ${theme.active ? 'settings-theme-active' : ''}`}>
+              <ThemeCard className={`card settings-theme-card ${theme.active ? 'settings-theme-active' : ''}`}>
                 <ThemeImage
                   src={url}
                   alt="Screenshot"
@@ -641,28 +644,31 @@ export default class ThemeModuleSettings extends React.PureComponent {
           style={{ display: 'none' }}
           onChange={this.handleUploadChange}
         />
-        <div className="btn-group">
+        <div>
           <button
             type="button"
             onClick={() => this.setActivePage('installed')}
-            className={`btn btn-primary ${activePage === 'installed' ? 'active' : ''}`}
+            className={`btn btn-primary mr-2 ${activePage === 'installed' ? 'active' : ''}`}
           >
             Installed
           </button>
           <button
             type="button"
             onClick={this.handleUploadClick}
-            className="btn btn-primary"
+            className="btn btn-primary mr-2"
           >
             Upload Theme
           </button>
           <button
             type="button"
             onClick={() => this.setActivePage('create')}
-            className={`btn btn-primary ${activePage === 'create' ? 'active' : ''}`}
+            className={`btn btn-primary mr-2 ${activePage === 'create' ? 'active' : ''}`}
           >
             Create Theme
           </button>
+          <a href="https://ruqqus-plus.headzoo.io/themes" className="btn btn-primary" target="_blank">
+            Browse Themes
+          </a>
         </div>
         <div className="pt-4">
           {page}

@@ -56,7 +56,11 @@ header {
 }
 
 .settings-theme-active {
-  border: 1px solid $color-primary;
+  border: 1px solid $color-primary !important;
+}
+
+.settings-theme-card {
+  border: 1px solid rgba(152, 152, 152, 0.125);
 }
 
 #toast-container {

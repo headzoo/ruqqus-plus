@@ -114,9 +114,9 @@ export default class ThemeModule extends Module {
    */
   getDatabase = () => {
     return new Promise((resolve) => {
-      const dbReq = indexedDB.open('ThemeModule', 4);
+      const dbReq = indexedDB.open('ThemeModule', 5);
       dbReq.onupgradeneeded = (e) => {
-        e.target.result.createObjectStore('themes', { keyPath: 'id', autoIncrement: true });
+        e.target.result.createObjectStore('themes', { keyPath: 'uuid' });
       };
       dbReq.onsuccess = (e) => {
         resolve(e.target.result);
