@@ -3,7 +3,8 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack -p && cd build && zip -r build.zip * && cd ..",
+    "build-chrome": "webpack -p && cd build && zip -r chrome.zip * && cd ..",
+    "build-firefox": "cd build && web-ext build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch"
   },
