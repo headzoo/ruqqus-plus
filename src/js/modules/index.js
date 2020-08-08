@@ -2,7 +2,7 @@ import InfiniteScrollModule from './InfiniteScrollModule';
 import NewTabModule from './NewTabModule';
 import BiggerButtonsModule from './BiggerButtonsModule';
 import UserInfoModule from './UserInfoModule';
-import TaggerModule from './TaggerModule';
+import UserTaggerModule from './UserTaggerModule';
 import PostSaveModule from './PostSaveModule';
 import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
@@ -19,7 +19,7 @@ export default {
   PostSaveModule,
   UserInfoModule,
   PreviewPostModule,
-  TaggerModule,
+  UserTaggerModule,
   RemoveCreatePostModule,
   BetterSidebarModule,
   // WatchGuildsModule,

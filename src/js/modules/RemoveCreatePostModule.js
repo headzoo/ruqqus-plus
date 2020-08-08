@@ -22,7 +22,7 @@ export default class RemoveCreatePostModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Remove "Create Post" input';
+    return 'Remove Create Post';
   };
 
   /**

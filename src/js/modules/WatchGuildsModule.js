@@ -22,7 +22,7 @@ export default class WatchGuildsModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Watch guilds module';
+    return 'Watch Guilds';
   };
 
   /**

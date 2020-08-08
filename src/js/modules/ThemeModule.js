@@ -23,7 +23,7 @@ export default class ThemeModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Enable themes';
+    return 'Themes';
   };
 
   /**

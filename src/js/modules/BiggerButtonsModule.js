@@ -21,7 +21,7 @@ export default class BiggerButtonsModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Bigger vote buttons';
+    return 'Bigger Buttons';
   };
 
   /**

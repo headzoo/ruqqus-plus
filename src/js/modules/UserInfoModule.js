@@ -23,7 +23,7 @@ export default class UserInfoModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Show user info when hovering over their username';
+    return 'User Info';
   };
 
   /**

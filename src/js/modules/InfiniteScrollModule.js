@@ -52,7 +52,7 @@ export default class InfiniteScrollModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Infinite scroll';
+    return 'Infinite Scroll';
   };
 
   /**

@@ -38,7 +38,7 @@ export default class PreviewPostModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Adds a preview pane to the post submit page';
+    return 'Preview Post';
   };
 
   /**

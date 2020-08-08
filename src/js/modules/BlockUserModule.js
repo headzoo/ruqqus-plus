@@ -21,7 +21,7 @@ export default class BlockUserModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Adds a block user button';
+    return 'Block User';
   };
 
   /**

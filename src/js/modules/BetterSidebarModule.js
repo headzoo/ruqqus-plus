@@ -38,7 +38,7 @@ export default class BetterSidebarModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Sidebar enhancements';
+    return 'Better Sidebar';
   };
 
   /**

@@ -40,7 +40,7 @@ export default class PostSaveModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Save posts';
+    return 'Post Save';
   };
 
   /**

@@ -26,7 +26,7 @@ export default class HideVotedPostsModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Hide posts after voting';
+    return 'Hide Voted Posts';
   };
 
   /**

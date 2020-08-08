@@ -5,7 +5,7 @@ import Module from './Module';
 /**
  * Handles tagging users
  */
-export default class TaggerModule extends Module {
+export default class UserTaggerModule extends Module {
   /**
    * @type {IDBDatabase}
    */
@@ -32,7 +32,7 @@ export default class TaggerModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'User tagging';
+    return 'User Tagger';
   };
 
   /**
