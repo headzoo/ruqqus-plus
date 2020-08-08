@@ -5,7 +5,7 @@ import { injectCSS, insertAfter, createElement } from '../utils/web';
 /**
  * Removes the "create post" input
  */
-export default class RemoveCreatePost extends Module {
+export default class RemoveCreatePostModule extends Module {
   /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
@@ -42,7 +42,7 @@ export default class RemoveCreatePost extends Module {
    */
   execContentContext = () => {
     injectCSS(`
-      #main-content-col .row:nth-child(2) { display: none !important; }
+      .pseudo-submit-form { display: none; }
       .guild-border-top .text-small.font-weight-bold { white-space: nowrap; }
     `);
 
