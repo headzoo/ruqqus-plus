@@ -4,6 +4,9 @@ Browser extension that provides enhancements for ruqqus.com.
 
 https://ruqqus.com/+RuqqusPlus
 
+Chrome https://chrome.google.com/webstore/detail/ruqqus-plus/ldjlnflajiicdcmcdnmmmcidpodmijia
+Firefox https://addons.mozilla.org/en-US/firefox/addon/ruqqus-plus/
+
 ### Building
 Yarn (> 1.22.x) or npm (> 6.x) will be needed to build the extension. Clone the repository to a directory and run the following commands (replacing `yarn` with `npm` where applicable).
 
