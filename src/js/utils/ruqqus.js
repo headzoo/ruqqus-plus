@@ -133,6 +133,23 @@ export const fetchUnread = () => {
 };
 
 /**
+ * @param {string} guild
+ * @returns {Promise<any>}
+ */
+export const fetchGuildListing = (guild) => {
+  return fetch(`https://ruqqus.com/api/v1/guild/${guild}/listing`)
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error(`Received status code ${resp.status}`);
+      }
+      return resp.json();
+    })
+    .then((json) => {
+      return json;
+    });
+};
+
+/**
  * returns {boolean}
  */
 export const isDarkMode = () => {

@@ -126,7 +126,7 @@ export default class ThemeModule extends Module {
    * @returns {Promise<IDBDatabase>}
    */
   static getDatabase = () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const dbReq = indexedDB.open('ThemeModule', 5);
       dbReq.onupgradeneeded = (e) => {
         e.target.result.createObjectStore('themes', { keyPath: 'uuid' });
@@ -135,7 +135,7 @@ export default class ThemeModule extends Module {
         resolve(e.target.result);
       };
       dbReq.onerror = (e) => {
-        this.toastError(`Error initializing theme module. ${e.target.errorCode}`);
+        reject(new Error(`Error initializing theme module. ${e.target.errorCode}`));
       };
     });
   };

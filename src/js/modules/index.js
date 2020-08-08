@@ -8,6 +8,7 @@ import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
 import BlockUserModule from './BlockUserModule';
 import ThemeModule from './ThemeModule';
+import WatchGuildsModule from './WatchGuildsModule';
 
 export default {
   InfiniteScrollModule,
@@ -18,6 +19,7 @@ export default {
   PreviewPostModule,
   TaggerModule,
   BetterSidebarModule,
+  // WatchGuildsModule,
   BlockUserModule,
   ThemeModule
 };
