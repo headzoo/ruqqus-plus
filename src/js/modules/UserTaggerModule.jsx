@@ -1,4 +1,3 @@
-import React from 'react';
 import { createElement, insertAfter, querySelectorEach } from '../utils/web';
 import Module from './Module';
 
@@ -42,33 +41,6 @@ export default class UserTaggerModule extends Module {
    */
   getHelp = () => {
     return 'Adds a button next to each username which lets you tag the user with lists of words.';
-  };
-
-  /**
-   * All modules have on/off checkboxes on the extension settings page, but
-   * modules may also have advanced settings which are reachable from the
-   * settings page sidebar. This method returns the label used in the sidebar.
-   *
-   * @returns {string} Return a falsy value when the module does not have settings
-   */
-  getSettingsSidebarLabel = () => {
-    return 'Tagged Users';
-  };
-
-  /**
-   * Returns the advanced settings form when applicable. The method must return
-   * a React component.
-   *
-   * @returns {*}
-   */
-  getSettingsComponent = () => {
-    return () => {
-      return (
-        <div>
-          Not implemented yet.
-        </div>
-      );
-    };
   };
 
   /**
