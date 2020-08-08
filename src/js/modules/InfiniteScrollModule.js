@@ -132,7 +132,7 @@ export default class InfiniteScrollModule extends Module {
     if (entry.isIntersecting) {
       this.loading.style.display = 'block';
 
-      fetch(`https://ruqqus.com/?sort=${this.sort}&page=${this.page}&t=${this.type}`)
+      fetch(`https://ruqqus.com${document.location.pathname}?sort=${this.sort}&page=${this.page}&t=${this.type}`)
         .then((resp) => resp.text())
         .then((text) => {
           const template = createElement('template', {
