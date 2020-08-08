@@ -3,12 +3,12 @@ import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
 import { setHTML, createElement, createTemplateContent, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
-import postTemplate from './templates/post';
+import postTemplate from './SavePostsModule/post-template.html';
 
 /**
- * Handles tagging users
+ * Allows saving posts
  */
-export default class PostSaveModule extends Module {
+export default class SavePostsModule extends Module {
   /**
    * @type {IDBDatabase}
    */
@@ -40,7 +40,7 @@ export default class PostSaveModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Post Save';
+    return 'Save Posts';
   };
 
   /**
@@ -223,7 +223,9 @@ export default class PostSaveModule extends Module {
         const u     = new URL(record.url);
         record.host = u.hostname;
         record.date = moment(parseInt(record.created_utc, 10) * 1000).format('D MMM YYYY');
-        const post  = createTemplateContent(parseTemplate(postTemplate, record));
+        const post  = createTemplateContent(
+          parseTemplate(postTemplate, record)
+        );
         posts.appendChild(post);
       });
       this.dispatch('rp.change');

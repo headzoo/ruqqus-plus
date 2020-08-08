@@ -3,7 +3,7 @@ import NewTabModule from './NewTabModule';
 import BiggerButtonsModule from './BiggerButtonsModule';
 import UserInfoModule from './UserInfoModule';
 import UserTaggerModule from './UserTaggerModule';
-import PostSaveModule from './PostSaveModule';
+import SavePostsModule from './SavePostsModule';
 import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
 import BlockUserModule from './BlockUserModule';
@@ -16,7 +16,7 @@ export default {
   InfiniteScrollModule,
   NewTabModule,
   BiggerButtonsModule,
-  PostSaveModule,
+  PostSaveModule: SavePostsModule,
   UserInfoModule,
   PreviewPostModule,
   UserTaggerModule,

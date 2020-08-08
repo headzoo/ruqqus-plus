@@ -5,7 +5,7 @@
  */
 export const parseTemplate = (template, values) => {
   Object.keys(values).forEach((key) => {
-    const r = new RegExp(`{{${key}}}`, 'g');
+    const r = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
     template = template.replace(r, values[key]);
   });
 

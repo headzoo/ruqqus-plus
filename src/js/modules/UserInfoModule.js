@@ -2,6 +2,8 @@ import moment from 'moment';
 import Module from './Module';
 import { fetchUser, isDarkMode } from '../utils/ruqqus';
 import { injectStyleLink, createElement, setHTML, querySelectorEach } from '../utils/web';
+import { parseTemplate } from '../utils/templates';
+import userTemplate from './UserInfoModule/user-template.html';
 
 /**
  * Displays user information when hovering over their username
@@ -61,33 +63,6 @@ export default class UserInfoModule extends Module {
   };
 
   /**
-   * @param {*} values
-   * @returns {string}
-   */
-  getBoxTemplate = (values) => {
-    let html = `
-      <div class="d-flex align-items-center">
-          <img src="%%profile_url%%" alt="Avatar" id="container-authed-avatar" class="avatar mr-2" />
-          <div class="d-flex flex-column">
-              <span id="container-authed-username" class="username mr-2">%%username%%</span>
-              <div>
-                  <span id="container-authed-rep" class="rep">%%rep%% Rep</span>
-                  &nbsp;&nbsp;
-                  <span id="container-joined" class="joined">joined %%joined%%</span>
-              </div>
-          </div>
-      </div>
-    `;
-
-    Object.keys(values).forEach((key) => {
-      const r = new RegExp(`%%${key}%%`, 'g');
-      html = html.replace(r, values[key]);
-    });
-
-    return html;
-  }
-
-  /**
    * @param {MouseEvent} e
    */
   handleMouseEnter = (e) => {
@@ -120,7 +95,8 @@ export default class UserInfoModule extends Module {
 
           user.joined = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
           user.rep    = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
-          setHTML(box, this.getBoxTemplate(user));
+          const html  = parseTemplate(userTemplate, user);
+          setHTML(box, html);
         });
     }
   };
