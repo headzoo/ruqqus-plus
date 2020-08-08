@@ -1,6 +1,7 @@
 import Module from './Module';
 import ThemeModuleSettings from './components/ThemeModuleSettings';
 import { injectCSS } from '../utils/web';
+import { isDarkMode } from '../utils/ruqqus';
 
 /**
  * Opens posts in a new tab.
@@ -83,8 +84,11 @@ export default class ThemeModule extends Module {
     });
     port.postMessage({ event: 'rq.getActiveTheme' });
     port.onMessage.addListener((msg) => {
-      if (msg.event && msg.event === 'rq.getActiveTheme' && msg.css) {
+      if (msg.event && msg.event === 'rq.getActiveTheme') {
         injectCSS(msg.css);
+        if (msg.dark_css && isDarkMode()) {
+          injectCSS(msg.dark_css);
+        }
       }
     });
   };
@@ -108,8 +112,9 @@ export default class ThemeModule extends Module {
                   for (let i = 0; i < themes.length; i++) {
                     if (themes[i].active) {
                       port.postMessage({
-                        css:   themes[i].css,
-                        event: 'rq.getActiveTheme'
+                        css:      themes[i].css || '',
+                        dark_css: themes[i].dark_css || '',
+                        event:    'rq.getActiveTheme'
                       });
                       break;
                     }

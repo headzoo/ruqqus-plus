@@ -37,6 +37,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
         version:     '1.0.0',
         description: '',
         css:         '',
+        dark_css:    '',
         screenshot:  null,
         active:      false
       }
@@ -66,6 +67,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
         version:     '1.0.0',
         description: '',
         css:         '',
+        dark_css:    '',
         screenshot:  null,
         active:      false
       }
@@ -282,7 +284,25 @@ export default class ThemeModuleSettings extends React.PureComponent {
             onKeyDown={handleKeyDown}
           />
           <small id="theme-css-help" className="form-text text-muted">
-            CSS added to every Ruqqus page.
+            CSS injected into every Ruqqus page.
+          </small>
+        </div>
+        <div className="form-group">
+          <label htmlFor="theme-dark-css">
+            Dark Mode CSS
+          </label>
+          <textarea
+            name="dark_css"
+            className="form-control"
+            id="theme-dark-css"
+            rows="6"
+            aria-describedby="theme-dark-css-help"
+            value={createValues.dark_css}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+          />
+          <small id="theme-dark-css-help" className="form-text text-muted">
+            <strong>Additional</strong> CSS injected into every Ruqqus page when in dark mode.
           </small>
         </div>
         <div className="form-group">
