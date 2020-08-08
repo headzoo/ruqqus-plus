@@ -436,7 +436,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
 
           const newInstalled = Array.from(installed);
           newInstalled.forEach((t) => {
-            t.active     = t.id === theme.id;
+            t.active     = t.uuid === theme.uuid;
             const tx     = db.transaction(['themes'], 'readwrite');
             const store  = tx.objectStore('themes');
             const req    = store.put(t);
@@ -510,7 +510,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
             : chrome.extension.getURL('images/no-theme.png');
 
           return (
-            <div key={theme.id} className="col-3">
+            <div key={theme.uuid} className="col-3">
               <ThemeCard className={`card settings-theme-card ${theme.active ? 'settings-theme-active' : ''}`}>
                 <ThemeImage
                   src={url}

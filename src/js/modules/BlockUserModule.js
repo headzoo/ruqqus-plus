@@ -1,5 +1,4 @@
 import Module from './Module';
-import purePopup from '../utils/purePopup';
 import { createElement, querySelectorEach } from '../utils/web';
 
 /**
@@ -153,16 +152,15 @@ export default class BlockUserModule extends Module {
     }
 
     const username = card.querySelector('.user-name').innerText.trim();
-    purePopup.confirm({ title: `Are you sure you want to block ${username}?` }, ({ confirm }) => {
-      if (confirm === 'ok') {
-        // Block needs to happen from the window context in order to access
-        // the window.formkey() function. The window context is listening for
-        // this event.
-        this.dispatch('rq.blockUser', { username });
-        this.removeUserCards(username);
-        this.toastSuccess(`User ${username} blocked.`);
-      }
-    });
+    // eslint-disable-next-line no-alert
+    if (window.confirm(`Are you sure you want to block ${username}?`)) {
+      // Block needs to happen from the window context in order to access
+      // the window.formkey() function. The window context is listening for
+      // this event.
+      this.dispatch('rq.blockUser', { username });
+      this.removeUserCards(username);
+      this.toastSuccess(`User ${username} blocked.`);
+    }
   };
 
   /**

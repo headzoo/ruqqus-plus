@@ -1,5 +1,4 @@
 import React from 'react';
-import purePopup from '../utils/purePopup';
 import { createElement, insertAfter, querySelectorEach } from '../utils/web';
 import Module from './Module';
 
@@ -177,49 +176,41 @@ export default class TaggerModule extends Module {
       promptValue = userTags.join(', ');
     }
 
-    purePopup.prompt({
-      title:  `Tagging ${username}.`,
-      inputs: {
-        tags: 'Comma separated list of tags:'
-      },
-      values: {
-        tags: promptValue
-      }
-    }, (result) => {
-      if (result.confirm === 'ok') {
-        const input = result.tags;
+    // eslint-disable-next-line no-alert
+    const result = window.prompt('Comma separated list of tags:', promptValue);
+    if (result) {
+      const input = result.tags;
 
-        const tx    = this.db.transaction(['userTags'], 'readwrite');
-        const store = tx.objectStore('userTags');
+      const tx    = this.db.transaction(['userTags'], 'readwrite');
+      const store = tx.objectStore('userTags');
 
-        if (input) {
-          const tags = input.split(',').map((t) => t.trim());
-          const row  = { username, tags };
-          if (userTags !== -1) {
-            store.put(row);
-          } else {
-            store.add(row);
-          }
-
-          tx.oncomplete = () => {
-            this.tags[username] = tags;
-            querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
-              el.innerText = tags.join(', ');
-              el.parentElement.classList.remove('rp-user-tag-wrap-empty');
-            });
-          };
-          tx.onerror = (ev) => {
-            this.toastError(`Error saving tag. ${ev.target.errorCode}`);
-          };
+      if (input) {
+        const tags = input.split(',').map((t) => t.trim());
+        const row  = { username, tags };
+        if (userTags !== -1) {
+          store.put(row);
         } else {
-          store.delete(username);
-          this.tags[username] = -1;
-          querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
-            el.innerText = '';
-            el.parentElement.classList.add('rp-user-tag-wrap-empty');
-          });
+          store.add(row);
         }
+
+        tx.oncomplete = () => {
+          this.tags[username] = tags;
+          querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
+            el.innerText = tags.join(', ');
+            el.parentElement.classList.remove('rp-user-tag-wrap-empty');
+          });
+        };
+        tx.onerror = (ev) => {
+          this.toastError(`Error saving tag. ${ev.target.errorCode}`);
+        };
+      } else {
+        store.delete(username);
+        this.tags[username] = -1;
+        querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
+          el.innerText = '';
+          el.parentElement.classList.add('rp-user-tag-wrap-empty');
+        });
       }
-    });
+    }
   };
 }

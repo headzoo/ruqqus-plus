@@ -71,43 +71,45 @@ export default class InfiniteScrollModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.posts = document.getElementById('posts');
-    if (!this.posts) {
-      return;
-    }
+    this.onDOMReady(() => {
+      this.posts = document.getElementById('posts');
+      if (!this.posts) {
+        return;
+      }
 
-    const pageLinks = document.querySelectorAll('.page-link');
-    if (!pageLinks || pageLinks.length < 2) {
-      console.error('No page link found.');
-      return;
-    }
-    const href = pageLinks[1].getAttribute('href');
-    if (!href) {
-      console.log('End of feed.');
-      return;
-    }
+      const pageLinks = document.querySelectorAll('.page-link');
+      if (!pageLinks || pageLinks.length < 2) {
+        console.error('No page link found.');
+        return;
+      }
+      const href = pageLinks[1].getAttribute('href');
+      if (!href) {
+        console.log('End of feed.');
+        return;
+      }
 
-    pageLinks[0].style.display = 'none';
-    pageLinks[1].style.display = 'none';
-    this.loading = document.createElement('img');
-    this.loading.setAttribute('src', chrome.runtime.getURL('images/loading.svg'));
-    this.loading.setAttribute('style', 'display: none;');
-    insertAfter(pageLinks[1], this.loading);
+      pageLinks[0].style.display = 'none';
+      pageLinks[1].style.display = 'none';
+      this.loading = document.createElement('img');
+      this.loading.setAttribute('src', chrome.runtime.getURL('images/loading.svg'));
+      this.loading.setAttribute('style', 'display: none;');
+      insertAfter(pageLinks[1], this.loading);
 
-    const parsed = queryString.parse(href);
-    this.page    = parseInt(parsed.page || 0, 10);
-    this.sort    = parsed.sort;
-    this.type    = parsed.t;
-    if (!this.page) {
-      this.page = 2;
-    }
+      const parsed = queryString.parse(href);
+      this.page    = parseInt(parsed.page || 0, 10);
+      this.sort    = parsed.sort;
+      this.type    = parsed.t;
+      if (!this.page) {
+        this.page = 2;
+      }
 
-    const observer = new IntersectionObserver(this.handleIntersect, {
-      rootMargin: '0px',
-      threshold:  1.0
+      const observer = new IntersectionObserver(this.handleIntersect, {
+        rootMargin: '0px',
+        threshold:  1.0
+      });
+      const cards = this.posts.querySelectorAll('.card');
+      observer.observe(cards[cards.length - 1]);
     });
-    const cards = this.posts.querySelectorAll('.card');
-    observer.observe(cards[cards.length - 1]);
   };
 
   /**

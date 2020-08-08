@@ -41,7 +41,7 @@
     "react-simple-code-editor": "^0.11.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "ruqqus-plus-shared": "^0.0.3",
+    "ruqqus-plus-shared": "^0.0.8",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "styled-components": "^5.1.1",

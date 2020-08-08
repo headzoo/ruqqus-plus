@@ -5,6 +5,8 @@ import events from './events';
  * Base class for actions and modules
  */
 export default class Controller {
+  ready = false;
+
   /**
    * All modules have on/off checkboxes on the extension settings page, but
    * modules may also have advanced settings which are reachable from the
@@ -58,6 +60,20 @@ export default class Controller {
    */
   onInstalled = () => {
   }
+
+  /**
+   * Wrapper around the DOMContentLoaded event
+   *
+   * @param {Function} callback
+   */
+  onDOMReady = (callback) => {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!this.ready) {
+        this.ready = true;
+        callback();
+      }
+    }, false);
+  };
 
   /**
    * Dispatches an event
