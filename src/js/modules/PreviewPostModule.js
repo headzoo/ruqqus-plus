@@ -28,7 +28,7 @@ export default class PreviewPostModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return true;
   };
 

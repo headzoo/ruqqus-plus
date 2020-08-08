@@ -1,4 +1,4 @@
-import actions from './actions';
+import controllers from './controllers';
 
 /**
  * This page gets injected into ruqqus. Unlike contentScript.js, this script
@@ -6,9 +6,9 @@ import actions from './actions';
  * which some actions/modules might need.
  */
 
-const actionObjects = {};
-Object.keys(actions).forEach((key) => {
-  const action = new actions[key]();
-  action.execWindowContext();
-  actionObjects[key] = action;
+const controllerObjects = {};
+Object.keys(controllers).forEach((key) => {
+  const c = new controllers[key]();
+  c.execWindowContext();
+  controllerObjects[key] = c;
 });

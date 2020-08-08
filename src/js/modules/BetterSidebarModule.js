@@ -28,7 +28,7 @@ export default class BetterSidebarModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return false;
   };
 

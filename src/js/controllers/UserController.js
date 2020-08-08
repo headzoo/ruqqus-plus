@@ -1,10 +1,10 @@
-import Action from './Action';
 import { fetchUnread } from '../utils/ruqqus';
+import Controller from './Controller';
 
 /**
  * Manages the user account
  */
-export default class UserAction extends Action {
+export default class UserController extends Controller {
   /**
    * Called from the background script
    */

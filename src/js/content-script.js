@@ -1,13 +1,13 @@
 import { injectScript } from './utils/web';
-import actions from './actions';
+import controllers from './controllers';
 
-// All of the extension functionality is encapsulated in actions. The
-// ModuleAction initializes modules.
-const actionObjects = {};
-Object.keys(actions).forEach((key) => {
-  const action = new actions[key]();
-  action.execContentContext();
-  actionObjects[key] = action;
+// All of the extension functionality is encapsulated in controllers. The
+// ModuleController initializes modules.
+const controllerObjects = {};
+Object.keys(controllers).forEach((key) => {
+  const c = new controllers[key]();
+  c.execContentContext();
+  controllerObjects[key] = c;
 });
 
 // contentInject.js has access to the ruqqus window object, which is needed

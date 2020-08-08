@@ -1,21 +1,21 @@
 import { createStore } from 'redux';
 import { wrapStore } from 'webext-redux';
-import actions from './actions';
+import controllers from './controllers';
 import createRootReducer from './redux/reducers/rootReducer';
 
 const store = createStore(createRootReducer(), {});
 wrapStore(store);
 
 chrome.runtime.onInstalled.addListener(() => {
-  Object.keys(actions).forEach((key) => {
-    const action = new actions[key]();
-    action.onInstalled();
+  Object.keys(controllers).forEach((key) => {
+    const c = new controllers[key]();
+    c.onInstalled();
   });
 });
 
-const actionObjects = {};
-Object.keys(actions).forEach((key) => {
-  const action = new actions[key]();
-  action.execBackgroundContext(store);
-  actionObjects[key] = action;
+const controllerObjs = {};
+Object.keys(controllers).forEach((key) => {
+  const c = new controllers[key]();
+  c.execBackgroundContext(store);
+  controllerObjs[key] = c;
 });

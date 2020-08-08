@@ -12,7 +12,7 @@ export default class RemoveCreatePostModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return false;
   };
 

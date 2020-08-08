@@ -30,7 +30,7 @@ export default class SavePostsModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return true;
   };
 

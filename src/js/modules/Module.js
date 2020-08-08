@@ -1,4 +1,4 @@
-import Controller from '../utils/Controller';
+import Controller from '../controllers/Controller';
 
 /**
  * Parent module class
@@ -10,7 +10,7 @@ export default class Module extends Controller {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return false;
   };
 

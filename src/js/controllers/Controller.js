@@ -1,5 +1,5 @@
 import toastr from 'toastr';
-import events from './events';
+import events from '../utils/events';
 
 /**
  * Base class for actions and modules

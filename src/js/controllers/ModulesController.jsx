@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import storage from '../utils/storage';
 import mods from '../modules';
-import Action from './Action';
+import Controller from './Controller';
 
 /**
  * Action that handles modules
  */
-export default class ModulesAction extends Action {
+export default class ModulesController extends Controller {
   /**
    * @type {{}}
    */
@@ -32,7 +32,7 @@ export default class ModulesAction extends Action {
           .then((active) => {
             Object.keys(mods).forEach((key) => {
               if (active[key] === undefined) {
-                active[key] = mods[key].getDefaultSetting();
+                active[key] = mods[key].isEnabledByDefault();
               }
             });
             setModules(active);
@@ -98,7 +98,7 @@ export default class ModulesAction extends Action {
         const newModules = {};
         Object.keys(mods).forEach((key) => {
           if (!active[key]) {
-            newModules[key] = mods[key].getDefaultSetting();
+            newModules[key] = mods[key].isEnabledByDefault();
           } else {
             newModules[key] = active[key];
           }
@@ -188,7 +188,7 @@ export default class ModulesAction extends Action {
         let isChanged = false;
         Object.keys(mods).forEach((key) => {
           if (modules[key] === undefined) {
-            modules[key] = mods[key].getDefaultSetting();
+            modules[key] = mods[key].isEnabledByDefault();
             isChanged = true;
           }
         });

@@ -16,7 +16,7 @@ export default class HideVotedPostsModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return false;
   };
 

@@ -11,7 +11,7 @@ export default class NewTabModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return false;
   };
 

@@ -38,7 +38,7 @@ export default class NewTabModule extends Module {
    *
    * @returns {number}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return 1;
   };
 
@@ -75,7 +75,7 @@ export default class Module {
    *
    * @returns {number}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return 0;
   };
 

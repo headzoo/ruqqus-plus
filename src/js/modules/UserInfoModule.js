@@ -15,7 +15,7 @@ export default class UserInfoModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return true;
   };
 

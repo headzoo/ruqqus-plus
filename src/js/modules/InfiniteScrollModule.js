@@ -42,7 +42,7 @@ export default class InfiniteScrollModule extends Module {
    *
    * @returns {boolean}
    */
-  static getDefaultSetting = () => {
+  static isEnabledByDefault = () => {
     return true;
   };
 

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createElement } from '../utils/web';
 import storage from '../utils/storage';
-import Action from './Action';
+import Controller from './Controller';
 
 /**
  * Adds custom css and javascript to each ruqqus page.
  */
-export default class HeadAction extends Action {
+export default class HeadController extends Controller {
   /**
    * @returns {string}
    */

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import actions from './actions';
+import controllers from './controllers';
 import mods from './modules';
 import storage from './utils/storage';
 
@@ -26,8 +26,8 @@ class App extends React.Component {
     const sidebarItems   = {};
     const pageComponents = {};
 
-    Object.keys(actions).forEach((key, i) => {
-      const actionObj = new actions[key]();
+    Object.keys(controllers).forEach((key, i) => {
+      const actionObj = new controllers[key]();
       const label     = actionObj.getSettingsSidebarLabel();
       if (!label) {
         return;
