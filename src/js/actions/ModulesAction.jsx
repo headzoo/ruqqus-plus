@@ -68,7 +68,7 @@ export default class ModulesAction extends Action {
         <form className="pt-2">
           <div className="mb-4">
             {Object.keys(loaded).map((key) => (
-              <div key={key} className="custom-control custom-checkbox">
+              <div key={key} className="custom-control custom-checkbox mb-2">
                 <input
                   type="checkbox"
                   name={key}
