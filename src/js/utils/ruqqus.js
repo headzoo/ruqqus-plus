@@ -160,3 +160,16 @@ export const isDarkMode = () => {
 
   return link.getAttribute('href').indexOf('dark') !== -1;
 };
+
+/**
+ * @param {string} path
+ * @returns {string}
+ */
+export const extractGuildName = (path) => {
+  const matches = path.match(/\/\+([a-z0-9_]+)/i);
+  if (!matches || matches.length < 2) {
+    return '';
+  }
+
+  return matches[1];
+};
