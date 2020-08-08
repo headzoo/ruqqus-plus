@@ -78,19 +78,21 @@ export default class TaggerModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    const dbReq = indexedDB.open('TaggerAction', 1);
-    dbReq.onupgradeneeded = (e) => {
-      this.db = e.target.result;
-      this.db.createObjectStore('userTags', { keyPath: 'username' });
-    };
-    dbReq.onsuccess = (e) => {
-      this.db = e.target.result;
-      this.wireupUserNames();
-      this.listen('rp.change', this.wireupUserNames);
-    };
-    dbReq.onerror = (e) => {
-      this.toastError(`Error initializing tagger. ${e.target.errorCode}`);
-    };
+    this.onDOMReady(() => {
+      const dbReq = indexedDB.open('TaggerAction', 1);
+      dbReq.onupgradeneeded = (e) => {
+        this.db = e.target.result;
+        this.db.createObjectStore('userTags', { keyPath: 'username' });
+      };
+      dbReq.onsuccess = (e) => {
+        this.db = e.target.result;
+        this.wireupUserNames();
+        this.listen('rp.change', this.wireupUserNames);
+      };
+      dbReq.onerror = (e) => {
+        this.toastError(`Error initializing tagger. ${e.target.errorCode}`);
+      };
+    });
   };
 
   /**

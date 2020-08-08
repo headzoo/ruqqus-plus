@@ -45,8 +45,10 @@ export default class HideVotedPostsModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.removeCards();
-    this.listen('rp.change', this.removeCards);
+    this.onDOMReady(() => {
+      this.removeCards();
+      this.listen('rp.change', this.removeCards);
+    });
   };
 
   /**

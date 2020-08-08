@@ -59,16 +59,18 @@ export default class PostSaveModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    if (document.location.pathname.indexOf('/@') !== -1) {
-      this.handleProfile();
-    }
+    this.onDOMReady(() => {
+      if (document.location.pathname.indexOf('/@') !== -1) {
+        this.handleProfile();
+      }
 
-    this.getDatabase()
-      .then((db) => {
-        this.db = db;
-        this.wireupCards();
-        this.listen('rp.change', this.wireupCards);
-      });
+      this.getDatabase()
+        .then((db) => {
+          this.db = db;
+          this.wireupCards();
+          this.listen('rp.change', this.wireupCards);
+        });
+    });
   };
 
   /**

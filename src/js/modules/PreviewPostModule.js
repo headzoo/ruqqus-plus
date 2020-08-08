@@ -61,18 +61,20 @@ export default class PreviewPostModule extends Module {
       return;
     }
 
-    const label   = document.querySelector('label[for="body"]');
-    this.textarea = document.getElementById('post-text');
-    this.link     = createElement('a', {
-      'style': 'float: right;',
-      'class': 'mt-3',
-      'href':  'javascript:void(0)', // eslint-disable-line
-      'html':  '<i class="fas fa-eye"></i> Preview',
-      'on':    {
-        'click': this.handleLinkClick
-      }
+    this.onDOMReady(() => {
+      const label   = document.querySelector('label[for="body"]');
+      this.textarea = document.getElementById('post-text');
+      this.link     = createElement('a', {
+        'style': 'float: right;',
+        'class': 'mt-3',
+        'href':  'javascript:void(0)', // eslint-disable-line
+        'html':  '<i class="fas fa-eye"></i> Preview',
+        'on':    {
+          'click': this.handleLinkClick
+        }
+      });
+      label.parentNode.insertBefore(this.link, label);
     });
-    label.parentNode.insertBefore(this.link, label);
   };
 
   /**

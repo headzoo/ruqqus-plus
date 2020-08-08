@@ -44,7 +44,7 @@ export default class UserInfoModule extends Module {
   execContentContext = () => {
     injectStyleLink(chrome.runtime.getURL('css/user-info-styles.css'));
     this.listen('rp.change', this.wireupUserNames);
-    this.wireupUserNames();
+    this.onDOMReady(this.wireupUserNames);
   };
 
   /**

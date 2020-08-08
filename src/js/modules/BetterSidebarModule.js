@@ -57,28 +57,30 @@ export default class BetterSidebarModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.sidebar = document.querySelector('.sidebar-left');
-    if (this.sidebar) {
-      this.updateFilter();
+    this.onDOMReady(() => {
+      this.sidebar = document.querySelector('.sidebar-left');
+      if (this.sidebar) {
+        this.updateFilter();
 
-      // Guilds are cached in storage for 10 minutes.
-      storage.get('guilds')
-        .then((guilds) => {
-          if (guilds) {
-            this.guilds = guilds.guilds;
-            this.updateSidebar();
-          } else {
-            fetchMyGuilds()
-              .then((g) => {
-                this.guilds = g;
-                storage.set('guilds', { guilds: g }, 600 * 1000)
-                  .then(() => {
-                    this.updateSidebar();
-                  });
-              });
-          }
-        });
-    }
+        // Guilds are cached in storage for 10 minutes.
+        storage.get('guilds')
+          .then((guilds) => {
+            if (guilds) {
+              this.guilds = guilds.guilds;
+              this.updateSidebar();
+            } else {
+              fetchMyGuilds()
+                .then((g) => {
+                  this.guilds = g;
+                  storage.set('guilds', { guilds: g }, 600 * 1000)
+                    .then(() => {
+                      this.updateSidebar();
+                    });
+                });
+            }
+          });
+      }
+    });
   }
 
   /**

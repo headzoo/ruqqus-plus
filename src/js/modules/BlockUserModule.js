@@ -71,16 +71,18 @@ export default class BlockUserModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.listen('rp.change', this.execContentContext);
+    this.onDOMReady(() => {
+      this.listen('rp.change', this.execContentContext);
 
-    const posts = document.querySelector('.posts');
-    if (posts) {
-      querySelectorEach(posts, '.card', this.wireupCard);
-    }
-    const comments = document.querySelector('.comment-section');
-    if (comments) {
-      querySelectorEach(comments, '.comment', this.wireupComment);
-    }
+      const posts = document.querySelector('.posts');
+      if (posts) {
+        querySelectorEach(posts, '.card', this.wireupCard);
+      }
+      const comments = document.querySelector('.comment-section');
+      if (comments) {
+        querySelectorEach(comments, '.comment', this.wireupComment);
+      }
+    });
   }
 
   /**

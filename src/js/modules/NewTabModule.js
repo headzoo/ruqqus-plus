@@ -40,8 +40,15 @@ export default class NewTabModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.listen('rp.change', this.execContentContext);
+    this.listen('rp.change', this.wireupLinks);
 
+    this.onDOMReady(this.wireupLinks);
+  };
+
+  /**
+   *
+   */
+  wireupLinks = () => {
     // Ensure post links get target="_blank" everywhere they appear on the page.
     const hrefs = [];
     document.querySelectorAll('.card-title a').forEach((link) => {
