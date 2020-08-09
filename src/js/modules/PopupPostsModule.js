@@ -7,6 +7,11 @@ import { isDarkMode } from '../utils/ruqqus';
  */
 export default class PopupPostsModule extends Module {
   /**
+   * @type {string}
+   */
+  lastTitle = '';
+
+  /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
    *
@@ -54,7 +59,7 @@ export default class PopupPostsModule extends Module {
    * chrome extension API.
    */
   execWindowContext = () => {
-    this.listen('rp.popupPosts.events', () => {
+    this.listen('rp.PopupPostsModule.events', () => {
       // @see https://github.com/ruqqus/ruqqus/blob/master/ruqqus/assets/js/all_js.js#L1019
       $('.comment-box').focus(function (event) {
         event.preventDefault();
@@ -96,20 +101,27 @@ export default class PopupPostsModule extends Module {
   };
 
   /**
-   * @param {Event} e
+   * @param {MouseEvent} e
    */
   handleTitleClick = (e) => {
     e.preventDefault();
+    const { target } = e;
 
-    const href = e.target.getAttribute('href');
-    this.popup(href);
+    const href  = target.getAttribute('href');
+    const title = target.innerText;
+    const thumb = target.closest('.card').querySelector('.post-img');
+    this.popup(href, title, thumb ? thumb.getAttribute('src') : '');
   };
 
   /**
    * @param {string} url
+   * @param {string} title
+   * @param {string} thumb
    */
-  popup = (url) => {
+  popup = (url, title, thumb) => {
+    this.lastTitle = document.title;
     this.loader(true);
+
     fetch(url)
       .then((resp) => resp.text())
       .then((text) => {
@@ -131,28 +143,35 @@ export default class PopupPostsModule extends Module {
           'class': 'rp-popup-posts-mask'
         });
         body.appendChild(mask);
-
         const container = createElement('div', {
           'class': 'rp-popup-posts-container'
         });
         body.append(container);
-
         const post = createElement('div', {
           'class': 'rp-popup-posts-post'
         });
         container.append(post);
         post.append(col);
-        this.loader(false);
-        window.history.pushState(null, document.title, url);
-        this.dispatch('rp.popupPosts.events');
 
+        document.title = title;
+        window.history.pushState(null, document.title, url);
+        this.dispatch('rp.PopupPostsModule.events', { url, title, thumb });
+        this.loader(false);
+
+        /**
+         * @param {Event} e
+         */
         const handleContainerClick = (e) => {
           if (!hasParentClass(e.target, 'rp-popup-posts-post')) {
             container.removeEventListener('click', handleContainerClick, false);
             container.remove();
             mask.remove();
+
             body.style.overflow = 'auto';
             window.history.back();
+            setTimeout(() => {
+              document.title = this.lastTitle;
+            }, 250);
           }
         };
         container.addEventListener('click', handleContainerClick, false);

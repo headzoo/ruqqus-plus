@@ -1,0 +1,24 @@
+.rp-recently-viewed-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  h5.post-title {
+    font-size: 0.9rem;
+
+    a {
+      color: #cfcfcf;
+    }
+  }
+
+  li {
+    height: 30px;
+    overflow: hidden;
+  }
+
+  img.post-img {
+    height: 30px;
+    width: 40px;
+    float: left;
+  }
+}

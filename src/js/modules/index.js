@@ -11,6 +11,7 @@ import ThemeModule from './ThemeModule';
 import PopupPostsModule from './PopupPostsModule';
 import RemoveCreatePostModule from './RemoveCreatePostModule';
 import HideVotedPostsModule from './HideVotedPostsModule';
+import RecentlyViewedModule from './RecentlyViewedModule';
 import WatchGuildsModule from './WatchGuildsModule';
 
 export default {
@@ -26,6 +27,7 @@ export default {
   BetterSidebarModule,
   // WatchGuildsModule,
   HideVotedPostsModule,
+  RecentlyViewedModule,
   BlockUserModule,
   ThemeModule
 };
