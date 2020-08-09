@@ -143,6 +143,7 @@ export default class PopupPostsModule extends Module {
         container.append(post);
         post.append(col);
         this.loader(false);
+        window.history.pushState(null, document.title, url);
         this.dispatch('rp.popupPosts.events');
 
         const handleContainerClick = (e) => {
@@ -151,6 +152,7 @@ export default class PopupPostsModule extends Module {
             container.remove();
             mask.remove();
             body.style.overflow = 'auto';
+            window.history.back();
           }
         };
         container.addEventListener('click', handleContainerClick, false);
