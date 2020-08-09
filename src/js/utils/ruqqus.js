@@ -97,7 +97,7 @@ export const fetchMyGuilds = () => {
         const avatar = body.querySelector('img');
         if (title && avatar) {
           guilds.push({
-            name:   title.innerText.trim(),
+            name:   title.innerText.trim().replace('+', ''),
             avatar: avatar.getAttribute('src')
           });
         }

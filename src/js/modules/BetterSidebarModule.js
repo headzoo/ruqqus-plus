@@ -1,6 +1,7 @@
 import Module from './Module';
-import { fetchMyGuilds } from '../utils/ruqqus';
+import { fetchMyGuilds, extractGuildName } from '../utils/ruqqus';
 import { createElement, querySelectorEach } from '../utils/web';
+import { searchByObjectKey } from '../utils/arrays';
 import storage from '../utils/storage';
 
 /**
@@ -11,6 +12,11 @@ export default class BetterSidebarModule extends Module {
    * @type {[]}
    */
   guilds = null;
+
+  /**
+   * @type {{}}
+   */
+  views = {};
 
   /**
    * @type {HTMLElement}
@@ -60,27 +66,70 @@ export default class BetterSidebarModule extends Module {
     this.onDOMReady(() => {
       this.sidebar = document.querySelector('.sidebar-left');
       if (this.sidebar) {
-        this.updateFilter();
+        this.removeSidebarGuilds();
+        this.addFilterInput();
 
-        // Guilds are cached in storage for 10 minutes.
-        storage.get('guilds', [])
-          .then((guilds) => {
-            if (guilds) {
-              this.guilds = guilds;
-              this.updateSidebar();
-            } else {
-              fetchMyGuilds()
-                .then((g) => {
-                  this.guilds = g;
-                  storage.set('guilds', g, 600 * 1000)
-                    .then(() => {
+        storage.get('BetterSidebarModule.views', {})
+          .then((views) => {
+            this.views = views;
+
+            // Guilds are cached in storage for 10 minutes.
+            storage.get('BetterSidebarModule.guilds')
+              .then((guilds) => {
+                if (guilds) {
+                  this.guilds = this.sortGuilds(guilds);
+                  this.updateSidebar();
+                } else {
+                  fetchMyGuilds()
+                    .then((g) => {
+                      this.guilds = this.sortGuilds(g);
                       this.updateSidebar();
+                      storage.set('BetterSidebarModule.guilds', this.guilds, 600 * 1000);
                     });
-                });
-            }
+                }
+              });
           });
       }
     });
+  };
+
+  /**
+   *
+   */
+  removeSidebarGuilds = () => {
+    let recommends = this.sidebar.querySelectorAll('.guild-recommendations-list.sidebar-collapsed-hidden');
+    if (recommends.length > 1) {
+      recommends[1].querySelectorAll('*').forEach((n) => n.remove());
+    }
+    recommends = this.sidebar.querySelectorAll('.guild-recommendations-list.sidebar-collapsed-visible');
+    if (recommends.length > 1) {
+      recommends[1].querySelectorAll('*').forEach((n) => n.remove());
+    }
+  };
+
+  /**
+   * @param {[]} guilds
+   * @returns {[]}
+   */
+  sortGuilds = (guilds) => {
+    const keys = Object.keys(this.views).sort((a, b) => {
+      return this.views[a] > this.views[b] ? -1 : 1;
+    });
+
+    const newGuilds = [];
+    keys.forEach((key) => {
+      const index = searchByObjectKey(guilds, 'name', key);
+      if (index !== -1) {
+        newGuilds.push(guilds[index]);
+      }
+    });
+    guilds.forEach((guild) => {
+      if (keys.indexOf(guild.name) === -1) {
+        newGuilds.push(guild);
+      }
+    });
+
+    return newGuilds;
   }
 
   /**
@@ -92,12 +141,23 @@ export default class BetterSidebarModule extends Module {
     }
 
     this.updateGuildsList();
+
+    // Keeping track of how many times a guild has been viewed.
+    const guildName = extractGuildName(document.location.pathname);
+    if (guildName) {
+      for (let i = 0; i < this.guilds.length; i++) {
+        if (this.guilds[i].name === guildName) {
+          this.recordGuildView(guildName);
+          break;
+        }
+      }
+    }
   };
 
   /**
    *
    */
-  updateFilter = () => {
+  addFilterInput = () => {
     this.filterInput = createElement('input', {
       'class':       'form-control mb-2 rp-sidebar-guild-filter',
       'placeholder': 'Filter guilds',
@@ -118,20 +178,17 @@ export default class BetterSidebarModule extends Module {
       const master = recommends[2];
 
       this.guilds.forEach((guild) => {
-        if (
-          !mine.querySelector(`a[href="/${guild.name}"]`)
-          && !(master && master.querySelector(`a[href="/${guild.name}"]`))
-        ) {
+        if (!(master && master.querySelector(`a[href="/+${guild.name}"]`))) {
           const li = createElement('li', {
             'class': 'guild-recommendations-item',
             'html':  `
-              <a href="/${guild.name}">
+              <a href="/+${guild.name}">
                 <div class="d-flex">
                   <div>
                     <img src="${guild.avatar}" class="profile-pic profile-pic-30 mr-2" alt="Avatar">
                   </div>
                   <div class="my-auto">
-                    <div class="text-black font-weight-normal">${guild.name}</div>
+                    <div class="text-black font-weight-normal">+${guild.name}</div>
                   </div>
                 </div>
               </a>
@@ -148,14 +205,11 @@ export default class BetterSidebarModule extends Module {
       const master = recommends[2];
 
       this.guilds.forEach((guild) => {
-        if (
-          !mine.querySelector(`a[href="/${guild.name}"]`)
-          && !(master && master.querySelector(`a[href="/${guild.name}"]`))
-        ) {
+        if (!(master && master.querySelector(`a[href="/+${guild.name}"]`))) {
           const li = createElement('li', {
             'class': 'guild-recommendations-item',
             'html':  `
-              <a href="/${guild.name}">
+              <a href="/+${guild.name}">
                 <img src="${guild.avatar}" class="profile-pic profile-pic-30 transition-square" alt="Avatar">
               </a>
             `
@@ -200,5 +254,16 @@ export default class BetterSidebarModule extends Module {
         });
       }
     }
+  };
+
+  /**
+   * @param {string} guildName
+   */
+  recordGuildView = (guildName) => {
+    if (!this.views[guildName]) {
+      this.views[guildName] = 0;
+    }
+    this.views[guildName] += 1;
+    storage.set('BetterSidebarModule.views', this.views);
   };
 }
