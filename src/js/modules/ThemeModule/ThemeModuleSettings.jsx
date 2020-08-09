@@ -3,6 +3,7 @@ import toastr from 'toastr';
 import { themes } from 'ruqqus-plus-shared';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import { Icon } from '../../components';
 import ThemeModule from '../ThemeModule';
 
 const ThemeCard = styled.div`
@@ -639,6 +640,7 @@ export default class ThemeModuleSettings extends React.PureComponent {
           </button>
           <a href="https://ruqqus-plus.headzoo.io/themes" className="btn btn-primary" target="_blank">
             Browse Themes
+            <Icon className="ml-2" name="external-link-alt" fas />
           </a>
         </div>
         <div className="pt-4">
