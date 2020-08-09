@@ -152,6 +152,7 @@ export default class PopupPostsModule extends Module {
         });
         container.append(post);
         post.append(col);
+        post.querySelector('#voting').classList.add('mt-0');
 
         document.title = title;
         window.history.pushState(null, document.title, url);
