@@ -9,14 +9,9 @@ class Storage {
    * @returns {Promise}
    */
   set = (key, values, expiration = 0) => {
-    return new Promise((resolve, reject) => {
-      if (typeof values !== 'object' || Array.isArray(values)) {
-        console.log('error');
-        reject(new Error('Storage value must be an object.'));
-      }
-
+    return new Promise((resolve) => {
       const stored = {
-        ...values,
+        _values:     values,
         _time:       (new Date()).getTime(),
         _expiration: expiration
       };
@@ -37,8 +32,8 @@ class Storage {
           return;
         }
 
-        const values = resp[key];
-        const { _expiration, _time, ...rest } = values;
+        const stored = resp[key];
+        const { _expiration, _time, _values, ...rest } = stored;
         if (_expiration !== undefined && _time !== undefined && _expiration !== 0) {
           const diff = (new Date()).getTime() - _time;
           if (diff >= _expiration) {
@@ -49,7 +44,13 @@ class Storage {
           }
         }
 
-        resolve(rest);
+        if (_values !== undefined) {
+          resolve(_values);
+        } else if (rest) {
+          resolve(rest);
+        } else {
+          resolve(defaultValue);
+        }
       });
     });
   };

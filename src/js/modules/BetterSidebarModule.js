@@ -63,16 +63,16 @@ export default class BetterSidebarModule extends Module {
         this.updateFilter();
 
         // Guilds are cached in storage for 10 minutes.
-        storage.get('guilds')
+        storage.get('guilds', [])
           .then((guilds) => {
             if (guilds) {
-              this.guilds = guilds.guilds;
+              this.guilds = guilds;
               this.updateSidebar();
             } else {
               fetchMyGuilds()
                 .then((g) => {
                   this.guilds = g;
-                  storage.set('guilds', { guilds: g }, 600 * 1000)
+                  storage.set('guilds', g, 600 * 1000)
                     .then(() => {
                       this.updateSidebar();
                     });

@@ -56,15 +56,15 @@ export default class WatchGuildsModule extends Module {
    *
    */
   processAlarm = () => {
-    storage.get('watchedGuilds', { guilds: [] })
-      .then((resp) => {
-        if (resp.guilds.length === 0) {
+    storage.get('watchedGuilds', [])
+      .then((guilds) => {
+        if (guilds.length === 0) {
           return;
         }
 
         const promises = [];
-        for (let i = 0; i < resp.guilds.length; i++) {
-          promises.push(this.processGuild(resp.guilds[i]));
+        for (let i = 0; i < guilds.length; i++) {
+          promises.push(this.processGuild(guilds[i]));
         }
         console.log(promises);
         Promise.all(promises)
