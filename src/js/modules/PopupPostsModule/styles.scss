@@ -24,11 +24,16 @@ $height-header: 48px;
 .rp-popup-posts-post {
   position: absolute;
   top: 0;
-  width: 70%;
+  width: 80%;
   left: 50%;
-  height: 100%;
+  height: auto;
+  min-height: 100%;
   transform: translateX(-50%);
   z-index: 1002;
+
+  @media (min-width: 800px)  {
+    width: 70%;
+  }
 }
 
 .rp-popup-posts-col {
