@@ -8,6 +8,7 @@ import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
 import BlockUserModule from './BlockUserModule';
 import ThemeModule from './ThemeModule';
+import PopupPostsModule from './PopupPostsModule';
 import RemoveCreatePostModule from './RemoveCreatePostModule';
 import HideVotedPostsModule from './HideVotedPostsModule';
 import WatchGuildsModule from './WatchGuildsModule';
@@ -20,6 +21,7 @@ export default {
   UserInfoModule,
   PreviewPostModule,
   UserTaggerModule,
+  PopupPostsModule,
   RemoveCreatePostModule,
   BetterSidebarModule,
   // WatchGuildsModule,

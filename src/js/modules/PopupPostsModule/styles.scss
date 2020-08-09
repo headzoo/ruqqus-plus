@@ -1,0 +1,68 @@
+$height-header: 48px;
+
+.rp-popup-posts-mask {
+  position: fixed;
+  top: $height-header;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  z-index: 1000;
+  opacity: 0.7;
+}
+
+.rp-popup-posts-container {
+  position: fixed;
+  top: $height-header;
+  bottom: 50px;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+.rp-popup-posts-post {
+  position: absolute;
+  top: 0;
+  width: 70%;
+  left: 50%;
+  height: 100%;
+  transform: translateX(-50%);
+  z-index: 1002;
+}
+
+.rp-popup-posts-col {
+  padding-top: 37px;
+  margin-bottom: 50px;
+  background-color: #FFF;
+
+  &.rp-popup-posts-dark {
+    background-color: #0f0f0f;
+  }
+
+  .comment-section {
+    margin-bottom: 50px;
+  }
+}
+
+.rp-popup-posts-guild {
+  position: absolute !important;
+  top: 0 !important;
+  width: 100% !important;
+
+  & + .row {
+    margin-top: 1rem;
+  }
+}
+
+.rp-popup-posts-loader {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  left: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+}

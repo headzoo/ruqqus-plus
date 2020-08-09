@@ -134,3 +134,23 @@ export const querySelectorAttribs = (context, selector, attribs = {}) => {
     setAttributes(el, isObj ? attribs : selector);
   });
 };
+
+/**
+ * @param {HTMLElement|Node} element
+ * @param {string} className
+ * @param {boolean} returnParent
+ * @returns {boolean|HTMLElement|Node}
+ */
+export function hasParentClass(element, className, returnParent = false) {
+  do {
+    if (element.classList && element.classList.contains(className)) {
+      if (returnParent) {
+        return element;
+      }
+      return true;
+    }
+    element = element.parentNode;
+  } while (element);
+
+  return false;
+}

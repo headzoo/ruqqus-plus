@@ -12,6 +12,10 @@ Object.keys(controllers).forEach((key) => {
 
 // contentInject.js has access to the ruqqus window object, which is needed
 // to access ruqqus functions and variables. (This script cannot access them.)
+let injected = false;
 document.addEventListener('DOMContentLoaded', () => {
-  injectScript(chrome.extension.getURL('js/content-inject.js'));
+  if (!injected) {
+    injected = true;
+    injectScript(chrome.extension.getURL('js/content-inject.js'));
+  }
 });

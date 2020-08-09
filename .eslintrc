@@ -93,6 +93,7 @@
     },
     "parserOptions": {},
     "globals": {
-        "chrome": true
+        "chrome": true,
+        "$": true
     }
 }
