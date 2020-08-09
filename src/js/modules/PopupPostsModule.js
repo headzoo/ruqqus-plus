@@ -157,6 +157,7 @@ export default class PopupPostsModule extends Module {
         document.title = title;
         window.history.pushState(null, document.title, url);
         this.dispatch('rp.PopupPostsModule.events', { url, title, thumb });
+        this.dispatch('rp.change');
         this.loader(false);
 
         /**

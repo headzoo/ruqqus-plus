@@ -82,7 +82,10 @@ export default class Controller {
    * @param {*} detail
    */
   dispatch = (event, detail = {}) => {
-    return events.dispatch(event, detail);
+    return events.dispatch(event, {
+      ...detail,
+      sender: this.constructor.name
+    });
   };
 
   /**
