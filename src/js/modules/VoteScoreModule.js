@@ -1,5 +1,5 @@
 import Module from './Module';
-import { querySelectorEach, createElement, insertAfter } from '../utils/web';
+import { querySelectorEach, createElement, insertAfter, injectCSS } from '../utils/web';
 
 /**
  * Makes the vote score +/- move visible
@@ -40,8 +40,12 @@ export default class VoteScoreModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    this.listen('rp.change', this.wireupLinks);
+    injectCSS(`
+      .rp-vote-score-up { color: #805ad5; }
+      .rp-vote-score-down { color: #38b2ac; }
+    `);
 
+    this.listen('rp.change', this.wireupLinks);
     this.onDOMReady(this.wireupLinks);
   };
 
@@ -54,9 +58,7 @@ export default class VoteScoreModule extends Module {
       if (score && !score.getAttribute('data-rp-vote-score-wired')) {
         const title = score.getAttribute('data-original-title');
         const metas = card.querySelectorAll('.post-meta-guild');
-        const span  = createElement('span', {
-          'html': `(${title}) &middot;&nbsp;`
-        });
+        const span  = this.createSpan(title);
         insertAfter(metas[1], span);
         score.setAttribute('data-rp-vote-score-wired', 'true');
       }
@@ -67,11 +69,35 @@ export default class VoteScoreModule extends Module {
       if (score) {
         const title = score.getAttribute('data-original-title');
         const meta  = card.querySelector('.post-meta');
-        const span  = createElement('span', {
-          'html': `(${title}) &middot;&nbsp;`
-        });
+        const span  = this.createSpan(title);
         meta.prepend(span);
       }
     });
+  };
+
+  /**
+   * @param {string} title
+   * @returns {HTMLElement}
+   */
+  createSpan = (title) => {
+    const parts = this.extractScore(title);
+    return createElement('span', {
+      'html': `
+        <span class="rp-vote-score-up">${parts.up}</span>/<span class="rp-vote-score-down">${parts.down}</span>
+        &nbsp;&middot;&nbsp;`
+    });
+  };
+
+  /**
+   * @param {string} title
+   * @returns {{up: string, down: string}}
+   */
+  extractScore = (title) => {
+    const parts = title.split(' | ');
+
+    return {
+      up:   parts[0],
+      down: parts[1]
+    };
   };
 }
