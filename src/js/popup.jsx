@@ -75,7 +75,10 @@ class App extends React.Component {
                 target="_blank"
                 onClick={this.handleUnreadClick}
               >
-                <i className="fas fa-bell" />
+                <i className={`fas fa-bell ${unread > 0 ? 'text-danger' : ''}`} />
+                {unread > 0 && (
+                  <span className="badge-count font-weight-bolder">{unread}</span>
+                )}
               </a>
             </div>
           ) : (
