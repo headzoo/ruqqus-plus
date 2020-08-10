@@ -84,7 +84,7 @@ export default class VoteScoreModule extends Module {
     return createElement('span', {
       'html': `
         <span class="rp-vote-score-up">${parts.up}</span>/<span class="rp-vote-score-down">${parts.down}</span>
-        &nbsp;&middot;&nbsp;`
+        &middot;&nbsp;`
     });
   };
 
