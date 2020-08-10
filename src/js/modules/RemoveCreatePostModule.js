@@ -54,8 +54,8 @@ export default class RemoveCreatePostModule extends Module {
           guild = extractGuildName(document.location.pathname);
         }
 
-        const unsub   = document.getElementById('button-unsub');
-        const sub     = document.getElementById('button-sub');
+        const unsub   = document.querySelector('#button-unsub:not(.d-none)');
+        const sub     = document.querySelector('#button-sub:not(.d-none)');
         const actions = top.querySelectorAll('.dropdown-actions');
         if (unsub || (actions && actions.length > 1)) {
           const button  = createElement('a', {
@@ -63,10 +63,12 @@ export default class RemoveCreatePostModule extends Module {
             'class': 'btn btn-primary btn-block',
             'html':  '<i class="fas fa-pen mr-1"></i> Create Post'
           });
+
           if (sub) {
             sub.classList.add('mr-2');
             insertAfter(sub, button);
           } else if (unsub) {
+            console.log('here');
             unsub.classList.add('mr-2');
             insertAfter(unsub, button);
           } else {
