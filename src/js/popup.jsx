@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Loading } from './components';
 import { fetchMe, fetchUser } from './utils/ruqqus';
+import storage from './utils/storage';
 
 class App extends React.Component {
   /**
@@ -21,6 +22,11 @@ class App extends React.Component {
    *
    */
   componentDidMount() {
+    storage.get('unread', 0)
+      .then((unread) => {
+        this.setState({ unread });
+      });
+
     fetchMe()
       .then(({ authed, unread, username }) => {
         if (authed) {

@@ -1,5 +1,6 @@
 import { fetchUnread } from '../utils/ruqqus';
 import Controller from './Controller';
+import storage from '../utils/storage';
 
 /**
  * Manages the user account
@@ -20,21 +21,23 @@ export default class UserController extends Controller {
       if (alarm.name === 'fetchAuth') {
         fetchUnread()
           .then((unread) => {
-            this.setUnread(unread);
+            this.setBadgeText(unread);
+            storage.set('unread', unread);
           });
       }
     });
 
     fetchUnread()
       .then((unread) => {
-        this.setUnread(unread);
+        this.setBadgeText(unread);
+        storage.set('unread', unread);
       });
   };
 
   /**
    * @param {number} unread
    */
-  setUnread = (unread) => {
+  setBadgeText = (unread) => {
     if (unread > 0) {
       chrome.browserAction.setBadgeText({ text: unread.toString() });
       chrome.browserAction.setBadgeBackgroundColor({ color: '#E53E3D' });
