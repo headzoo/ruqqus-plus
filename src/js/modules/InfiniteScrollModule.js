@@ -176,6 +176,7 @@ export default class InfiniteScrollModule extends Module {
     const card           = document.getElementById(e.detail.id);
     const upvoteButton   = card.querySelector('.upvote-button');
     const downvoteButton = card.querySelector('.downvote-button');
+    const image          = card.querySelector('.post-img');
 
     upvoteButton.addEventListener('click', upvote, false);
     upvoteButton.addEventListener('keydown', (event) => {
@@ -190,5 +191,24 @@ export default class InfiniteScrollModule extends Module {
         downvote(event);
       }
     }, false);
+
+    // createElement used in handleIntersect strips out the inline JS ruqqus included.
+    // We have to add it back for image popups to work.
+    if (image) {
+      const src      = image.getAttribute('src');
+      const possible = ['i.ruqqus.com', 'imgur.com', 'cdn.discordapp.com', 'media.giphy.com'];
+      for (let i = 0; i < possible.length; i++) {
+        if (src.includes(possible[i])) {
+          const a = image.closest('a');
+          if (a) {
+            const link = a.getAttribute('href');
+            image.setAttribute(
+              'onclick',
+              `if (!window.__cfRLUnblockHandlers) return false; expandDesktopImage('${link}','${link}')`
+            );
+          }
+        }
+      }
+    }
   };
 }

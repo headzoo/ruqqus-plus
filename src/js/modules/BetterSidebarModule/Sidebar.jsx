@@ -189,7 +189,7 @@ export default class Sidebar extends React.PureComponent {
           </div>
         </div>
         <ul className="no-bullets guild-recommendations-list pl-0">
-          <li className="guild-recommendations-item">
+          <li className="guild-recommendations-item rp-better-sidebar-item">
             <a href="/">
               <div className="d-flex">
                 <div>
@@ -203,7 +203,7 @@ export default class Sidebar extends React.PureComponent {
               </div>
             </a>
           </li>
-          <li className="guild-recommendations-item">
+          <li className="guild-recommendations-item rp-better-sidebar-item">
             <a href="/all?sort=new">
               <div className="d-flex">
                 <div>
@@ -217,7 +217,7 @@ export default class Sidebar extends React.PureComponent {
               </div>
             </a>
           </li>
-          <li className="guild-recommendations-item">
+          <li className="guild-recommendations-item rp-better-sidebar-item">
             <a href="/all">
               <div className="d-flex">
                 <div>

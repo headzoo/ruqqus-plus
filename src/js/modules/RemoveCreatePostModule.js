@@ -68,7 +68,6 @@ export default class RemoveCreatePostModule extends Module {
             sub.classList.add('mr-2');
             insertAfter(sub, button);
           } else if (unsub) {
-            console.log('here');
             unsub.classList.add('mr-2');
             insertAfter(unsub, button);
           } else {
