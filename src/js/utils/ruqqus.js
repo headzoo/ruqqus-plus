@@ -97,11 +97,28 @@ export const fetchMyGuilds = () => {
         const avatar = body.querySelector('img');
         if (title && avatar) {
           guilds.push({
-            name:   title.innerText.trim().replace('+', ''),
-            avatar: avatar.getAttribute('src')
+            name:     title.innerText.trim().replace('+', ''),
+            avatar:   avatar.getAttribute('src'),
+            isMaster: false
           });
         }
       });
+
+      // Find the guild master of guilds.
+      const sidebar = html.querySelector('.sidebar-left');
+      if (sidebar) {
+        const recommendations = sidebar.querySelectorAll('.guild-recommendations-list.sidebar-collapsed-hidden');
+        const last = recommendations[recommendations.length - 1];
+        last.querySelectorAll('.guild-recommendations-item a').forEach((el) => {
+          const guildName = el.getAttribute('href').replace('/+', '');
+          for (let i = 0; i < guilds.length; i++) {
+            if (guilds[i].name === guildName) {
+              guilds[i].isMaster = true;
+              break;
+            }
+          }
+        });
+      }
 
       return guilds;
     });
