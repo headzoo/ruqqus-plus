@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { fetchMyGuilds } from '../../utils/ruqqus';
 import storage from '../../utils/storage';
 import { searchByObjectKey } from '../../utils/arrays';
@@ -14,7 +15,7 @@ export default class Sidebar extends React.PureComponent {
     this.state = {
       guilds:      null,
       favorites:   [],
-      isCollapsed: false,
+      isCollapsed: localStorage.getItem('sidebarPref') === 'collapsed',
       filterValue: ''
     };
 
@@ -119,20 +120,26 @@ export default class Sidebar extends React.PureComponent {
   handleCollapseClick = () => {
     const { isCollapsed } = this.state;
 
-    this.setState({ isCollapsed: !isCollapsed });
+    const newIsCollapsed = !isCollapsed;
+    this.setState({ isCollapsed: newIsCollapsed });
+    if (newIsCollapsed) {
+      localStorage.setItem('sidebarPref', 'collapsed');
+    } else {
+      localStorage.removeItem('sidebarPref');
+    }
   };
 
   /**
    * @returns {*}
    */
   renderFilterInput = () => {
-    const { filterValue } = this.state;
+    const { isCollapsed, filterValue } = this.state;
 
     return (
       <div className="form-group">
         <input
-          placeholder="Filter Guilds"
-          className="form-control mb-2 rp-sidebar-guild-filter"
+          placeholder={isCollapsed ? '' : 'Filter Guilds'}
+          className={`form-control mb-2 rp-sidebar-guild-filter ${isCollapsed && 'form-control-sm'}`}
           onChange={this.handleFilterChange}
           value={filterValue}
         />
@@ -144,56 +151,55 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   renderRuqqusFeeds = () => {
-    const { filterValue } = this.state;
+    const { isCollapsed, filterValue } = this.state;
 
     if (filterValue !== '') {
       return null;
     }
 
+    let classes = 'd-flex justify-content-between align-items-center mb-3';
+    if (isCollapsed) {
+      classes = 'd-flex justify-content-center align-items-center mb-3';
+    }
+
     return (
       <div className="mb-4">
-        <div className="sidebar-collapsed-hidden collapsed-toggle-parent">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div
-              className="text-small font-weight-bold text-muted text-uppercase"
-              style={{ letterSpacing: '0.025rem' }}
-            >
-              Ruqqus Feeds
-            </div>
+        <div className="sidebar-collapsed-hidden">
+          <div className={classes}>
+            {!isCollapsed && (
+              <div
+                className="text-small font-weight-bold text-muted text-uppercase"
+                style={{ letterSpacing: '0.025rem' }}
+              >
+                Ruqqus Feeds
+              </div>
+            )}
             <button
               type="button"
               className="btn"
-              data-toggle="tooltip"
-              data-placement="right"
               title="Collapse"
-              data-original-title="Collapse"
               onClick={this.handleCollapseClick}
             >
-              <span className="collapsed-toggle" />
+              {isCollapsed ? (
+                <i className="fas fa-chevron-circle-right rp-better-sidebar-collapse rp-better-sidebar-guild-icon" />
+              ) : (
+                <i className="fas fa-chevron-circle-left rp-better-sidebar-collapse rp-better-sidebar-guild-icon" />
+              )}
             </button>
           </div>
         </div>
-        <div className="sidebar-collapsed-visible collapsed-toggle-parent">
-          <button
-            type="button"
-            className="btn mb-3"
-          >
-            <span className="collapsed-toggle" />
-          </button>
-        </div>
-        <div className="sidebar-collapsed-visible">
-          <i className="fas fa-newspaper text-muted mb-3" style={{ fontSize: '1rem' }} />
-        </div>
-        <ul className="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-hidden">
+        <ul className="no-bullets guild-recommendations-list pl-0">
           <li className="guild-recommendations-item">
             <a href="/">
               <div className="d-flex">
                 <div>
                   <img src="/assets/images/icons/house-alt.png" className="profile-pic profile-pic-30" alt="" />
                 </div>
-                <div className="my-auto ml-2">
-                  <div className="text-black font-weight-normal">Home</div>
-                </div>
+                {!isCollapsed && (
+                  <div className="my-auto ml-2">
+                    <div className="text-black font-weight-normal">Home</div>
+                  </div>
+                )}
               </div>
             </a>
           </li>
@@ -203,9 +209,11 @@ export default class Sidebar extends React.PureComponent {
                 <div>
                   <img src="/assets/images/icons/planet.png" className="profile-pic profile-pic-30" alt="" />
                 </div>
-                <div className="my-auto ml-2">
-                  <div className="text-black font-weight-normal">All</div>
-                </div>
+                {!isCollapsed && (
+                  <div className="my-auto ml-2">
+                    <div className="text-black font-weight-normal">All</div>
+                  </div>
+                )}
               </div>
             </a>
           </li>
@@ -215,28 +223,12 @@ export default class Sidebar extends React.PureComponent {
                 <div>
                   <img src="/assets/images/icons/flame.png" className="profile-pic profile-pic-30" alt="" />
                 </div>
-                <div className="my-auto ml-2">
-                  <div className="text-black font-weight-normal">Trending</div>
-                </div>
+                {!isCollapsed && (
+                  <div className="my-auto ml-2">
+                    <div className="text-black font-weight-normal">Trending</div>
+                  </div>
+                )}
               </div>
-            </a>
-          </li>
-        </ul>
-
-        <ul className="no-bullets guild-recommendations-list pl-0 sidebar-collapsed-visible">
-          <li className="guild-recommendations-item">
-            <a href="/">
-              <img src="/assets/images/icons/house-alt.png" className="profile-pic profile-pic-30 transition-square" alt="" />
-            </a>
-          </li>
-          <li className="guild-recommendations-item">
-            <a href="/all?sort=new">
-              <img src="/assets/images/icons/planet.png" className="profile-pic profile-pic-30 transition-square" alt="" />
-            </a>
-          </li>
-          <li className="guild-recommendations-item">
-            <a href="/all?sort=hot">
-              <img src="/assets/images/icons/flame.png" className="profile-pic profile-pic-30 transition-square" alt="" />
             </a>
           </li>
         </ul>
@@ -268,6 +260,7 @@ export default class Sidebar extends React.PureComponent {
     return (
       <GuildList
         title="Favorite Guilds"
+        icon="star"
         guilds={favoriteGuilds}
         favorites={favorites}
         isCollapsed={isCollapsed}
@@ -299,6 +292,7 @@ export default class Sidebar extends React.PureComponent {
     return (
       <GuildList
         title="My Guilds"
+        icon="chess-rook"
         guilds={newGuilds}
         favorites={favorites}
         isCollapsed={isCollapsed}
@@ -324,6 +318,7 @@ export default class Sidebar extends React.PureComponent {
     return (
       <GuildList
         title="GuildMaster Of"
+        icon="crown"
         guilds={newGuilds}
         favorites={favorites}
         isCollapsed={isCollapsed}
@@ -336,8 +331,12 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   render() {
+    const { isCollapsed } = this.state;
+
     // eslint-disable-next-line max-len
-    const classes = 'col sidebar sidebar-left rp-better-sidebar-sidebar hide-scrollbar bg-white border-right d-none d-lg-block pt-3';
+    const classes = classNames('col sidebar sidebar-left rp-better-sidebar-sidebar hide-scrollbar bg-white border-right d-none d-lg-block pt-3', {
+      'rp-better-sidebar-sidebar-collapsed': isCollapsed
+    });
 
     return (
       <div

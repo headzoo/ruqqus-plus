@@ -3,6 +3,20 @@ import PropTypes from 'prop-types';
 
 const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
   const isFavorited = favorites.indexOf(guild.name) !== -1;
+console.log(isCollapsed);
+  if (isCollapsed) {
+    return (
+      <li className="guild-recommendations-item">
+        <a href={`/+${guild.name}`}>
+          <img
+            src={guild.avatar}
+            className="profile-pic profile-pic-30 transition-square"
+            alt=""
+          />
+        </a>
+      </li>
+    );
+  }
 
   return (
     <li key={guild.name} className="guild-recommendations-item rp-better-sidebar-item">

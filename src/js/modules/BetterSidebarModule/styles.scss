@@ -1,11 +1,15 @@
 .rp-better-sidebar-sidebar {
   min-width: 250px;
+
+  &.rp-better-sidebar-sidebar-collapsed {
+    min-width: 0;
+    width: 61px;
+  }
 }
 
-.rp-better-sidebar-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.rp-better-sidebar-collapse {
+  color: #AAAAAA;
+  font-size: 1.2rem;
 }
 
 .rp-better-sidebar-item {
@@ -23,4 +27,8 @@
   &.rp-better-sidebar-favorited {
     color: #FFF !important;
   }
+}
+
+.rp-better-sidebar-guild-icon {
+  font-size: 1.2rem !important;
 }
