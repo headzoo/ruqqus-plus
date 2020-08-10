@@ -12,19 +12,21 @@ import PopupPostsModule from './PopupPostsModule';
 import RemoveCreatePostModule from './RemoveCreatePostModule';
 import HideVotedPostsModule from './HideVotedPostsModule';
 import RecentlyViewedModule from './RecentlyViewedModule';
+import VoteScoreModule from './VoteScoreModule';
 import WatchGuildsModule from './WatchGuildsModule';
 
 export default {
   InfiniteScrollModule,
   NewTabModule,
   BiggerButtonsModule,
-  PostSaveModule: SavePostsModule,
+  SavePostsModule,
   UserInfoModule,
   PreviewPostModule,
   UserTaggerModule,
   PopupPostsModule,
   RemoveCreatePostModule,
   BetterSidebarModule,
+  VoteScoreModule,
   // WatchGuildsModule,
   HideVotedPostsModule,
   RecentlyViewedModule,
