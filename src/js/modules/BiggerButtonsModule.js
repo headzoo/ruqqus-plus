@@ -43,9 +43,12 @@ export default class BiggerButtonsModule extends Module {
     injectCSS(`
       .downvote-button::before,
       .upvote-button::before {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
       }
-      .score {
+
+      .score,
+      .score-up,
+      .score-down {
         font-size: 1rem;
       }
     `);
