@@ -153,6 +153,9 @@ export default class PopupPostsModule extends Module {
         const post = createElement('div', {
           'class': 'rp-popup-posts-post'
         });
+        if (isDarkMode()) {
+          post.classList.add('rp-popup-posts-post-dark');
+        }
         container.append(post);
         post.append(col);
         post.querySelector('#voting').classList.add('mt-0');

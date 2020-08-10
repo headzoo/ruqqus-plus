@@ -30,6 +30,11 @@ $height-header: 48px;
   min-height: 100%;
   transform: translateX(-50%);
   z-index: 1002;
+  background-color: #FFF;
+
+  &.rp-popup-posts-post-dark {
+    background-color: #181818;
+  }
 
   @media (min-width: 800px)  {
     width: 70%;
