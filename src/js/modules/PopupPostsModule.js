@@ -85,6 +85,10 @@ export default class PopupPostsModule extends Module {
           }
         }, false)
       };
+
+      $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+      });
     });
   }
 
