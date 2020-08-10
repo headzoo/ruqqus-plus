@@ -1,0 +1,22 @@
+.rp-better-sidebar-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rp-better-sidebar-item {
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.rp-better-sidebar-star {
+  color: #4a4a4a !important;
+  transition: color 150ms;
+  font-size: 1.1rem !important;
+
+  &:hover,
+  &.rp-better-sidebar-favorited {
+    color: gold !important;
+  }
+}
