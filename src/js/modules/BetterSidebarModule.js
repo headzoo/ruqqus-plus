@@ -10,6 +10,11 @@ import storage from '../utils/storage';
  */
 export default class BetterSidebarModule extends Module {
   /**
+   * @type {boolean}
+   */
+  sidebarMounted = false;
+
+  /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
    *
@@ -44,6 +49,29 @@ export default class BetterSidebarModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
+    // Not using this.onDOMReady to avoid flicker when we remove the default
+    // sidebar.
+    this.changeSidebar();
+
+    // But sometimes the above doesn't work because the default sidebar hasn't rendered
+    // yet. This is our backup plan.
+    this.onDOMReady(() => {
+      if (!this.sidebarMounted) {
+        this.changeSidebar();
+      }
+    });
+
+    // Keeping track of how many times a guild has been viewed.
+    const guildName = extractGuildName(document.location.pathname);
+    if (guildName) {
+      this.handleGuildView(guildName);
+    }
+  };
+
+  /**
+   *
+   */
+  changeSidebar = () => {
     const sidebar = document.querySelector('.sidebar-left');
     if (sidebar) {
       const mount = document.createElement('div');
@@ -54,12 +82,7 @@ export default class BetterSidebarModule extends Module {
         <Sidebar />,
         mount
       );
-    }
-
-    // Keeping track of how many times a guild has been viewed.
-    const guildName = extractGuildName(document.location.pathname);
-    if (guildName) {
-      this.handleGuildView(guildName);
+      this.sidebarMounted = true;
     }
   };
 

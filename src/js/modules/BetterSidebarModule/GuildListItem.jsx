@@ -20,30 +20,33 @@ const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
 
   return (
     <li key={guild.name} className="guild-recommendations-item rp-better-sidebar-item">
-      <a href={`/+${guild.name}`}>
-        <div className="d-flex align-items-center">
-          <div>
-            <img
-              src={guild.avatar}
-              className="profile-pic profile-pic-30 mr-2"
-              alt=""
-            />
-          </div>
-          <div className="my-auto">
-            <div className="text-black font-weight-normal">
-              +{guild.name}
-            </div>
-          </div>
+      <div className="d-flex align-items-center">
+        <a href={`/+${guild.name}`}>
+          <img
+            src={guild.avatar}
+            className="profile-pic profile-pic-30 mr-2"
+            alt=""
+          />
+        </a>
+        <div className="my-auto rp-better-sidebar-guild-name">
+          <a href={`/+${guild.name}`} className="text-black font-weight-normal" title={`+${guild.name}`}>
+            +{guild.name}
+          </a>
+        </div>
+        <div className="ml-auto">
+          <a href={`/submit?guild=${guild.name}`} title="Create Post">
+            <i className="fas fa-pen rp-better-sidebar-pen mr-2" />
+          </a>
           <i
             role="button"
             tabIndex={0}
             aria-label={isFavorited ? 'Remove favorite' : 'Add favorite'}
             title={isFavorited ? 'Remove favorite' : 'Add favorite'}
             onClick={(e) => onFavorite(e, guild)}
-            className={`fas fa-star rp-better-sidebar-star ml-auto ${isFavorited && 'rp-better-sidebar-favorited'}`}
+            className={`fas fa-star rp-better-sidebar-star ${isFavorited && 'rp-better-sidebar-favorited'}`}
           />
         </div>
-      </a>
+      </div>
     </li>
   );
 };

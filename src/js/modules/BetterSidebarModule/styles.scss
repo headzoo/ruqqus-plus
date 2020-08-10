@@ -1,5 +1,5 @@
 .rp-better-sidebar-sidebar {
-  min-width: 250px;
+  min-width: 260px;
 
   &.rp-better-sidebar-sidebar-collapsed {
     min-width: 0;
@@ -18,13 +18,31 @@
   }
 }
 
+.rp-better-sidebar-guild-name {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .rp-better-sidebar-star {
-  color: #4a4a4a !important;
+  color: #545454 !important;
   transition: color 150ms;
   font-size: 1.1rem !important;
+  cursor: pointer;
 
   &:hover,
   &.rp-better-sidebar-favorited {
+    color: gold !important;
+  }
+}
+
+.rp-better-sidebar-pen {
+  color: #545454 !important;
+  font-size: 1.1rem !important;
+  transition: color 150ms;
+
+  &:hover {
     color: #FFF !important;
   }
 }
