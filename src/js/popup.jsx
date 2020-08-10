@@ -44,14 +44,17 @@ class App extends React.Component {
    *
    */
   handleUnreadClick = () => {
-    this.setState({ unread: 0 });
+    storage.set('unread', 0)
+      .then(() => {
+        this.setState({ unread: 0 });
 
-    // Let the background script (UserAction) know about zeroing out
-    // the unread count so it can change the badge text.
-    chrome.runtime.sendMessage({
-      event: 'rq.setUnread',
-      data:  { unread: 0 }
-    });
+        // Let the background script (UserAction) know about zeroing out
+        // the unread count so it can change the badge text.
+        chrome.runtime.sendMessage({
+          event: 'rq.setUnread',
+          data:  { unread: 0 }
+        });
+      });
   };
 
   /**

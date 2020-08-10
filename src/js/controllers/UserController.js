@@ -12,7 +12,10 @@ export default class UserController extends Controller {
   execBackgroundContext = () => {
     chrome.runtime.onMessage.addListener((request) => {
       if (request.event && request.event === 'rq.setUnread') {
-        this.setUnread(request.data.unread);
+        storage.set('unread', request.data.unread)
+          .then(() => {
+            this.setBadgeText(request.data.unread);
+          });
       }
     });
 
