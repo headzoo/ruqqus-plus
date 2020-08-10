@@ -135,7 +135,6 @@ export default class PopupPostsModule extends Module {
         const template = document.createElement('template');
         template.innerHTML = text;
         const html = template.content;
-        // const html = createTemplateContent(text);
         const col  = html.querySelector('#main-content-col');
         col.classList.add('rp-popup-posts-col');
         col.querySelector('.guild-border-top').classList.add('rp-popup-posts-guild');
