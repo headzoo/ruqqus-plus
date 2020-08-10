@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Module from './Module';
-import { fetchUser, isDarkMode } from '../utils/ruqqus';
+import { fetchUser } from '../utils/ruqqus';
 import { injectStyleLink, createElement, setHTML, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import userTemplate from './UserInfoModule/user-template.html';
@@ -76,14 +76,11 @@ export default class UserInfoModule extends Module {
       existingBox.style.display = 'block';
     } else {
       const box  = createElement('div', {
-        'class':                  'rp-userInfo-box',
+        'class':                  'rp-user-info-box',
         'style':                  `top: ${rect.top + 20}px; left: ${rect.left}px`,
         'html':                   `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`,
         'data-userInfo-username': userName
       });
-      if (isDarkMode()) {
-        box.classList.add('rp-userInfo-box-dark');
-      }
       document.querySelector('body').appendChild(box);
 
       fetchUser(userName)
@@ -105,7 +102,7 @@ export default class UserInfoModule extends Module {
    *
    */
   handleMouseLeave = () => {
-    querySelectorEach('.rp-userInfo-box', (el) => {
+    querySelectorEach('.rp-user-info-box', (el) => {
       el.style.display = 'none';
     });
   };

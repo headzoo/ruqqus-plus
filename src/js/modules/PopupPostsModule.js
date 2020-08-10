@@ -1,6 +1,5 @@
 import Module from './Module';
 import { createElement, querySelectorEach, hasParentClass } from '../utils/web';
-import { isDarkMode } from '../utils/ruqqus';
 
 /**
  * Opens posts in a popup window
@@ -138,9 +137,6 @@ export default class PopupPostsModule extends Module {
         const col  = html.querySelector('#main-content-col');
         col.classList.add('rp-popup-posts-col');
         col.querySelector('.guild-border-top').classList.add('rp-popup-posts-guild');
-        if (isDarkMode()) {
-          col.classList.add('rp-popup-posts-dark');
-        }
 
         const mask = createElement('div', {
           'class': 'rp-popup-posts-mask'
@@ -153,9 +149,6 @@ export default class PopupPostsModule extends Module {
         const post = createElement('div', {
           'class': 'rp-popup-posts-post'
         });
-        if (isDarkMode()) {
-          post.classList.add('rp-popup-posts-post-dark');
-        }
         container.append(post);
         post.append(col);
         post.querySelector('#voting').classList.add('mt-0');

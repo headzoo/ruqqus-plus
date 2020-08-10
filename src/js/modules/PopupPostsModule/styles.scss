@@ -32,7 +32,7 @@ $height-header: 48px;
   z-index: 1002;
   background-color: #FFF;
 
-  &.rp-popup-posts-post-dark {
+  .rp-dark-mode & {
     background-color: #181818;
   }
 
@@ -46,7 +46,7 @@ $height-header: 48px;
   margin-bottom: 50px;
   background-color: #FFF;
 
-  &.rp-popup-posts-dark {
+  .rp-dark-mode & {
     background-color: #0f0f0f;
   }
 

@@ -1,4 +1,4 @@
-.rp-userInfo-box {
+.rp-user-info-box {
   position: fixed;
   width: 250px;
   z-index: 2001;
@@ -7,6 +7,11 @@
   background-color: #FFF;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.5);
   border-radius: 2px;
+
+  .rp-dark-mode & {
+    color: #FFF;
+    background-color: #383737;
+  }
 
   .avatar {
     height: 40px;
@@ -37,9 +42,4 @@
     text-align: center;
     font-size: 0.9rem;
   }
-}
-
-.rp-userInfo-box-dark {
-  color: #FFF;
-  background-color: #383737;
 }
