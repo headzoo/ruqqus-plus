@@ -55,14 +55,18 @@ export default class RemoveCreatePostModule extends Module {
         }
 
         const unsub   = document.getElementById('button-unsub');
+        const sub     = document.getElementById('button-sub');
         const actions = top.querySelectorAll('.dropdown-actions');
         if (unsub || (actions && actions.length > 1)) {
           const button  = createElement('a', {
             'href':  `/submit?guild=${guild}`,
             'class': 'btn btn-primary btn-block',
-            'html':  '<i class="fas fa-pen mr-1"></i> Submit'
+            'html':  '<i class="fas fa-pen mr-1"></i> Create Post'
           });
-          if (unsub) {
+          if (sub) {
+            sub.classList.add('mr-2');
+            insertAfter(sub, button);
+          } else if (unsub) {
             unsub.classList.add('mr-2');
             insertAfter(unsub, button);
           } else {
