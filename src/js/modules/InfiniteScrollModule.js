@@ -209,6 +209,10 @@ export default class InfiniteScrollModule extends Module {
           }
         }
       }
+
+      // createElement also removes the target attribute.
+      const link = image.closest('a');
+      link.setAttribute('target', '_blank');
     }
   };
 }
