@@ -1,0 +1,38 @@
+@import "vars";
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  z-index: 100;
+  transition: background 120ms ease-in-out;
+
+  &.mounted {
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.visible {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  &.black {
+    &.visible {
+      background: #000;
+    }
+  }
+}
+
+.mask-child {
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+
+  &.visible {
+    opacity: 1;
+  }
+}

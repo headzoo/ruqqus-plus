@@ -80,48 +80,65 @@ export const fetchPost = (pid) => {
 /**
  * @returns {Promise<[]>}
  */
-export const fetchMyGuilds = () => {
-  return fetch('https://ruqqus.com/mine')
+export const fetchMyGuilds = async () => {
+  const guilds = [];
+
+  for (let i = 1; i < 10; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    const text = await fetch(`https://ruqqus.com/mine?page=${i}`)
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error(`Received status code ${resp.status}`);
+        }
+        return resp.text();
+      });
+
+    const html = createTemplateContent(text);
+    let found  = false;
+    querySelectorEach(html, '.card-body', (body) => {
+      const title  = body.querySelector('.card-title');
+      const avatar = body.querySelector('img');
+      if (title && avatar) {
+        found = true;
+        guilds.push({
+          name:     title.innerText.trim().replace('+', ''),
+          avatar:   avatar.getAttribute('src'),
+          isMaster: false
+        });
+      }
+    });
+
+    if (!found) {
+      break;
+    }
+  }
+
+  // Find the guild master of guilds.
+  const text = await fetch('https://ruqqus.com')
     .then((resp) => {
       if (!resp.ok) {
         throw new Error(`Received status code ${resp.status}`);
       }
       return resp.text();
-    })
-    .then((text) => {
-      const html = createTemplateContent(text);
-
-      const guilds = [];
-      querySelectorEach(html, '.card-body', (body) => {
-        const title  = body.querySelector('.card-title');
-        const avatar = body.querySelector('img');
-        if (title && avatar) {
-          guilds.push({
-            name:     title.innerText.trim().replace('+', ''),
-            avatar:   avatar.getAttribute('src'),
-            isMaster: false
-          });
-        }
-      });
-
-      // Find the guild master of guilds.
-      const sidebar = html.querySelector('.sidebar-left');
-      if (sidebar) {
-        const recommendations = sidebar.querySelectorAll('.guild-recommendations-list.sidebar-collapsed-hidden');
-        const last = recommendations[recommendations.length - 1];
-        last.querySelectorAll('.guild-recommendations-item a').forEach((el) => {
-          const guildName = el.getAttribute('href').replace('/+', '');
-          for (let i = 0; i < guilds.length; i++) {
-            if (guilds[i].name === guildName) {
-              guilds[i].isMaster = true;
-              break;
-            }
-          }
-        });
-      }
-
-      return guilds;
     });
+
+  const html    = createTemplateContent(text);
+  const sidebar = html.querySelector('.sidebar-left');
+  if (sidebar) {
+    const recommendations = sidebar.querySelectorAll('.guild-recommendations-list.sidebar-collapsed-hidden');
+    const last = recommendations[recommendations.length - 1];
+    last.querySelectorAll('.guild-recommendations-item a').forEach((el) => {
+      const guildName = el.getAttribute('href').replace('/+', '');
+      for (let i = 0; i < guilds.length; i++) {
+        if (guilds[i].name === guildName) {
+          guilds[i].isMaster = true;
+          break;
+        }
+      }
+    });
+  }
+
+  return guilds;
 };
 
 /**

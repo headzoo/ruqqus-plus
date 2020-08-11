@@ -1,0 +1,90 @@
+@import "vars";
+
+$color-modal: #FFF;
+$color-modal-bg: #2d2d2d;
+
+.rp-modal {
+  width: 30vw;
+  height: auto !important;
+  padding: 15px;
+  color: #000;
+  text-align: left;
+  background-color: #FFF;
+  z-index: 1001;
+  border-radius: 4px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+  transform: translateY(-50%);
+  opacity: 0;
+  overflow: hidden;
+
+  &.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .rp-dark-mode & {
+    color: #FFF;
+    background-color: #2d2d2d;
+  }
+}
+
+.rp-modal-sm {
+  width: 25vw;
+  height: 25vh;
+
+  &.modal-narrow {
+    width: 30vw;
+  }
+}
+
+.rp-modal-md {
+  width: 60vw;
+  height: 60vh;
+}
+
+.rp-modal-lg {
+  width: 60vw;
+  height: 62vh;
+
+  &.modal-narrow {
+    width: 30vw;
+  }
+}
+
+.rp-modal-auto-height {
+  height: auto !important;
+}
+
+.rp-modal-auto-width {
+  width: auto !important;
+}
+
+.rp-modal-header {
+  display: inline-block;
+  margin-bottom: 10px;
+  width: 100%;
+
+  .fa-times {
+    float: right;
+    width: auto;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 18px;
+  }
+}
+
+.rp-modal-inner {
+  height: 100%;
+}
+
+.rp-modal-body {
+  height: 100%;
+  font-size: 15px;
+  line-height: 1.3em;
+}
+
+.rp-modal-footer {
+  padding-top: 15px;
+}

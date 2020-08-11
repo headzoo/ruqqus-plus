@@ -1,8 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Icon } from '../../components';
 import { fetchMyGuilds } from '../../utils/ruqqus';
 import storage from '../../utils/storage';
 import { searchByObjectKey } from '../../utils/arrays';
+import SettingsModal from './SettingsModal';
 import GuildList from './GuildList';
 
 export default class Sidebar extends React.PureComponent {
@@ -13,10 +15,12 @@ export default class Sidebar extends React.PureComponent {
     super(props);
 
     this.state = {
-      guilds:      null,
-      favorites:   [],
-      isCollapsed: localStorage.getItem('sidebarPref') === 'collapsed',
-      filterValue: ''
+      guilds:       null,
+      favorites:    [],
+      loading:      true,
+      isCollapsed:  localStorage.getItem('sidebarPref') === 'collapsed',
+      filterValue:  '',
+      settingsOpen: false
     };
 
     this.views = {};
@@ -30,27 +34,33 @@ export default class Sidebar extends React.PureComponent {
       .then((views) => {
         this.views = views;
 
-        // Guilds are cached in storage for 10 minutes.
-        storage.get('BetterSidebarModule.guilds')
-          .then((guilds) => {
-            if (guilds) {
-              this.setState({
-                guilds: this.sortGuilds(guilds)
-              });
-            } else {
-              fetchMyGuilds()
-                .then((g) => {
-                  this.setState({
-                    guilds: this.sortGuilds(g)
-                  });
-                  storage.set('BetterSidebarModule.guilds', g, 600 * 1000);
-                });
-            }
-          });
-
         storage.get('BetterSidebarModule.favorites', [])
           .then((favorites) => {
             this.setState({ favorites });
+
+            // Guilds are cached in storage for 24 hours.
+            storage.get('BetterSidebarModule.guilds')
+              .then((guilds) => {
+                if (guilds) {
+                  this.setState({
+                    guilds:  this.sortGuilds(guilds),
+                    loading: false
+                  });
+                } else {
+                  fetchMyGuilds()
+                    .then((g) => {
+                      this.setState({
+                        guilds:  this.sortGuilds(g),
+                        loading: false
+                      });
+                      storage.set('BetterSidebarModule.guilds', g, 86400 * 1000);
+                    });
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+                this.setState({ loading: false });
+              });
           });
       });
   }
@@ -127,6 +137,13 @@ export default class Sidebar extends React.PureComponent {
     } else {
       localStorage.removeItem('sidebarPref');
     }
+  };
+
+  /**
+   *
+   */
+  handleSettingsClick = () => {
+    this.setState({ settingsOpen: true });
   };
 
   /**
@@ -331,7 +348,7 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   render() {
-    const { isCollapsed } = this.state;
+    const { loading, isCollapsed, settingsOpen } = this.state;
 
     // eslint-disable-next-line max-len
     const classes = classNames('col sidebar sidebar-left rp-better-sidebar-sidebar hide-scrollbar bg-white border-right d-none d-lg-block pt-3', {
@@ -351,8 +368,30 @@ export default class Sidebar extends React.PureComponent {
             {this.renderFavoriteGuilds()}
             {this.renderMyGuilds()}
             {this.renderGuildMasterGuilds()}
+            {loading && (
+              <img src={chrome.runtime.getURL('images/loading.svg')} alt="Loading" />
+            )}
+          </div>
+          <div className="d-flex">
+            <a href="/mine" className="btn btn-secondary btn-sm mr-1" title="Your guilds">
+              Browse
+            </a>
+            <a href="/browse" className="btn btn-secondary btn-sm mr-1" title="Discover guilds">
+              Discover
+            </a>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              title="Sidebar settings"
+              onClick={this.handleSettingsClick}
+            >
+              <Icon name="cog" />
+            </button>
           </div>
         </div>
+        {settingsOpen && (
+          <SettingsModal onHidden={() => this.setState({ settingsOpen: false })} open />
+        )}
       </div>
     );
   }
