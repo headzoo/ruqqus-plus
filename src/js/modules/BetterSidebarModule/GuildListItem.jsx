@@ -35,15 +35,15 @@ const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
         </div>
         <div className="ml-auto">
           <a href={`/submit?guild=${guild.name}`} title="Create Post">
-            <i className="fas fa-pen rp-better-sidebar-pen mr-2" />
+            <i className="fas fa-pen rp-better-sidebar-icon mr-2" />
           </a>
           <i
             role="button"
             tabIndex={0}
+            onClick={(e) => onFavorite(e, guild)}
             aria-label={isFavorited ? 'Remove favorite' : 'Add favorite'}
             title={isFavorited ? 'Remove favorite' : 'Add favorite'}
-            onClick={(e) => onFavorite(e, guild)}
-            className={`fas fa-star rp-better-sidebar-star ${isFavorited && 'rp-better-sidebar-favorited'}`}
+            className={`fas fa-star rp-better-sidebar-icon ${isFavorited && 'rp-better-sidebar-favorited'}`}
           />
         </div>
       </div>

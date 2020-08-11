@@ -66,11 +66,12 @@ export default class VoteScoreModule extends Module {
 
     querySelectorEach('.rp-popup-posts-post .card', (card) => {
       const score = card.querySelector('.voting *[data-original-title]');
-      if (score) {
+      if (score && !score.getAttribute('data-rp-vote-score-wired')) {
         const title = score.getAttribute('data-original-title');
         const meta  = card.querySelector('.post-meta');
         const span  = this.createSpan(title);
         meta.prepend(span);
+        score.setAttribute('data-rp-vote-score-wired', 'true');
       }
     });
   };

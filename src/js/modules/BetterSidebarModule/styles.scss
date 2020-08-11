@@ -25,25 +25,35 @@
   text-overflow: ellipsis;
 }
 
-.rp-better-sidebar-star {
-  color: #545454 !important;
+.rp-better-sidebar-icon {
   transition: color 150ms;
   font-size: 1.1rem !important;
   cursor: pointer;
+  color: grey;
 
   &:hover,
   &.rp-better-sidebar-favorited {
-    color: gold !important;
+    color: #000 !important;
   }
-}
 
-.rp-better-sidebar-pen {
-  color: #545454 !important;
-  font-size: 1.1rem !important;
-  transition: color 150ms;
+  &.fa-star {
+    &:hover,
+    &.rp-better-sidebar-favorited {
+      color: gold !important;
 
-  &:hover {
-    color: #FFF !important;
+      &:hover {
+        color: #000 !important;
+      }
+    }
+  }
+
+  .rp-dark-mode & {
+    color: #545454 !important;
+
+    &:hover,
+    &.rp-better-sidebar-favorited {
+      color: #FFF !important;
+    }
   }
 }
 

@@ -280,7 +280,7 @@ export default class Sidebar extends React.PureComponent {
     }
 
     let newGuilds = guilds.filter((g) => {
-      return !g.isMaster;
+      return !g.isMaster && favorites.indexOf(g.name) === -1;
     });
     if (filterValue !== '') {
       const input = filterValue.toLowerCase();
