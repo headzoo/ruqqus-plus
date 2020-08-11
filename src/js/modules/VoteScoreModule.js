@@ -30,7 +30,7 @@ export default class VoteScoreModule extends Module {
    * @returns {string}
    */
   getHelp = () => {
-    return 'Makes the vote score +/- move visible';
+    return 'Makes the vote score +/- more visible';
   };
 
   /**
