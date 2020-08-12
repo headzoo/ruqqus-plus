@@ -64,7 +64,7 @@ export default class SettingsModal extends React.Component {
             </button>
           </div>
           <small className="text-muted form-text">
-            For example &quot;/all&quot;.
+            For example &quot;/all?sort=new&quot;.
           </small>
         </div>
       </div>
