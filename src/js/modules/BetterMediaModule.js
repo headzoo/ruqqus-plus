@@ -67,27 +67,31 @@ export default class BetterMediaModule extends Module {
     if (card) {
       const postBody = card.querySelector('#post-body');
       const anchor   = card.querySelector('.post-title a');
-      const href     = anchor.getAttribute('href');
-      const mediaUrl = new URL(href);
+      if (anchor) {
+        const href     = anchor.getAttribute('href');
+        const mediaUrl = new URL(href);
 
-      const supportedMediaHosts = {
-        'gfycat.com':         this.handleGfycat,
-        'i.imgur.com':        this.handleImgur,
-        'i.ruqqus.com':       this.handleRuqqus,
-        'open.spotify.com':   this.handleSpotify,
-        'twitter.com':        this.handleTwitter,
-        'mobile.twitter.com': this.handleTwitter
-      };
+        const supportedMediaHosts = {
+          'gfycat.com':         this.handleGfycat,
+          'i.imgur.com':        this.handleImgur,
+          'i.ruqqus.com':       this.handleRuqqus,
+          'open.spotify.com':   this.handleSpotify,
+          'twitter.com':        this.handleTwitter,
+          'mobile.twitter.com': this.handleTwitter
+        };
 
-      const handler = supportedMediaHosts[mediaUrl.hostname];
-      if (handler !== undefined) {
-        handler.call(this, postBody, mediaUrl);
-      } else {
-        const ext = href.split('.').pop().toLowerCase();
-        if (['jpg', 'jpeg', 'gif', 'png'].indexOf(ext) !== -1) {
-          const img = this.createImageContainer(mediaUrl);
-          postBody.appendChild(img);
+        const handler = supportedMediaHosts[mediaUrl.hostname];
+        if (handler !== undefined) {
+          handler.call(this, postBody, mediaUrl);
+        } else {
+          const ext = mediaUrl.pathname.split('.').pop().toLowerCase();
+          if (['jpg', 'jpeg', 'gif', 'png'].indexOf(ext) !== -1) {
+            const img = this.createImageContainer(mediaUrl);
+            postBody.appendChild(img);
+          }
         }
+      } else {
+        console.warn('No anchor found for card', card);
       }
     }
   };
