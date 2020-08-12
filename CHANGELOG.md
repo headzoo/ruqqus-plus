@@ -4,6 +4,7 @@
 - Adds RecentlyViewedModule
 - Adds VoteScoreModule
 - Adds ChangeHomeLinkModule
+- Adds CopyQuoteReplyModule
 
 0.0.2
 - Adds HideVotedPostsModule
