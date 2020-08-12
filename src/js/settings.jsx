@@ -116,7 +116,7 @@ class App extends React.Component {
           </div>
         </header>
         <div className="d-flex flex-grow-1">
-          <nav className="sidebar">
+          <nav className="sidebar d-flex flex-column justify-content-between">
             <ul id="sidebar-group" className="list-group">
               {Object.keys(sidebarItems).map((key) => (
                 <li
@@ -128,6 +128,9 @@ class App extends React.Component {
                 </li>
               ))}
             </ul>
+            <div className="p-4 text-center">
+              <small>v0.0.3</small>
+            </div>
           </nav>
           <div className="flex-grow-1">
             <div className="settings-page">
