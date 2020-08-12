@@ -8,21 +8,23 @@ import Module from './Module';
 export default class InfiniteScrollModule extends Module {
   /**
    * @type {number}
-   * @private
    */
   page = 1;
 
   /**
    * @type {string}
-   * @private
    */
   sort = 'new';
 
   /**
    * @type {string}
-   * @private
    */
   type = 'all';
+
+  /**
+   * @type {string}
+   */
+  q = '';
 
   /**
    * @type {HTMLElement}
@@ -99,6 +101,7 @@ export default class InfiniteScrollModule extends Module {
       this.page    = parseInt(parsed.page || 0, 10);
       this.sort    = parsed.sort;
       this.type    = parsed.t;
+      this.q       = parsed.q;
       if (!this.page) {
         this.page = 2;
       }
@@ -134,7 +137,7 @@ export default class InfiniteScrollModule extends Module {
     if (entry.isIntersecting) {
       this.loading.style.display = 'block';
 
-      fetch(`https://ruqqus.com${document.location.pathname}?sort=${this.sort}&page=${this.page}&t=${this.type}`)
+      fetch(`https://ruqqus.com${document.location.pathname}?sort=${this.sort}&page=${this.page}&t=${this.type}&q=${this.q}`)
         .then((resp) => resp.text())
         .then((text) => {
           const template = createElement('template', {
