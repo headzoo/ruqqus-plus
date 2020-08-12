@@ -196,6 +196,13 @@ export const isDarkMode = () => {
 };
 
 /**
+ * @returns {boolean}
+ */
+export const isPostPage = () => {
+  return !!document.querySelector('.comment-write');
+};
+
+/**
  * @param {string} path
  * @returns {string}
  */

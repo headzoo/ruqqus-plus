@@ -8,6 +8,7 @@ import PreviewPostModule from './PreviewPostModule';
 import BetterSidebarModule from './BetterSidebarModule';
 import BlockUserModule from './BlockUserModule';
 import ThemeModule from './ThemeModule';
+import BetterMediaModule from './BetterMediaModule';
 import PopupPostsModule from './PopupPostsModule';
 import RemoveCreatePostModule from './RemoveCreatePostModule';
 import HideVotedPostsModule from './HideVotedPostsModule';
@@ -23,6 +24,7 @@ export default {
   BiggerButtonsModule,
   SavePostsModule,
   UserInfoModule,
+  BetterMediaModule,
   PreviewPostModule,
   UserTaggerModule,
   PopupPostsModule,

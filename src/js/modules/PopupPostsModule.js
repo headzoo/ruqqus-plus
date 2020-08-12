@@ -1,5 +1,6 @@
 import Module from './Module';
 import { createElement, querySelectorEach, hasParentClass } from '../utils/web';
+import { isPostPage } from '../utils/ruqqus';
 
 /**
  * Opens posts in a popup window
@@ -46,8 +47,10 @@ export default class PopupPostsModule extends Module {
    */
   execContentContext = () => {
     this.onDOMReady(() => {
-      this.listen('rp.change', this.wireupCards);
-      this.wireupCards();
+      if (!isPostPage()) {
+        this.listen('rp.change', this.wireupCards);
+        this.wireupCards();
+      }
     });
   };
 

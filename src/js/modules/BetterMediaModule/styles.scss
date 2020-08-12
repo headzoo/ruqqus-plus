@@ -1,0 +1,26 @@
+.rp-better-media-iframe {
+  max-width: 100%;
+}
+
+.rp-better-media-image-container {
+  display: block;
+  position: relative;
+
+  &.rp-better-media-collapsed {
+    max-height: 600px;
+  }
+}
+
+.rp-better-media-overflow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  width: 100%;
+  color: #FFF;
+  background-color: rgba(0, 0, 0, 0.47);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
