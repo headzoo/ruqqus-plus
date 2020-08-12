@@ -16,7 +16,6 @@ import RecentlyViewedModule from './RecentlyViewedModule';
 import VoteScoreModule from './VoteScoreModule';
 import CopyQuoteReplyModule from './CopyQuoteReplyModule';
 import ChangeHomeLinkModule from './ChangeHomeLinkModule';
-import WatchGuildsModule from './WatchGuildsModule';
 
 export default {
   InfiniteScrollModule,
@@ -31,7 +30,6 @@ export default {
   RemoveCreatePostModule,
   BetterSidebarModule,
   VoteScoreModule,
-  // WatchGuildsModule,
   HideVotedPostsModule,
   RecentlyViewedModule,
   ChangeHomeLinkModule,
