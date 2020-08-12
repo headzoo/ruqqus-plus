@@ -74,6 +74,7 @@ export default class BetterMediaModule extends Module {
         const supportedMediaHosts = {
           'gfycat.com':         this.handleGfycat,
           'i.imgur.com':        this.handleImgur,
+          'imgur.com':          this.handleImgur,
           'i.ruqqus.com':       this.handleRuqqus,
           'open.spotify.com':   this.handleSpotify,
           'twitter.com':        this.handleTwitter,
@@ -127,23 +128,32 @@ export default class BetterMediaModule extends Module {
    */
   handleImgur = (postBody, mediaUrl) => {
     // @see https://help.imgur.com/hc/en-us/articles/211273743-Embed-Unit
-    const match = mediaUrl.toString().match(/^https:\/\/i.imgur.com\/(.*?)\./);
-    if (!match) {
-      return;
+    let id;
+    let match = mediaUrl.toString().match(/^https:\/\/i.imgur.com\/(.*?)\./);
+    if (match) {
+      // eslint-disable-next-line prefer-destructuring
+      id = match[1];
+    } else {
+      match = mediaUrl.toString().match(/^https:\/\/imgur.com\/(a|gallery)\/(.*)/);
+      if (match) {
+        id = `a/${match[1]}`;
+      }
     }
 
-    const container = createElement('blockquote', {
-      'class':   'imgur-embed-pub',
-      'data-id': match[1],
-      'lang':    'en'
-    });
-    const anchor = createElement('a', {
-      'href': `https://imgur.com/${match[1]}`
-    });
-    container.appendChild(anchor);
-    postBody.appendChild(container);
+    if (id) {
+      const container = createElement('blockquote', {
+        'class':   'imgur-embed-pub',
+        'data-id': id,
+        'lang':    'en'
+      });
+      const anchor = createElement('a', {
+        'href': `https://imgur.com/${id}`
+      });
+      container.appendChild(anchor);
+      postBody.appendChild(container);
 
-    injectScript('//s.imgur.com/min/embed.js');
+      injectScript('//s.imgur.com/min/embed.js');
+    }
   };
 
   /**
