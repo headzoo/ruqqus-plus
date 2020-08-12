@@ -4,6 +4,7 @@ export const favIcons = {
   'tumblr.com':        'https://assets.tumblr.com/images/msfavicon.png',
   'redd.it':           'https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png',
   'depositphotos.com': 'https://webst.depositphotos.com/favicon.ico',
-  'discord':           'https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico'
+  'discord':           'https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico',
+  'clouds.tf':         'https://clouds.tf/panel/img/favicon.ico'
 };
 export const favIconsKeys = Object.keys(favIcons);

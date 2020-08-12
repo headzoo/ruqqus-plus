@@ -207,6 +207,9 @@ export default class BetterMediaModule extends Module {
    * @returns {HTMLElement}
    */
   createImageContainer = (mediaUrl) => {
+    const outer     = createElement('div', {
+      'class': 'd-flex flex-column'
+    });
     const container = createElement('a', {
       'class':  'rp-better-media-image-container rp-better-media-collapsed',
       'href':   mediaUrl.toString(),
@@ -216,7 +219,7 @@ export default class BetterMediaModule extends Module {
     const img = new Image();
     const handleImageLoad = () => {
       const containerRect   = container.getBoundingClientRect();
-      container.style.width = `${img.width}px`;
+      outer.style.width = `${img.width}px`;
 
       const diff = img.height - containerRect.height;
       if (diff > 0 && diff > 50) {
@@ -238,6 +241,7 @@ export default class BetterMediaModule extends Module {
     img.addEventListener('load', handleImageLoad, false);
     img.src = mediaUrl.toString();
     container.appendChild(img);
+    outer.appendChild(container);
 
     let icon;
     for (let i = 0; i < favIconsKeys.length; i++) {
@@ -250,8 +254,8 @@ export default class BetterMediaModule extends Module {
       'class': 'rp-better-media-attrib',
       'html':  icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
     });
-    container.appendChild(attrib);
+    outer.appendChild(attrib);
 
-    return container;
+    return outer;
   };
 }
