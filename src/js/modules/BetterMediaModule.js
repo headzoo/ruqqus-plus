@@ -164,6 +164,7 @@ export default class BetterMediaModule extends Module {
         container.appendChild(overflow);
         overflow.addEventListener('click', (e) => {
           e.preventDefault();
+          e.stopPropagation();
           container.classList.remove('rp-better-media-collapsed');
           overflow.remove();
         }, false);
