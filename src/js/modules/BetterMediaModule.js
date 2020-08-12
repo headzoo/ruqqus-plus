@@ -1,5 +1,5 @@
 import Module from './Module';
-import { createElement, injectScript, querySelectorEach } from '../utils/web';
+import { createElement, injectScript, querySelectorEach, setHTML } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
@@ -291,18 +291,22 @@ export default class BetterMediaModule extends Module {
    */
   createImageContainer = (mediaUrl) => {
     const outer     = createElement('div', {
-      'class': 'd-flex flex-column'
+      'class': 'd-flex flex-column',
+      'style': 'max-width: 250px'
     });
     const container = createElement('a', {
       'class':  'rp-better-media-image-container rp-better-media-collapsed',
       'href':   mediaUrl.toString(),
       'target': '_blank',
-      'rel':    'nofollow noreferrer'
+      'rel':    'nofollow noreferrer',
+      'html':   `<img class="rp-better-media-load" src="${chrome.runtime.getURL('images/loading.svg')}" alt="Load" />`
     });
     const img = new Image();
     const handleImageLoad = () => {
-      const containerRect   = container.getBoundingClientRect();
-      outer.style.width = `${img.width}px`;
+      const containerRect  = container.getBoundingClientRect();
+      outer.style.maxWidth = 'none';
+      outer.style.width    = `${img.width}px`;
+      container.querySelector('.rp-better-media-load').remove();
 
       const diff = img.height - containerRect.height;
       if (diff > 0 && diff > 50) {
@@ -321,6 +325,7 @@ export default class BetterMediaModule extends Module {
         container.classList.remove('rp-better-media-collapsed');
       }
     };
+
     img.addEventListener('load', handleImageLoad, false);
     img.src = mediaUrl.toString();
     container.appendChild(img);
