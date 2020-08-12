@@ -1,6 +1,7 @@
 import Module from './Module';
 import { createElement, injectScript } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
+import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
 /**
  * Enhances the way media (images, videos) are displayed on the site
@@ -84,7 +85,7 @@ export default class BetterMediaModule extends Module {
       } else {
         const ext = href.split('.').pop().toLowerCase();
         if (['jpg', 'jpeg', 'gif', 'png'].indexOf(ext) !== -1) {
-          const img = this.createImageContainer(href);
+          const img = this.createImageContainer(mediaUrl);
           postBody.appendChild(img);
         }
       }
@@ -150,7 +151,7 @@ export default class BetterMediaModule extends Module {
     if (fluid) {
       fluid.closest('.row').remove();
     }
-    const img = this.createImageContainer(mediaUrl.toString());
+    const img = this.createImageContainer(mediaUrl);
     postBody.appendChild(img);
   };
 
@@ -198,13 +199,13 @@ export default class BetterMediaModule extends Module {
   };
 
   /**
-   * @param {string} href
+   * @param {URL} mediaUrl
    * @returns {HTMLElement}
    */
-  createImageContainer = (href) => {
+  createImageContainer = (mediaUrl) => {
     const container = createElement('a', {
       'class':  'rp-better-media-image-container rp-better-media-collapsed',
-      'href':   href,
+      'href':   mediaUrl.toString(),
       'target': '_blank',
       'rel':    'nofollow noreferrer'
     });
@@ -231,8 +232,21 @@ export default class BetterMediaModule extends Module {
       }
     };
     img.addEventListener('load', handleImageLoad, false);
-    img.src = href;
+    img.src = mediaUrl.toString();
     container.appendChild(img);
+
+    let icon;
+    for (let i = 0; i < favIconsKeys.length; i++) {
+      if (mediaUrl.hostname.indexOf(favIconsKeys[i]) !== -1) {
+        icon = favIcons[favIconsKeys[i]];
+        break;
+      }
+    }
+    const attrib = createElement('div', {
+      'class': 'rp-better-media-attrib',
+      'html':  icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
+    });
+    container.appendChild(attrib);
 
     return container;
   };

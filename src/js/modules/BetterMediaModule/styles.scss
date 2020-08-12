@@ -15,6 +15,10 @@
   img {
     max-width: 100%;
   }
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .rp-better-media-overflow {
@@ -29,4 +33,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.rp-better-media-attrib {
+  padding-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  img {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+  }
 }
