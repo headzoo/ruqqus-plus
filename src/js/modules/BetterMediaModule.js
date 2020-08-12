@@ -1,5 +1,5 @@
 import Module from './Module';
-import { createElement, injectScript } from '../utils/web';
+import { createElement, injectScript, querySelectorEach } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
@@ -7,6 +7,11 @@ import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
  * Enhances the way media (images, videos) are displayed on the site
  */
 export default class BetterMediaModule extends Module {
+  /**
+   * @type {string}
+   */
+  lastHref = '';
+
   /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
@@ -72,13 +77,13 @@ export default class BetterMediaModule extends Module {
         const mediaUrl = new URL(href);
 
         const supportedMediaHosts = {
-          'gfycat.com':         this.handleGfycat,
-          'i.imgur.com':        this.handleImgur,
-          'imgur.com':          this.handleImgur,
-          'i.ruqqus.com':       this.handleRuqqus,
-          'open.spotify.com':   this.handleSpotify,
-          'twitter.com':        this.handleTwitter,
-          'mobile.twitter.com': this.handleTwitter
+          'gfycat.com':         this.handlePostGfycat,
+          'i.imgur.com':        this.handlePostImgur,
+          'imgur.com':          this.handlePostImgur,
+          'i.ruqqus.com':       this.handlePostRuqqus,
+          'open.spotify.com':   this.handlePostSpotify,
+          'twitter.com':        this.handlePostTwitter,
+          'mobile.twitter.com': this.handlePostTwitter
         };
 
         const handler = supportedMediaHosts[mediaUrl.hostname];
@@ -101,14 +106,76 @@ export default class BetterMediaModule extends Module {
    *
    */
   wireupCards = () => {
-    console.log('cards');
+    querySelectorEach('.card-header a', (a) => {
+      const href = a.getAttribute('href');
+      if (href) {
+        if (href.indexOf('https://imgur.com') === 0) {
+          a.addEventListener('click', this.handleAnchorImgur, false);
+        }
+      }
+    });
+  };
+
+  /**
+   * @param {*} e
+   */
+  handleAnchorImgur = (e) => {
+    const { currentTarget } = e;
+
+    let src;
+    const href = currentTarget.getAttribute('href');
+    if (this.lastHref === href) {
+      return;
+    }
+    this.lastHref = href;
+
+    let match  = href.match(/^https:\/\/imgur.com\/a\/(.*)/);
+    if (match) {
+      src = `https://api.imgur.com/3/album/${match[1]}.json`;
+    } else {
+      match = href.match(/^https:\/\/imgur.com\/(.*)/);
+      if (match) {
+        src = `https://api.imgur.com/3/image/${match[1]}.json`;
+      }
+    }
+
+    if (src) {
+      e.preventDefault();
+
+      fetch(src, {
+        headers: {
+          'Authorization': 'Client-ID 92b389723993e50'
+        }
+      })
+        .then((resp) => resp.json())
+        .then((json) => {
+          if (json.success) {
+            let { link } = json.data;
+            if (json.data.images) {
+              link = json.data.images[0].link;
+            }
+
+            currentTarget.setAttribute('href', link);
+            currentTarget.setAttribute('data-target', '#expandImageModal');
+            currentTarget.setAttribute('data-toggle', 'modal');
+            const img = currentTarget.querySelector('img');
+            img.setAttribute(
+              'onclick',
+              `if (!window.__cfRLUnblockHandlers) return false; expandDesktopImage('${link}','${link}')`
+            );
+            setTimeout(() => {
+              img.click();
+            }, 100);
+          }
+        });
+    }
   };
 
   /**
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handleGfycat = (postBody, mediaUrl) => {
+  handlePostGfycat = (postBody, mediaUrl) => {
     // @see https://developers.gfycat.com/iframe/
     const iframe = createElement('iframe', {
       'src':             `${mediaUrl.protocol}//${mediaUrl.hostname}/ifr${mediaUrl.pathname}`,
@@ -126,7 +193,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handleImgur = (postBody, mediaUrl) => {
+  handlePostImgur = (postBody, mediaUrl) => {
     // @see https://help.imgur.com/hc/en-us/articles/211273743-Embed-Unit
     let id;
     let match = mediaUrl.toString().match(/^https:\/\/i.imgur.com\/(.*?)\./);
@@ -136,7 +203,13 @@ export default class BetterMediaModule extends Module {
     } else {
       match = mediaUrl.toString().match(/^https:\/\/imgur.com\/(a|gallery)\/(.*)/);
       if (match) {
-        id = `a/${match[1]}`;
+        id = `a/${match[2]}`;
+      } else {
+        match = mediaUrl.toString().match(/^https:\/\/imgur.com\/(.*)/);
+        if (match) {
+          // eslint-disable-next-line prefer-destructuring
+          id = match[1];
+        }
       }
     }
 
@@ -160,7 +233,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handleRuqqus = (postBody, mediaUrl) => {
+  handlePostRuqqus = (postBody, mediaUrl) => {
     const fluid = document.querySelector('.img-fluid');
     if (fluid) {
       fluid.closest('.row').remove();
@@ -173,7 +246,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handleTwitter = (postBody, mediaUrl) => {
+  handlePostTwitter = (postBody, mediaUrl) => {
     const container = createElement('blockquote', {
       'class': 'twitter-tweet',
       'lang':  'en'
@@ -191,7 +264,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handleSpotify = (postBody, mediaUrl) => {
+  handlePostSpotify = (postBody, mediaUrl) => {
     // @see https://community.spotify.com/t5/Desktop-Windows/URI-Codes/td-p/4479486
     let src;
     const match = mediaUrl.toString().match(/\/(playlist|album|artist|track)\/([\w\d]+)/i);
