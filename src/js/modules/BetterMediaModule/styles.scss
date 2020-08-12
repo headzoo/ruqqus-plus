@@ -5,9 +5,15 @@
 .rp-better-media-image-container {
   display: block;
   position: relative;
+  width: 600px;
+  max-width: 100%;
 
   &.rp-better-media-collapsed {
     max-height: 500px;
+  }
+
+  img {
+    max-width: 100%;
   }
 }
 

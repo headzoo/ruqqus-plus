@@ -70,13 +70,23 @@ export default class BetterMediaModule extends Module {
       const mediaUrl = new URL(href);
 
       const supportedMediaHosts = {
-        'gfycat.com':   this.handleGfycat,
-        'i.imgur.com':  this.handleImgur,
-        'i.ruqqus.com': this.handleRuqqus
+        'gfycat.com':         this.handleGfycat,
+        'i.imgur.com':        this.handleImgur,
+        'i.ruqqus.com':       this.handleRuqqus,
+        'open.spotify.com':   this.handleSpotify,
+        'twitter.com':        this.handleTwitter,
+        'mobile.twitter.com': this.handleTwitter
       };
+
       const handler = supportedMediaHosts[mediaUrl.hostname];
       if (handler !== undefined) {
         handler.call(this, postBody, mediaUrl);
+      } else {
+        const ext = href.split('.').pop().toLowerCase();
+        if (['jpg', 'jpeg', 'gif', 'png'].indexOf(ext) !== -1) {
+          const img = this.createImageContainer(href);
+          postBody.appendChild(img);
+        }
       }
     }
   };
@@ -136,8 +146,55 @@ export default class BetterMediaModule extends Module {
    * @param {URL} mediaUrl
    */
   handleRuqqus = (postBody, mediaUrl) => {
+    const fluid = document.querySelector('.img-fluid');
+    if (fluid) {
+      fluid.closest('.row').remove();
+    }
     const img = this.createImageContainer(mediaUrl.toString());
     postBody.appendChild(img);
+  };
+
+  /**
+   * @param {HTMLElement} postBody
+   * @param {URL} mediaUrl
+   */
+  handleTwitter = (postBody, mediaUrl) => {
+    const container = createElement('blockquote', {
+      'class': 'twitter-tweet',
+      'lang':  'en'
+    });
+    const anchor = createElement('a', {
+      'href': mediaUrl.toString().replace('mobile.', '')
+    });
+    container.appendChild(anchor);
+    postBody.appendChild(container);
+
+    injectScript('//platform.twitter.com/widgets.js');
+  };
+
+  /**
+   * @param {HTMLElement} postBody
+   * @param {URL} mediaUrl
+   */
+  handleSpotify = (postBody, mediaUrl) => {
+    // @see https://community.spotify.com/t5/Desktop-Windows/URI-Codes/td-p/4479486
+    let src;
+    const match = mediaUrl.toString().match(/\/(playlist|album|artist|track)\/([\w\d]+)/i);
+    if (match) {
+      src = `https://open.spotify.com/embed?uri=spotify:${match[1]}:${match[2]}`;
+    }
+
+    if (src) {
+      const iframe = createElement('iframe', {
+        'src':             src,
+        'frameborder':     0,
+        'scrolling':       'no',
+        'width':           300,
+        'height':          380,
+        'allowfullscreen': 'allowfullscreen'
+      });
+      postBody.appendChild(iframe);
+    }
   };
 
   /**
@@ -156,7 +213,8 @@ export default class BetterMediaModule extends Module {
       const containerRect   = container.getBoundingClientRect();
       container.style.width = `${img.width}px`;
 
-      if (img.height > containerRect.height) {
+      const diff = img.height - containerRect.height;
+      if (diff > 0 && diff > 50) {
         const overflow = createElement('div', {
           'class': 'rp-better-media-overflow post-title',
           'text':  'Click to see more'
@@ -168,6 +226,8 @@ export default class BetterMediaModule extends Module {
           container.classList.remove('rp-better-media-collapsed');
           overflow.remove();
         }, false);
+      } else {
+        container.classList.remove('rp-better-media-collapsed');
       }
     };
     img.addEventListener('load', handleImageLoad, false);
