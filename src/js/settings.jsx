@@ -26,14 +26,14 @@ class App extends React.Component {
     const sidebarItems   = {};
     const pageComponents = {};
 
-    Object.keys(controllers).forEach((key, i) => {
+    Object.keys(controllers).forEach((key) => {
       const actionObj = new controllers[key]();
       const label     = actionObj.getSettingsSidebarLabel();
       if (!label) {
         return;
       }
 
-      if (i === 0) {
+      if (activePage === '') {
         activePage = key;
       }
       sidebarItems[key]   = label;
@@ -57,8 +57,6 @@ class App extends React.Component {
 
         this.setState({ activePage, sidebarItems, pageComponents });
         storage.onChanged(this.handleStorageChange);
-
-        // this.setState({ activePage: 'ThemeModule' });
       });
   }
 

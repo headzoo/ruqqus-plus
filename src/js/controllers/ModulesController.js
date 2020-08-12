@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import storage from '../utils/storage';
 import mods from '../modules';
 import Controller from './Controller';
+import Settings from './ModulesController/Settings';
 
 /**
  * Action that handles modules
@@ -23,70 +23,7 @@ export default class ModulesController extends Controller {
    * @returns {*}
    */
   getSettingsComponent = () => {
-    return () => {
-      const [loaded, setLoaded]   = useState({});
-      const [modules, setModules] = useState({});
-
-      useEffect(() => {
-        storage.get('modules', {})
-          .then((active) => {
-            Object.keys(mods).forEach((key) => {
-              if (active[key] === undefined) {
-                active[key] = mods[key].isEnabledByDefault();
-              }
-            });
-            setModules(active);
-
-            const newLoaded = {};
-            Object.keys(active).forEach((key) => {
-              if (mods[key]) {
-                newLoaded[key] = new mods[key]();
-              }
-            });
-            setLoaded(newLoaded);
-          });
-      }, []);
-
-      /**
-       * @param {*} e
-       */
-      const handleCheckChange = (e) => {
-        const { name }   = e.target;
-        const newModules = { ...modules };
-        newModules[name] = e.target.checked;
-
-        storage.set('modules', newModules)
-          .then(() => {
-            setModules(newModules);
-            const newLoaded = { ...loaded };
-            newLoaded[name] = new mods[name]();
-            setLoaded(newLoaded);
-          });
-      };
-
-      return (
-        <form className="pt-2">
-          <div className="mb-4">
-            {Object.keys(loaded).map((key) => (
-              <div key={key} className="custom-control custom-checkbox mb-2">
-                <input
-                  type="checkbox"
-                  name={key}
-                  id={`setting-${key}`}
-                  className="custom-control-input"
-                  checked={!!modules[key]}
-                  onChange={handleCheckChange}
-                />
-                <label className="custom-control-label" htmlFor={`setting-${key}`}>
-                  {loaded[key].getLabel()}
-                </label>
-                <div className="text-muted">{loaded[key].getHelp()}</div>
-              </div>
-            ))}
-          </div>
-        </form>
-      );
-    };
+    return Settings;
   };
 
   /**

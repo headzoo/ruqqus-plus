@@ -169,6 +169,11 @@ export default class Module {
   };
 
   /**
+   * Returns a react component that will be displayed in a modal
+   */
+  getSettingsModal = () => {}
+
+  /**
    * Called from the extension content script
    *
    * The content script has access to the chrome extension API but does not

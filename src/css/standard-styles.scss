@@ -7,6 +7,7 @@ $theme-colors: (
 
 @import "~bootstrap/scss/bootstrap.scss";
 @import "~toastr/build/toastr.css";
+@import "modal";
 
 body,
 html,
@@ -61,6 +62,15 @@ header {
 
 .settings-theme-card {
   border: 1px solid rgba(152, 152, 152, 0.125);
+}
+
+.settings-cog-icon {
+  cursor: pointer;
+  transition: color 250ms;
+
+  &:hover {
+    color: #FFF !important;
+  }
 }
 
 #toast-container {

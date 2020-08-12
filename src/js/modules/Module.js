@@ -31,4 +31,10 @@ export default class Module extends Controller {
   getHelp = () => {
     return '';
   };
+
+  /**
+   * Returns a react component that will be displayed in a modal
+   */
+  getSettingsModal = () => {
+  }
 }
