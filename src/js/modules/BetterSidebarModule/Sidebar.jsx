@@ -191,18 +191,37 @@ export default class Sidebar extends React.PureComponent {
                 Ruqqus Feeds
               </div>
             )}
-            <button
-              type="button"
-              className="btn"
-              title="Collapse"
-              onClick={this.handleCollapseClick}
-            >
-              {isCollapsed ? (
-                <i className="fas fa-chevron-circle-right rp-better-sidebar-collapse rp-better-sidebar-guild-icon" />
-              ) : (
-                <i className="fas fa-chevron-circle-left rp-better-sidebar-collapse rp-better-sidebar-guild-icon" />
+            <div>
+              {!isCollapsed && (
+                <i
+                  tabIndex={0}
+                  role="button"
+                  title="Sidebar settings"
+                  aria-label="Sidebar settings"
+                  onClick={this.handleSettingsClick}
+                  className="fas fa-cog rp-better-sidebar-collapse rp-better-sidebar-icon mr-2"
+                />
               )}
-            </button>
+              {isCollapsed ? (
+                <i
+                  tabIndex={0}
+                  role="button"
+                  title="Expand"
+                  aria-label="Expand sidebar"
+                  onClick={this.handleCollapseClick}
+                  className="fas fa-chevron-circle-right rp-better-sidebar-collapse rp-better-sidebar-icon"
+                />
+              ) : (
+                <i
+                  tabIndex={0}
+                  role="button"
+                  title="Collapse"
+                  aria-label="Collapse sidebar"
+                  onClick={this.handleCollapseClick}
+                  className="fas fa-chevron-circle-left rp-better-sidebar-collapse rp-better-sidebar-icon"
+                />
+              )}
+            </div>
           </div>
         </div>
         <ul className="no-bullets guild-recommendations-list pl-0">
