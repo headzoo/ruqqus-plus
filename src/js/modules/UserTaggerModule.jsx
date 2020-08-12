@@ -151,10 +151,8 @@ export default class UserTaggerModule extends Module {
     }
 
     // eslint-disable-next-line no-alert
-    const result = window.prompt('Comma separated list of tags:', promptValue);
-    if (result) {
-      const input = result.tags;
-
+    const input = window.prompt('Comma separated list of tags:', promptValue);
+    if (input) {
       const tx    = this.db.transaction(['userTags'], 'readwrite');
       const store = tx.objectStore('userTags');
 
