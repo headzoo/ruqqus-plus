@@ -1,5 +1,7 @@
 import Module from './Module';
 import { querySelectorEach, createElement, insertAfter, injectCSS } from '../utils/web';
+import storage from '../utils/storage';
+import SettingsModal from './VoteScoreModule/SettingsModal';
 
 /**
  * Makes the vote score +/- move visible
@@ -34,6 +36,13 @@ export default class VoteScoreModule extends Module {
   };
 
   /**
+   * Returns a react component that will be displayed in a modal
+   */
+  getSettingsModal = () => {
+    return SettingsModal;
+  };
+
+  /**
    * Called from the content script
    *
    * The content script has access to the chrome extension API but does not
@@ -53,52 +62,75 @@ export default class VoteScoreModule extends Module {
    *
    */
   wireupLinks = () => {
-    querySelectorEach('.posts .card', (card) => {
-      const score = card.querySelector('.voting *[data-original-title]');
-      if (score && !score.getAttribute('data-rp-vote-score-wired')) {
-        const title = score.getAttribute('data-original-title');
-        const metas = card.querySelectorAll('.post-meta-guild');
-        const span  = this.createSpan(title);
-        insertAfter(metas[1], span);
-        score.setAttribute('data-rp-vote-score-wired', 'true');
-      }
-    });
+    storage.get('VoteScoreModule.display', 'scores')
+      .then((display) => {
+        this.display = display;
 
-    querySelectorEach('.rp-popup-posts-post .card', (card) => {
-      const score = card.querySelector('.voting *[data-original-title]');
-      if (score && !score.getAttribute('data-rp-vote-score-wired')) {
-        const title = score.getAttribute('data-original-title');
-        const meta  = card.querySelector('.post-meta');
-        const span  = this.createSpan(title);
-        meta.prepend(span);
-        score.setAttribute('data-rp-vote-score-wired', 'true');
-      }
-    });
+        querySelectorEach('.posts .card', (card) => {
+          const voting = card.querySelector('.voting *[data-original-title]');
+          if (voting && !voting.getAttribute('data-rp-vote-score-wired')) {
+            const score = parseInt(card.querySelector('.score').innerText, 10);
+            const title = voting.getAttribute('data-original-title');
+            const metas = card.querySelectorAll('.post-meta-guild');
+            const span  = this.createSpan(title, score);
+            insertAfter(metas[1], span);
+            voting.setAttribute('data-rp-vote-score-wired', 'true');
+          }
+        });
+
+        querySelectorEach('.rp-popup-posts-post .card', (card) => {
+          const voting = card.querySelector('.voting *[data-original-title]');
+          if (voting && !voting.getAttribute('data-rp-vote-score-wired')) {
+            const score = parseInt(card.querySelector('.score').innerText, 10);
+            const title = voting.getAttribute('data-original-title');
+            const meta  = card.querySelector('.post-meta');
+            const span  = this.createSpan(title, score);
+            meta.prepend(span);
+            voting.setAttribute('data-rp-vote-score-wired', 'true');
+          }
+        });
+      });
   };
 
   /**
    * @param {string} title
+   * @param {number} score
    * @returns {HTMLElement}
    */
-  createSpan = (title) => {
+  createSpan = (title, score) => {
     const parts = this.extractScore(title);
+    if (this.display === 'score') {
+      return createElement('span', {
+        'html': `
+        <span class="rp-vote-score-up">+${parts.up}</span>/<span class="rp-vote-score-down">-${parts.down}</span>
+        &middot;&nbsp;`
+      });
+    }
+
+    let percent;
+    if (score === 0 && parts.up === parts.down) {
+      percent = 0;
+    } else {
+      percent = Math.floor((score / parts.up) * 100);
+    }
+
     return createElement('span', {
       'html': `
-        <span class="rp-vote-score-up">${parts.up}</span>/<span class="rp-vote-score-down">${parts.down}</span>
+        (%${percent})
         &middot;&nbsp;`
     });
   };
 
   /**
    * @param {string} title
-   * @returns {{up: string, down: string}}
+   * @returns {{up: number, down: number}}
    */
   extractScore = (title) => {
     const parts = title.split(' | ');
 
     return {
-      up:   parts[0],
-      down: parts[1]
+      up:   parseInt(parts[0].replace('+', ''), 10),
+      down: parseInt(parts[1].replace('-', ''), 10)
     };
   };
 }
