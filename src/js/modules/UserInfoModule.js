@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchUser } from '../utils/ruqqus';
-import { injectStyleLink, createElement, setHTML, querySelectorEach } from '../utils/web';
+import { createElement, setHTML, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import userTemplate from './UserInfoModule/user-template.html';
 
@@ -44,7 +44,6 @@ export default class UserInfoModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    injectStyleLink(chrome.runtime.getURL('css/user-info-styles.css'));
     this.listen('rp.change', this.wireupUserNames);
     this.onDOMReady(this.wireupUserNames);
   };
