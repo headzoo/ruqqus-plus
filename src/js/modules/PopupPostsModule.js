@@ -110,13 +110,15 @@ export default class PopupPostsModule extends Module {
    * @param {MouseEvent} e
    */
   handleTitleClick = (e) => {
-    e.preventDefault();
-    const { target } = e;
+    if (!isPostPage()) {
+      e.preventDefault();
+      const { target } = e;
 
-    const href  = target.getAttribute('href');
-    const title = target.innerText;
-    const thumb = target.closest('.card').querySelector('.post-img');
-    this.popup(href, title, thumb ? thumb.getAttribute('src') : '');
+      const href  = target.getAttribute('href');
+      const title = target.innerText;
+      const thumb = target.closest('.card').querySelector('.post-img');
+      this.popup(href, title, thumb ? thumb.getAttribute('src') : '');
+    }
   };
 
   /**
