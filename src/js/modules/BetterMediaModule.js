@@ -133,9 +133,14 @@ export default class BetterMediaModule extends Module {
     if (match) {
       src = `https://api.imgur.com/3/album/${match[1]}.json`;
     } else {
-      match = href.match(/^https:\/\/imgur.com\/(.*)/);
+      match = href.match(/^https:\/\/imgur.com\/gallery\/(.*)/);
       if (match) {
-        src = `https://api.imgur.com/3/image/${match[1]}.json`;
+        src = `https://api.imgur.com/3/gallery/${match[1]}.json`;
+      } else {
+        match = href.match(/^https:\/\/imgur.com\/(.*)/);
+        if (match) {
+          src = `https://api.imgur.com/3/image/${match[1]}.json`;
+        }
       }
     }
 
