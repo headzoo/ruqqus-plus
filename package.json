@@ -1,7 +1,7 @@
 {
   "name": "ruqqus-plus",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "scripts": {
     "build-chrome": "webpack -p && cd build && zip -r chrome.zip * && cd ..",
     "build-firefox": "webpack -p && cd build && web-ext build",
