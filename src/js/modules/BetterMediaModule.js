@@ -1,5 +1,5 @@
 import Module from './Module';
-import { createElement, injectScript, querySelectorEach, setHTML } from '../utils/web';
+import { createElement, injectScript, querySelectorEach } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
@@ -303,16 +303,15 @@ export default class BetterMediaModule extends Module {
     });
     const img = new Image();
     const handleImageLoad = () => {
-      const containerRect  = container.getBoundingClientRect();
       outer.style.maxWidth = 'none';
       outer.style.width    = `${img.width}px`;
       container.querySelector('.rp-better-media-load').remove();
+      const outerRect = outer.getBoundingClientRect();
 
-      const diff = img.height - containerRect.height;
-      if (diff > 0 && diff > 50) {
+      if (img.clientHeight > outerRect.height) {
         const overflow = createElement('div', {
           'class': 'rp-better-media-overflow post-title',
-          'text':  'Click to see more'
+          'text':  'Click To Expand'
         });
         container.appendChild(overflow);
         overflow.addEventListener('click', (e) => {

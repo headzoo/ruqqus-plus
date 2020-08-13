@@ -31,6 +31,8 @@ $height-header: 48px;
   transform: translateX(-50%);
   z-index: 1002;
   background-color: #FFF;
+  border-left: 1px solid #3f4146;
+  border-right: 1px solid #3f4146;
 
   .rp-dark-mode & {
     background-color: #181818;

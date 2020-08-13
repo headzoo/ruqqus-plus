@@ -5,12 +5,13 @@
 .rp-better-media-image-container {
   display: block;
   position: relative;
-  width: 600px;
+  width: 500px;
   max-width: 100%;
   overflow: hidden;
+  border: 1px solid #7b7b7b;
 
   &.rp-better-media-collapsed {
-    max-height: 500px;
+    max-height: 600px;
   }
 
   img {
