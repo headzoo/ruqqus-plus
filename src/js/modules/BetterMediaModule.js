@@ -77,13 +77,14 @@ export default class BetterMediaModule extends Module {
         const mediaUrl = new URL(href);
 
         const supportedMediaHosts = {
-          'gfycat.com':         this.handlePostGfycat,
-          'i.imgur.com':        this.handlePostImgur,
-          'imgur.com':          this.handlePostImgur,
-          'i.ruqqus.com':       this.handlePostRuqqus,
-          'open.spotify.com':   this.handlePostSpotify,
-          'twitter.com':        this.handlePostTwitter,
-          'mobile.twitter.com': this.handlePostTwitter
+          'gfycat.com':         this.createGfycat,
+          'www.redgifs.com':    this.createRedGifs,
+          'i.imgur.com':        this.createImgur,
+          'imgur.com':          this.createImgur,
+          'i.ruqqus.com':       this.createRuqqus,
+          'open.spotify.com':   this.createSpotify,
+          'twitter.com':        this.createTwitter,
+          'mobile.twitter.com': this.createTwitter
         };
 
         const handler = supportedMediaHosts[mediaUrl.hostname];
@@ -109,8 +110,17 @@ export default class BetterMediaModule extends Module {
     querySelectorEach('.card-header a', (a) => {
       const href = a.getAttribute('href');
       if (href) {
-        if (href.indexOf('https://imgur.com') === 0) {
-          a.addEventListener('click', this.handleAnchorImgur, false);
+        const supportedMediaHosts = {
+          'imgur.com':       this.handleAnchorImgur,
+          'www.redgifs.com': this.handleAnchorRedGifs,
+          'redgifs.com':     this.handleAnchorRedGifs,
+          'gfycat.com':      this.handleAnchorGfycat
+        };
+
+        const mediaUrl = new URL(href);
+        const handler  = supportedMediaHosts[mediaUrl.hostname];
+        if (handler !== undefined) {
+          a.addEventListener('click', handler, false);
         }
       }
     });
@@ -177,12 +187,51 @@ export default class BetterMediaModule extends Module {
   };
 
   /**
+   * @param {*} e
+   */
+  handleAnchorRedGifs = (e) => {
+    const mediaUrl = this.getClickedAnchorURL(e);
+    if (mediaUrl) {
+      const popup = this.createPopup();
+      this.createRedGifs(popup, mediaUrl);
+    }
+  };
+
+  /**
+   * @param {*} e
+   */
+  handleAnchorGfycat = (e) => {
+    const mediaUrl = this.getClickedAnchorURL(e);
+    if (mediaUrl) {
+      const popup = this.createPopup();
+      this.createGfycat(popup, mediaUrl);
+    }
+  };
+
+  /**
+   * @param {*} e
+   * @returns {URL}
+   */
+  getClickedAnchorURL = (e) => {
+    const { currentTarget } = e;
+
+    const href = currentTarget.getAttribute('href');
+    if (this.lastHref === href) {
+      return null;
+    }
+    this.lastHref = href;
+    e.preventDefault();
+
+    return new URL(href);
+  }
+
+  /**
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handlePostGfycat = (postBody, mediaUrl) => {
+  createGfycat = (postBody, mediaUrl) => {
     // @see https://developers.gfycat.com/iframe/
-    const iframe = createElement('iframe', {
+    const frame = this.createFrameContainer({
       'src':             `${mediaUrl.protocol}//${mediaUrl.hostname}/ifr${mediaUrl.pathname}`,
       'frameborder':     0,
       'scrolling':       'no',
@@ -191,14 +240,31 @@ export default class BetterMediaModule extends Module {
       'class':           'rp-better-media-iframe',
       'allowfullscreen': 'allowfullscreen'
     });
-    postBody.appendChild(iframe);
+    postBody.appendChild(frame);
   };
 
   /**
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handlePostImgur = (postBody, mediaUrl) => {
+  createRedGifs = (postBody, mediaUrl) => {
+    const frame = this.createFrameContainer({
+      'src':             `${mediaUrl.protocol}//${mediaUrl.hostname}/ifr${mediaUrl.pathname.replace('/watch', '')}`,
+      'frameborder':     0,
+      'scrolling':       'no',
+      'width':           640,
+      'height':          453,
+      'class':           'rp-better-media-iframe',
+      'allowfullscreen': 'allowfullscreen'
+    });
+    postBody.appendChild(frame);
+  };
+
+  /**
+   * @param {HTMLElement} postBody
+   * @param {URL} mediaUrl
+   */
+  createImgur = (postBody, mediaUrl) => {
     // @see https://help.imgur.com/hc/en-us/articles/211273743-Embed-Unit
     let id;
     let match = mediaUrl.toString().match(/^https:\/\/i.imgur.com\/(.*?)\./);
@@ -219,10 +285,12 @@ export default class BetterMediaModule extends Module {
     }
 
     if (id) {
+      const src       = chrome.runtime.getURL('images/loading.svg');
       const container = createElement('blockquote', {
-        'class':   'imgur-embed-pub',
+        'class':   'imgur-embed-pub rp-better-media-blockquote',
         'data-id': id,
-        'lang':    'en'
+        'lang':    'en',
+        'html':    `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
       });
       const anchor = createElement('a', {
         'href': `https://imgur.com/${id}`
@@ -238,7 +306,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handlePostRuqqus = (postBody, mediaUrl) => {
+  createRuqqus = (postBody, mediaUrl) => {
     const fluid = document.querySelector('.img-fluid');
     if (fluid) {
       fluid.closest('.row').remove();
@@ -251,10 +319,11 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handlePostTwitter = (postBody, mediaUrl) => {
+  createTwitter = (postBody, mediaUrl) => {
     const container = createElement('blockquote', {
-      'class': 'twitter-tweet',
-      'lang':  'en'
+      'class': 'twitter-tweet rp-better-media-blockquote',
+      'lang':  'en',
+      'html':  `<img class="rp-better-media-load" src="${chrome.runtime.getURL('images/loading.svg')}" alt="Load" />`
     });
     const anchor = createElement('a', {
       'href': mediaUrl.toString().replace('mobile.', '')
@@ -269,7 +338,7 @@ export default class BetterMediaModule extends Module {
    * @param {HTMLElement} postBody
    * @param {URL} mediaUrl
    */
-  handlePostSpotify = (postBody, mediaUrl) => {
+  createSpotify = (postBody, mediaUrl) => {
     // @see https://community.spotify.com/t5/Desktop-Windows/URI-Codes/td-p/4479486
     let src;
     const match = mediaUrl.toString().match(/\/(playlist|album|artist|track)\/([\w\d]+)/i);
@@ -278,7 +347,7 @@ export default class BetterMediaModule extends Module {
     }
 
     if (src) {
-      const iframe = createElement('iframe', {
+      const frame = this.createFrameContainer({
         'src':             src,
         'frameborder':     0,
         'scrolling':       'no',
@@ -286,9 +355,29 @@ export default class BetterMediaModule extends Module {
         'height':          380,
         'allowfullscreen': 'allowfullscreen'
       });
-      postBody.appendChild(iframe);
+      postBody.appendChild(frame);
     }
   };
+
+  /**
+   * @param {*} attribs
+   * @returns {HTMLElement}
+   */
+  createFrameContainer = (attribs) => {
+    const src       = chrome.runtime.getURL('images/loading.svg');
+    const container = createElement('div', {
+      'html': `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
+    });
+    const iframe = createElement('iframe', attribs);
+    iframe.style.display = 'none';
+    iframe.addEventListener('load', () => {
+      container.querySelector('.rp-better-media-load').remove();
+      iframe.style.display = 'block';
+    });
+    container.appendChild(iframe);
+
+    return container;
+  }
 
   /**
    * @param {URL} mediaUrl
@@ -349,5 +438,35 @@ export default class BetterMediaModule extends Module {
     outer.appendChild(attrib);
 
     return outer;
+  };
+
+  /**
+   * @returns {HTMLElement}
+   */
+  createPopup = () => {
+    const body = document.querySelector('body');
+    body.style.overflow = 'hidden';
+
+    const mask = createElement('div', {
+      'class': 'rp-better-media-mask'
+    });
+    body.appendChild(mask);
+    const container = createElement('div', {
+      'class': 'rp-better-media-popup-container'
+    });
+    body.append(container);
+    const content = createElement('div', {
+      'class': 'rp-better-media-popup-content'
+    });
+    container.appendChild(content);
+
+    container.addEventListener('click', () => {
+      content.remove();
+      container.remove();
+      mask.remove();
+      body.style.overflow = 'auto';
+    }, false);
+
+    return content;
   };
 }

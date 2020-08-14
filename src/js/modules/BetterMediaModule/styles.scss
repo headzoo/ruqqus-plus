@@ -1,5 +1,11 @@
+$height-header: 48px;
+
 .rp-better-media-iframe {
   max-width: 100%;
+}
+
+.rp-better-media-load {
+  display: block;
 }
 
 .rp-better-media-image-container {
@@ -48,4 +54,41 @@
     width: 20px;
     border-radius: 50%;
   }
+}
+
+.rp-better-media-blockquote {
+  background-color: transparent;
+  border-left: 0;
+}
+
+.rp-better-media-mask {
+  position: fixed;
+  top: $height-header;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  z-index: 1000;
+  opacity: 0.7;
+}
+
+.rp-better-media-popup-container {
+  position: fixed;
+  top: $height-header;
+  bottom: 50px;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+.rp-better-media-popup-content {
+  position: absolute;
+  top: 25px;
+  width: auto;
+  left: 50%;
+  height: auto;
+  min-height: 100%;
+  transform: translateX(-50%);
+  z-index: 1002;
 }
