@@ -109,7 +109,7 @@ export default class BetterMediaModule extends Module {
   wireupCards = () => {
     querySelectorEach('.card-header a', (a) => {
       const href = a.getAttribute('href');
-      if (href) {
+      if (href && href.indexOf('http') === 0) {
         const supportedMediaHosts = {
           'imgur.com':       this.handleAnchorImgur,
           'www.redgifs.com': this.handleAnchorRedGifs,
