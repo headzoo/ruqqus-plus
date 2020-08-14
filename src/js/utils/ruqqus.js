@@ -101,7 +101,7 @@ export const fetchMyGuilds = async () => {
       if (title && avatar) {
         found = true;
         guilds.push({
-          name:     title.innerText.trim().replace('+', ''),
+          name:     title.getAttribute('href').replace('/+', ''),
           avatar:   avatar.getAttribute('src'),
           isMaster: false
         });
