@@ -129,7 +129,7 @@ class App extends React.Component {
               ))}
             </ul>
             <div className="p-4 text-center">
-              <small>v0.0.4</small>
+              <small>v0.1.4</small>
             </div>
           </nav>
           <div className="flex-grow-1">
