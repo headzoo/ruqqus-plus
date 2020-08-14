@@ -139,6 +139,7 @@ export default class PopupPostsModule extends Module {
         const template = document.createElement('template');
         template.innerHTML = text;
         const html = template.content;
+
         const col  = html.querySelector('#main-content-col');
         col.classList.add('rp-popup-posts-col');
         col.querySelector('.guild-border-top').classList.add('rp-popup-posts-guild');
@@ -157,6 +158,9 @@ export default class PopupPostsModule extends Module {
         container.append(post);
         post.append(col);
         post.querySelector('#voting').classList.add('mt-0');
+        querySelectorEach(post, '.post-filter .dropdown-item', (a) => {
+          a.addEventListener('click', this.handlePostFilterClick, false);
+        });
 
         document.title = title;
         window.history.pushState(null, document.title, url);
@@ -181,6 +185,36 @@ export default class PopupPostsModule extends Module {
           }
         };
         container.addEventListener('click', handleContainerClick, false);
+      });
+  };
+
+  /**
+   * @param {Event} e
+   */
+  handlePostFilterClick = (e) => {
+    const { currentTarget } = e;
+    e.preventDefault();
+
+    const href = currentTarget.getAttribute('href');
+    const root = new URL(document.location.href);
+
+    this.loader(true);
+    fetch(`${root.protocol}//${root.hostname}${root.pathname}${href}`)
+      .then((resp) => resp.text())
+      .then((text) => {
+        const template = document.createElement('template');
+        template.innerHTML = text;
+        const html = template.content;
+
+        const commentSection = html.querySelector('.comment-section');
+        const oldSection     = document.querySelector('.comment-section');
+        oldSection.parentNode.replaceChild(commentSection, oldSection);
+        querySelectorEach('.post-filter .dropdown-item', (a) => {
+          a.addEventListener('click', this.handlePostFilterClick, false);
+        });
+      })
+      .finally(() => {
+        this.loader(false);
       });
   };
 
