@@ -77,6 +77,14 @@ export const insertAfter = (ref, node) => {
 };
 
 /**
+ * @param {Element} ref
+ * @param {Element} node
+ */
+export const insertBefore = (ref, node) => {
+  ref.parentNode.insertBefore(node, ref);
+};
+
+/**
  * @param {HTMLElement} el
  * @param {{}} attribs
  * @returns {HTMLElement}

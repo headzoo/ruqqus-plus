@@ -1,5 +1,5 @@
 import Module from './Module';
-import { querySelectorEach, createElement, insertAfter, injectCSS } from '../utils/web';
+import { querySelectorEach, createElement, insertAfter, insertBefore, injectCSS } from '../utils/web';
 import storage from '../utils/storage';
 import SettingsModal from './VoteScoreModule/SettingsModal';
 
@@ -78,6 +78,18 @@ export default class VoteScoreModule extends Module {
           }
         });
 
+        querySelectorEach('.comment', (comment) => {
+          const points = comment.querySelector('.points');
+          if (points && !points.getAttribute('data-rp-vote-score-wired')) {
+            const score     = parseInt(comment.querySelector('.score').innerText, 10);
+            const title     = points.getAttribute('data-original-title');
+            const timeStamp = comment.querySelector('.time-stamp');
+            const span      = this.createSpan(title, score, false);
+            insertBefore(timeStamp, span);
+            points.setAttribute('data-rp-vote-score-wired', 'true');
+          }
+        });
+
         querySelectorEach('.rp-popup-posts-post .card', (card) => {
           const voting = card.querySelector('.voting *[data-original-title]');
           if (voting && !voting.getAttribute('data-rp-vote-score-wired')) {
@@ -95,15 +107,17 @@ export default class VoteScoreModule extends Module {
   /**
    * @param {string} title
    * @param {number} score
+   * @param {boolean} dotsAfter
    * @returns {HTMLElement}
    */
-  createSpan = (title, score) => {
+  createSpan = (title, score, dotsAfter = true) => {
     const parts = this.extractScore(title);
     if (this.display === 'score') {
       return createElement('span', {
         'html': `
+        ${dotsAfter ? '' : '&nbsp;&middot;'}
         <span class="rp-vote-score-up">+${parts.up}</span>/<span class="rp-vote-score-down">-${parts.down}</span>
-        &middot;&nbsp;`
+        ${dotsAfter ? '&middot;&nbsp;' : ''}`
       });
     }
 
@@ -116,8 +130,9 @@ export default class VoteScoreModule extends Module {
 
     return createElement('span', {
       'html': `
+        ${dotsAfter ? '' : '&nbsp;&middot;'}
         (%${percent})
-        &middot;&nbsp;`
+        ${dotsAfter ? '&middot;&nbsp;' : ''}`
     });
   };
 
