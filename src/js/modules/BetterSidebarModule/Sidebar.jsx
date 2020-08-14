@@ -7,6 +7,10 @@ import { searchByObjectKey } from '../../utils/arrays';
 import SettingsModal from './SettingsModal';
 import GuildList from './GuildList';
 
+const defaultSettings = {
+  showBadgeNSFW: true
+};
+
 export default class Sidebar extends React.PureComponent {
   /**
    * @param {*} props
@@ -20,7 +24,8 @@ export default class Sidebar extends React.PureComponent {
       loading:      true,
       isCollapsed:  localStorage.getItem('sidebarPref') === 'collapsed',
       filterValue:  '',
-      settingsOpen: false
+      settingsOpen: false,
+      settings:     {}
     };
 
     this.views = {};
@@ -29,40 +34,33 @@ export default class Sidebar extends React.PureComponent {
   /**
    *
    */
-  componentDidMount() {
-    storage.get('BetterSidebarModule.views', {})
-      .then((views) => {
-        this.views = views;
+  async componentDidMount() {
+    try {
+      this.views      = await storage.get('BetterSidebarModule.views', {});
+      const settings  = await storage.get('BetterSidebarModule.settings', defaultSettings);
+      const favorites = await storage.get('BetterSidebarModule.favorites', []);
+      this.setState({ settings, favorites });
 
-        storage.get('BetterSidebarModule.favorites', [])
-          .then((favorites) => {
-            this.setState({ favorites });
-
-            // Guilds are cached in storage for 24 hours.
-            storage.get('BetterSidebarModule.guilds')
-              .then((guilds) => {
-                if (guilds) {
-                  this.setState({
-                    guilds:  this.sortGuilds(guilds),
-                    loading: false
-                  });
-                } else {
-                  fetchMyGuilds()
-                    .then((g) => {
-                      this.setState({
-                        guilds:  this.sortGuilds(g),
-                        loading: false
-                      });
-                      storage.set('BetterSidebarModule.guilds', g, 86400 * 1000);
-                    });
-                }
-              })
-              .catch((err) => {
-                console.error(err);
-                this.setState({ loading: false });
-              });
+      const guilds = await storage.get('BetterSidebarModule.guilds');
+      if (guilds) {
+        this.setState({
+          guilds:  this.sortGuilds(guilds),
+          loading: false
+        });
+      } else {
+        fetchMyGuilds()
+          .then((g) => {
+            this.setState({
+              guilds:  this.sortGuilds(g),
+              loading: false
+            });
+            storage.set('BetterSidebarModule.guilds', g, 86400 * 1000);
           });
-      });
+      }
+    } catch (error) {
+      console.error(error);
+      this.setState({ loading: false });
+    }
   }
 
   /**
@@ -144,6 +142,16 @@ export default class Sidebar extends React.PureComponent {
    */
   handleSettingsClick = () => {
     this.setState({ settingsOpen: true });
+  };
+
+  /**
+   *
+   */
+  handleSettingsChange = () => {
+    storage.get('BetterSidebarModule.settings', defaultSettings)
+      .then((settings) => {
+        this.setState({ settings });
+      });
   };
 
   /**
@@ -276,7 +284,7 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   renderFavoriteGuilds = () => {
-    const { favorites, guilds, isCollapsed, filterValue } = this.state;
+    const { favorites, settings, guilds, isCollapsed, filterValue } = this.state;
 
     if (favorites.length === 0 || !guilds || filterValue !== '') {
       return null;
@@ -299,6 +307,7 @@ export default class Sidebar extends React.PureComponent {
         icon="star"
         guilds={favoriteGuilds}
         favorites={favorites}
+        settings={settings}
         isCollapsed={isCollapsed}
         onFavorite={this.handleFavorite}
       />
@@ -309,7 +318,7 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   renderMyGuilds = () => {
-    const { guilds, favorites, isCollapsed, filterValue } = this.state;
+    const { guilds, favorites, settings, isCollapsed, filterValue } = this.state;
 
     if (!guilds) {
       return null;
@@ -331,6 +340,7 @@ export default class Sidebar extends React.PureComponent {
         icon="chess-rook"
         guilds={newGuilds}
         favorites={favorites}
+        settings={settings}
         isCollapsed={isCollapsed}
         onFavorite={this.handleFavorite}
       />
@@ -341,7 +351,7 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   renderGuildMasterGuilds = () => {
-    const { guilds, favorites, isCollapsed, filterValue } = this.state;
+    const { guilds, favorites, settings, isCollapsed, filterValue } = this.state;
 
     if (!guilds || filterValue !== '') {
       return null;
@@ -357,6 +367,7 @@ export default class Sidebar extends React.PureComponent {
         icon="crown"
         guilds={newGuilds}
         favorites={favorites}
+        settings={settings}
         isCollapsed={isCollapsed}
         onFavorite={this.handleFavorite}
       />
@@ -409,7 +420,11 @@ export default class Sidebar extends React.PureComponent {
           </div>
         </div>
         {settingsOpen && (
-          <SettingsModal onHidden={() => this.setState({ settingsOpen: false })} open />
+          <SettingsModal
+            onHidden={() => this.setState({ settingsOpen: false })}
+            onChange={this.handleSettingsChange}
+            open
+          />
         )}
       </div>
     );

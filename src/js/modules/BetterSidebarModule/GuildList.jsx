@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GuildListItem from './GuildListItem';
 
-const GuildList = ({ title, icon, guilds, favorites, isCollapsed, onFavorite }) => {
+const GuildList = ({ title, icon, guilds, favorites, settings, isCollapsed, onFavorite }) => {
   return (
     <div className="mb-4">
       <div>
@@ -26,6 +26,7 @@ const GuildList = ({ title, icon, guilds, favorites, isCollapsed, onFavorite }) 
           <GuildListItem
             key={guild.name}
             guild={guild}
+            settings={settings}
             favorites={favorites}
             isCollapsed={isCollapsed}
             onFavorite={onFavorite}
@@ -41,6 +42,7 @@ GuildList.propTypes = {
   icon:        PropTypes.string.isRequired,
   guilds:      PropTypes.array,
   favorites:   PropTypes.array,
+  settings:    PropTypes.object.isRequired,
   isCollapsed: PropTypes.bool,
   onFavorite:  PropTypes.func.isRequired
 };

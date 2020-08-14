@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
+const GuildListItem = ({ guild, favorites, settings, isCollapsed, onFavorite }) => {
   const isFavorited = favorites.indexOf(guild.name) !== -1;
 
   if (isCollapsed) {
@@ -21,7 +21,12 @@ const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
   return (
     <li key={guild.name} className="guild-recommendations-item rp-better-sidebar-item">
       <div className="d-flex align-items-center">
-        <a href={`/+${guild.name}`}>
+        <a href={`/+${guild.name}`} className="position-relative">
+          {(settings.showBadgeNSFW && guild.isNSFW) && (
+            <span className="badge text-danger border-danger border-1 text-small-extra rp-better-sidebar-item-nsfw">
+              nsfw
+            </span>
+          )}
           <img
             src={guild.avatar}
             className="profile-pic profile-pic-30 mr-2"
@@ -54,6 +59,7 @@ const GuildListItem = ({ guild, favorites, isCollapsed, onFavorite }) => {
 GuildListItem.propTypes = {
   guild:       PropTypes.object.isRequired,
   favorites:   PropTypes.array.isRequired,
+  settings:    PropTypes.object.isRequired,
   isCollapsed: PropTypes.bool.isRequired,
   onFavorite:  PropTypes.func.isRequired
 };

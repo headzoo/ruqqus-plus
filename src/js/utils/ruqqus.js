@@ -103,6 +103,7 @@ export const fetchMyGuilds = async () => {
         guilds.push({
           name:     title.getAttribute('href').replace('/+', ''),
           avatar:   avatar.getAttribute('src'),
+          isNSFW:   title.innerText.indexOf('NSFW') !== -1,
           isMaster: false
         });
       }
