@@ -1,5 +1,6 @@
 import queryString from 'query-string';
 import { insertAfter, createElement } from '../utils/web';
+import { getLoaderURL } from '../utils/loader';
 import Module from './Module';
 
 /**
@@ -93,7 +94,7 @@ export default class InfiniteScrollModule extends Module {
       pageLinks[0].style.display = 'none';
       pageLinks[1].style.display = 'none';
       this.loading = document.createElement('img');
-      this.loading.setAttribute('src', chrome.runtime.getURL('images/loading.svg'));
+      this.loading.setAttribute('src', getLoaderURL());
       this.loading.setAttribute('style', 'display: none;');
       insertAfter(pageLinks[1], this.loading);
 

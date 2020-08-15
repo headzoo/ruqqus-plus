@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Icon } from '../../components';
 import { fetchMyGuilds } from '../../utils/ruqqus';
+import { getLoaderURL } from '../../utils/loader';
 import storage from '../../utils/storage';
 import { searchByObjectKey } from '../../utils/arrays';
 import SettingsModal from './SettingsModal';
@@ -422,7 +423,7 @@ export default class Sidebar extends React.PureComponent {
             {this.renderFilterInput()}
             {sectionsToRender}
             {loading && (
-              <img src={chrome.runtime.getURL('images/loading.svg')} alt="Loading" />
+              <img src={getLoaderURL()} alt="Loading" />
             )}
           </div>
           <div className="d-flex">

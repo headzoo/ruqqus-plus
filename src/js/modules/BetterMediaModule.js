@@ -1,6 +1,7 @@
 import Module from './Module';
 import { createElement, injectScript, querySelectorEach } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
+import { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
 /**
@@ -285,7 +286,7 @@ export default class BetterMediaModule extends Module {
     }
 
     if (id) {
-      const src       = chrome.runtime.getURL('images/loading.svg');
+      const src       = getLoaderURL();
       const container = createElement('blockquote', {
         'class':   'imgur-embed-pub rp-better-media-blockquote',
         'data-id': id,
@@ -323,7 +324,7 @@ export default class BetterMediaModule extends Module {
     const container = createElement('blockquote', {
       'class': 'twitter-tweet rp-better-media-blockquote',
       'lang':  'en',
-      'html':  `<img class="rp-better-media-load" src="${chrome.runtime.getURL('images/loading.svg')}" alt="Load" />`
+      'html':  `<img class="rp-better-media-load" src="${getLoaderURL()}" alt="Load" />`
     });
     const anchor = createElement('a', {
       'href': mediaUrl.toString().replace('mobile.', '')
@@ -364,7 +365,7 @@ export default class BetterMediaModule extends Module {
    * @returns {HTMLElement}
    */
   createFrameContainer = (attribs) => {
-    const src       = chrome.runtime.getURL('images/loading.svg');
+    const src       = getLoaderURL();
     const container = createElement('div', {
       'html': `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
     });
@@ -393,7 +394,7 @@ export default class BetterMediaModule extends Module {
       'href':   mediaUrl.toString(),
       'target': '_blank',
       'rel':    'nofollow noreferrer',
-      'html':   `<img class="rp-better-media-load" src="${chrome.runtime.getURL('images/loading.svg')}" alt="Load" />`
+      'html':   `<img class="rp-better-media-load" src="${getLoaderURL()}" alt="Load" />`
     });
     const img = new Image();
     const handleImageLoad = () => {

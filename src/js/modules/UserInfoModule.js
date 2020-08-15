@@ -3,6 +3,7 @@ import Module from './Module';
 import { fetchUser } from '../utils/ruqqus';
 import { createElement, setHTML, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
+import { getLoaderURL } from '../utils/loader';
 import userTemplate from './UserInfoModule/user-template.html';
 
 /**
@@ -77,7 +78,7 @@ export default class UserInfoModule extends Module {
       const box  = createElement('div', {
         'class':                  'rp-user-info-box',
         'style':                  `top: ${rect.top + 20}px; left: ${rect.left}px`,
-        'html':                   `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" />`,
+        'html':                   `<img src="${getLoaderURL()}" alt="Loading" />`,
         'data-userInfo-username': userName
       });
       document.querySelector('body').appendChild(box);

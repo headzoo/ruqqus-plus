@@ -47,6 +47,19 @@
   border-color: #292929;
 }
 
+.rp-loader {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 2000;
+  left: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+}
+
+
 #toast-container {
   margin-top: 15px !important;
 

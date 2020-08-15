@@ -1,6 +1,7 @@
 import Module from './Module';
 import { createElement, querySelectorEach, hasParentClass } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
+import loader from '../utils/loader';
 
 /**
  * Opens posts in a popup window
@@ -128,7 +129,7 @@ export default class PopupPostsModule extends Module {
    */
   popup = (url, title, thumb) => {
     this.lastTitle = document.title;
-    this.loader(true);
+    loader(true);
 
     fetch(url)
       .then((resp) => resp.text())
@@ -166,7 +167,7 @@ export default class PopupPostsModule extends Module {
         window.history.pushState(null, document.title, url);
         this.dispatch('rp.PopupPostsModule.events', { url, title, thumb });
         this.dispatch('rp.change');
-        this.loader(false);
+        loader(false);
 
         /**
          * @param {Event} e
@@ -198,7 +199,7 @@ export default class PopupPostsModule extends Module {
     const href = currentTarget.getAttribute('href');
     const root = new URL(document.location.href);
 
-    this.loader(true);
+    loader(true);
     fetch(`${root.protocol}//${root.hostname}${root.pathname}${href}`)
       .then((resp) => resp.text())
       .then((text) => {
@@ -214,26 +215,7 @@ export default class PopupPostsModule extends Module {
         });
       })
       .finally(() => {
-        this.loader(false);
+        loader(false);
       });
   };
-
-  /**
-   * @param {boolean} show
-   */
-  loader = (show) => {
-    if (!show) {
-      const l = document.querySelector('.rp-popup-posts-loader');
-      if (l) {
-        l.remove();
-      }
-      return;
-    }
-
-    const img = createElement('img', {
-      'src':   chrome.runtime.getURL('images/loading.svg'),
-      'class': 'rp-popup-posts-loader'
-    });
-    document.querySelector('body').appendChild(img);
-  }
 }

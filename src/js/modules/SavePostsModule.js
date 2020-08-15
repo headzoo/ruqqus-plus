@@ -3,6 +3,7 @@ import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
 import { setHTML, createElement, createTemplateContent, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
+import { getLoaderURL } from '../utils/loader';
 import postTemplate from './SavePostsModule/post-template.html';
 
 /**
@@ -166,7 +167,7 @@ export default class SavePostsModule extends Module {
     if (nav && !nav.querySelector('.rp-nav-link')) {
       item = createElement('li', {
         'class': 'nav-item',
-        'html':  `<img src="${chrome.runtime.getURL('images/loading.svg')}" alt="Loading" style="margin-top: 5px" />`
+        'html':  `<img src="${getLoaderURL()}" alt="Loading" style="margin-top: 5px" />`
       });
       nav.appendChild(item);
     }
