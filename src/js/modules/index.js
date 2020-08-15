@@ -16,6 +16,7 @@ import RecentlyViewedModule from './RecentlyViewedModule';
 import VoteScoreModule from './VoteScoreModule';
 import CopyQuoteReplyModule from './CopyQuoteReplyModule';
 import ChangeHomeLinkModule from './ChangeHomeLinkModule';
+import FixCrossPostModule from './FixCrossPostModule';
 
 export default {
   InfiniteScrollModule,
@@ -35,5 +36,6 @@ export default {
   ChangeHomeLinkModule,
   BlockUserModule,
   CopyQuoteReplyModule,
-  ThemeModule
+  ThemeModule,
+  FixCrossPostModule
 };

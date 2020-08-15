@@ -1,5 +1,6 @@
 0.1.4
 - Adds more settings to BetterSidebarModule
+- Adds FixCrossPostModule
 
 0.0.3
 - Adds PopupPostsModule
