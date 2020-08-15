@@ -121,9 +121,26 @@ export default class BetterMediaModule extends Module {
         const handler  = supportedMediaHosts[mediaUrl.hostname];
         if (handler !== undefined) {
           a.addEventListener('click', handler, false);
+        } else {
+          const ext = mediaUrl.pathname.split('.').pop().toLowerCase();
+          if (['jpg', 'jpeg', 'png', 'gif'].indexOf(ext) !== -1) {
+            a.addEventListener('click', this.handleAnchorImage, false);
+          }
         }
       }
     });
+  };
+
+  /**
+   * @param {*} e
+   */
+  handleAnchorImage = (e) => {
+    const mediaUrl = this.getClickedAnchorURL(e);
+    if (mediaUrl) {
+      const popup = this.createPopup();
+      const img   = this.createImageContainer(mediaUrl);
+      popup.appendChild(img);
+    }
   };
 
   /**
@@ -235,7 +252,7 @@ export default class BetterMediaModule extends Module {
    */
   createGfycat = (postBody, mediaUrl) => {
     // @see https://developers.gfycat.com/iframe/
-    const frame = this.createFrameContainer({
+    const frame = this.createFrameContainer(mediaUrl, {
       'src':             `${mediaUrl.protocol}//${mediaUrl.hostname}/ifr${mediaUrl.pathname}`,
       'frameborder':     0,
       'scrolling':       'no',
@@ -252,7 +269,7 @@ export default class BetterMediaModule extends Module {
    * @param {URL} mediaUrl
    */
   createRedGifs = (postBody, mediaUrl) => {
-    const frame = this.createFrameContainer({
+    const frame = this.createFrameContainer(mediaUrl, {
       'src':             `${mediaUrl.protocol}//${mediaUrl.hostname}/ifr${mediaUrl.pathname.replace('/watch', '')}`,
       'frameborder':     0,
       'scrolling':       'no',
@@ -351,7 +368,7 @@ export default class BetterMediaModule extends Module {
     }
 
     if (src) {
-      const frame = this.createFrameContainer({
+      const frame = this.createFrameContainer(mediaUrl, {
         'src':             src,
         'frameborder':     0,
         'scrolling':       'no',
@@ -364,10 +381,11 @@ export default class BetterMediaModule extends Module {
   };
 
   /**
+   * @param {URL} mediaUrl
    * @param {*} attribs
    * @returns {HTMLElement}
    */
-  createFrameContainer = (attribs) => {
+  createFrameContainer = (mediaUrl, attribs) => {
     const src       = getLoaderURL();
     const container = this.html.createElement('div', {
       'html': `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
@@ -379,6 +397,9 @@ export default class BetterMediaModule extends Module {
       iframe.style.display = 'block';
     });
     container.appendChild(iframe);
+
+    const attrib = this.createAttribute(mediaUrl);
+    container.appendChild(attrib);
 
     return container;
   }
@@ -428,17 +449,7 @@ export default class BetterMediaModule extends Module {
     container.appendChild(img);
     outer.appendChild(container);
 
-    let icon;
-    for (let i = 0; i < favIconsKeys.length; i++) {
-      if (mediaUrl.hostname.indexOf(favIconsKeys[i]) !== -1) {
-        icon = favIcons[favIconsKeys[i]];
-        break;
-      }
-    }
-    const attrib = this.html.createElement('div', {
-      'class': 'rp-better-media-attrib',
-      'html':  icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
-    });
+    const attrib = this.createAttribute(mediaUrl);
     outer.appendChild(attrib);
 
     return outer;
@@ -462,8 +473,8 @@ export default class BetterMediaModule extends Module {
     const content = this.html.createElement('div', {
       'class': 'rp-better-media-popup-content'
     });
-    container.appendChild(content);
 
+    container.appendChild(content);
     container.addEventListener('click', () => {
       content.remove();
       container.remove();
@@ -472,5 +483,26 @@ export default class BetterMediaModule extends Module {
     }, false);
 
     return content;
+  };
+
+  /**
+   * @param {URL} mediaUrl
+   * @returns {HTMLElement}
+   */
+  createAttribute = (mediaUrl) => {
+    let icon;
+    for (let i = 0; i < favIconsKeys.length; i++) {
+      if (mediaUrl.hostname.indexOf(favIconsKeys[i]) !== -1) {
+        icon = favIcons[favIconsKeys[i]];
+        break;
+      }
+    }
+
+    return this.html.createElement('a', {
+      'class':  'rp-better-media-attrib',
+      'href':   mediaUrl.toString(),
+      'target': '_blank',
+      'html':   icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
+    });
   };
 }
