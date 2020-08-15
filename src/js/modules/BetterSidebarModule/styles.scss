@@ -65,8 +65,29 @@
   position: absolute;
   font-size: 9px !important;
   background-color: #e53e3e;
-  color: #000 !important;
+  color: #FFF !important;
   padding: .15em .4em;
   bottom: -8px;
   opacity: 0.9;
+}
+
+.rp-better-sidebar-settings-modal {
+  .rp-dark-mode & {
+    .list-group-item {
+      background-color: #2d2d2d;
+    }
+
+    .btn {
+      color: #FFF;
+    }
+  }
+
+  .custom-control-input {
+    width: 1.25rem;
+    height: 1.5rem;
+  }
+
+  .custom-control-label {
+    vertical-align: middle;
+  }
 }

@@ -1,3 +1,6 @@
+0.1.4
+- Adds more settings to BetterSidebarModule
+
 0.0.3
 - Adds PopupPostsModule
 - BetterSidebarModule sorts by most viewed guilds and favorites

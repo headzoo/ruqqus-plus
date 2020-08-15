@@ -1,13 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import GuildListItem from './GuildListItem';
+import SidebarTools from './SidebarTools';
 
-const GuildList = ({ title, icon, guilds, favorites, settings, isCollapsed, onFavorite }) => {
+const GuildList = ({ title, icon, guilds, favorites, settings, isTop, isCollapsed, onFavorite, onToolClick }) => {
   return (
     <div className="mb-4">
       <div>
         {isCollapsed ? (
-          <div className="d-flex justify-content-center align-items-center mb-4">
+          <div className="d-flex flex-column justify-content-center align-items-center mb-4">
+            {isTop && (
+              <div className="mb-2">
+                <SidebarTools
+                  isCollapsed={isCollapsed}
+                  onClick={onToolClick}
+                />
+              </div>
+            )}
             <i className={`fas fa-${icon} rp-better-sidebar-guild-icon`} />
           </div>
         ) : (
@@ -18,6 +27,12 @@ const GuildList = ({ title, icon, guilds, favorites, settings, isCollapsed, onFa
             >
               {title}
             </div>
+            {isTop && (
+              <SidebarTools
+                isCollapsed={isCollapsed}
+                onClick={onToolClick}
+              />
+            )}
           </div>
         )}
       </div>
@@ -42,9 +57,11 @@ GuildList.propTypes = {
   icon:        PropTypes.string.isRequired,
   guilds:      PropTypes.array,
   favorites:   PropTypes.array,
+  isTop:       PropTypes.bool.isRequired,
   settings:    PropTypes.object.isRequired,
   isCollapsed: PropTypes.bool,
-  onFavorite:  PropTypes.func.isRequired
+  onFavorite:  PropTypes.func.isRequired,
+  onToolClick: PropTypes.func.isRequired
 };
 
 GuildList.defaultProps = {

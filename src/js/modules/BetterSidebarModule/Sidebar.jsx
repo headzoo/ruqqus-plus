@@ -6,9 +6,18 @@ import storage from '../../utils/storage';
 import { searchByObjectKey } from '../../utils/arrays';
 import SettingsModal from './SettingsModal';
 import GuildList from './GuildList';
+import SidebarTools from './SidebarTools';
 
 const defaultSettings = {
-  showBadgeNSFW: true
+  showBadgeNSFW: true,
+  showCreate:    true,
+  showFavorite:  true,
+  sections:      [
+    { name: 'ruqqus',      label: 'Ruqqus Feeds',   visible: true },
+    { name: 'favorites',   label: 'Favorite Guilds', visible: true },
+    { name: 'mine',        label: 'My Guilds',       visible: true },
+    { name: 'guildmaster', label: 'Guildmaster Of',  visible: true }
+  ]
 };
 
 export default class Sidebar extends React.PureComponent {
@@ -25,7 +34,7 @@ export default class Sidebar extends React.PureComponent {
       isCollapsed:  localStorage.getItem('sidebarPref') === 'collapsed',
       filterValue:  '',
       settingsOpen: false,
-      settings:     {}
+      settings:     { ...defaultSettings }
     };
 
     this.views = {};
@@ -36,6 +45,7 @@ export default class Sidebar extends React.PureComponent {
    */
   async componentDidMount() {
     try {
+      // await storage.remove('BetterSidebarModule.settings');
       this.views      = await storage.get('BetterSidebarModule.views', {});
       const settings  = await storage.get('BetterSidebarModule.settings', defaultSettings);
       const favorites = await storage.get('BetterSidebarModule.favorites', []);
@@ -155,6 +165,18 @@ export default class Sidebar extends React.PureComponent {
   };
 
   /**
+   * @param {Event} e
+   * @param {string} tool
+   */
+  handleToolClick = (e, tool) => {
+    if (tool === 'settings') {
+      this.handleSettingsClick();
+    } else if (tool === 'collapse') {
+      this.handleCollapseClick();
+    }
+  };
+
+  /**
    * @returns {*}
    */
   renderFilterInput = () => {
@@ -173,9 +195,10 @@ export default class Sidebar extends React.PureComponent {
   };
 
   /**
+   * @param {boolean} isTop
    * @returns {*}
    */
-  renderRuqqusFeeds = () => {
+  renderRuqqusFeeds = (isTop) => {
     const { isCollapsed, filterValue } = this.state;
 
     if (filterValue !== '') {
@@ -188,7 +211,7 @@ export default class Sidebar extends React.PureComponent {
     }
 
     return (
-      <div className="mb-4">
+      <div key="ruqqus" className="mb-4">
         <div className="sidebar-collapsed-hidden">
           <div className={classes}>
             {!isCollapsed && (
@@ -199,37 +222,12 @@ export default class Sidebar extends React.PureComponent {
                 Ruqqus Feeds
               </div>
             )}
-            <div>
-              {!isCollapsed && (
-                <i
-                  tabIndex={0}
-                  role="button"
-                  title="Sidebar settings"
-                  aria-label="Sidebar settings"
-                  onClick={this.handleSettingsClick}
-                  className="fas fa-cog rp-better-sidebar-collapse rp-better-sidebar-icon mr-2"
-                />
-              )}
-              {isCollapsed ? (
-                <i
-                  tabIndex={0}
-                  role="button"
-                  title="Expand"
-                  aria-label="Expand sidebar"
-                  onClick={this.handleCollapseClick}
-                  className="fas fa-chevron-circle-right rp-better-sidebar-collapse rp-better-sidebar-icon"
-                />
-              ) : (
-                <i
-                  tabIndex={0}
-                  role="button"
-                  title="Collapse"
-                  aria-label="Collapse sidebar"
-                  onClick={this.handleCollapseClick}
-                  className="fas fa-chevron-circle-left rp-better-sidebar-collapse rp-better-sidebar-icon"
-                />
-              )}
-            </div>
+            {isTop && (
+              <SidebarTools
+                isCollapsed={isCollapsed}
+                onClick={this.handleToolClick}
+              />
+            )}
           </div>
         </div>
         <ul className="no-bullets guild-recommendations-list pl-0">
@@ -281,9 +279,10 @@ export default class Sidebar extends React.PureComponent {
   };
 
   /**
+   * @param {boolean} isTop
    * @returns {*}
    */
-  renderFavoriteGuilds = () => {
+  renderFavoriteGuilds = (isTop) => {
     const { favorites, settings, guilds, isCollapsed, filterValue } = this.state;
 
     if (favorites.length === 0 || !guilds || filterValue !== '') {
@@ -303,21 +302,25 @@ export default class Sidebar extends React.PureComponent {
 
     return (
       <GuildList
+        key="favorites"
         title="Favorite Guilds"
         icon="star"
+        isTop={isTop}
         guilds={favoriteGuilds}
         favorites={favorites}
         settings={settings}
         isCollapsed={isCollapsed}
+        onToolClick={this.handleToolClick}
         onFavorite={this.handleFavorite}
       />
     );
   };
 
   /**
+   * @param {boolean} isTop
    * @returns {*}
    */
-  renderMyGuilds = () => {
+  renderMyGuilds = (isTop) => {
     const { guilds, favorites, settings, isCollapsed, filterValue } = this.state;
 
     if (!guilds) {
@@ -336,21 +339,25 @@ export default class Sidebar extends React.PureComponent {
 
     return (
       <GuildList
+        key="mine"
         title="My Guilds"
         icon="chess-rook"
+        isTop={isTop}
         guilds={newGuilds}
         favorites={favorites}
         settings={settings}
         isCollapsed={isCollapsed}
+        onToolClick={this.handleToolClick}
         onFavorite={this.handleFavorite}
       />
     );
   };
 
   /**
+   * @param {boolean} isTop
    * @returns {*}
    */
-  renderGuildMasterGuilds = () => {
+  renderGuildMasterGuilds = (isTop) => {
     const { guilds, favorites, settings, isCollapsed, filterValue } = this.state;
 
     if (!guilds || filterValue !== '') {
@@ -363,12 +370,15 @@ export default class Sidebar extends React.PureComponent {
 
     return (
       <GuildList
+        key="gm"
         title="GuildMaster Of"
         icon="crown"
+        isTop={isTop}
         guilds={newGuilds}
         favorites={favorites}
         settings={settings}
         isCollapsed={isCollapsed}
+        onToolClick={this.handleToolClick}
         onFavorite={this.handleFavorite}
       />
     );
@@ -378,11 +388,27 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   render() {
-    const { loading, isCollapsed, settingsOpen } = this.state;
+    const { loading, settings, isCollapsed, settingsOpen } = this.state;
 
     // eslint-disable-next-line max-len
     const classes = classNames('col sidebar sidebar-left rp-better-sidebar-sidebar hide-scrollbar bg-white border-right d-none d-lg-block pt-3', {
       'rp-better-sidebar-sidebar-collapsed': isCollapsed
+    });
+
+    const sections = {
+      ruqqus:      this.renderRuqqusFeeds,
+      favorites:   this.renderFavoriteGuilds,
+      mine:        this.renderMyGuilds,
+      guildmaster: this.renderGuildMasterGuilds
+    };
+    let isTop = true;
+    const sectionsToRender = settings.sections.map((section) => {
+      if (section.visible) {
+        const s = sections[section.name](isTop);
+        isTop = false;
+        return s;
+      }
+      return null;
     });
 
     return (
@@ -394,10 +420,7 @@ export default class Sidebar extends React.PureComponent {
         <div className="sidebar-section sidebar-trending" style={{ wordBreak: 'break-word' }}>
           <div className="body p-0">
             {this.renderFilterInput()}
-            {this.renderRuqqusFeeds()}
-            {this.renderFavoriteGuilds()}
-            {this.renderMyGuilds()}
-            {this.renderGuildMasterGuilds()}
+            {sectionsToRender}
             {loading && (
               <img src={chrome.runtime.getURL('images/loading.svg')} alt="Loading" />
             )}
@@ -421,6 +444,7 @@ export default class Sidebar extends React.PureComponent {
         </div>
         {settingsOpen && (
           <SettingsModal
+            settings={settings}
             onHidden={() => this.setState({ settingsOpen: false })}
             onChange={this.handleSettingsChange}
             open
