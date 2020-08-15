@@ -1,4 +1,3 @@
-import { createElement, insertAfter, querySelectorEach } from '../utils/web';
 import Module from './Module';
 
 /**
@@ -71,7 +70,7 @@ export default class UserTaggerModule extends Module {
    *
    */
   wireupUserNames = async () => {
-    querySelectorEach('.user-name', this.wireupUser);
+    this.html.querySelectorEach('.user-name', this.wireupUser);
   };
 
   /**
@@ -85,7 +84,7 @@ export default class UserTaggerModule extends Module {
     el.setAttribute('data-rp-tagged', 'true');
 
     const username = el.getAttribute('href').replace('/@', '');
-    const tagIcon  = createElement('span', {
+    const tagIcon  = this.html.createElement('span', {
       'title':        'Tag User',
       'class':        'rp-pointer',
       'data-rp-user': username,
@@ -94,7 +93,7 @@ export default class UserTaggerModule extends Module {
         'click': this.handleTagClick
       }
     });
-    insertAfter(el, tagIcon);
+    this.html.insertAfter(el, tagIcon);
 
     const tags    = await this.getUserTags(username);
     const tagWrap = document.createElement('span');
@@ -103,13 +102,13 @@ export default class UserTaggerModule extends Module {
       tagWrap.classList.add('rp-user-tag-wrap-empty');
     }
 
-    const tagSpan = createElement('span', {
+    const tagSpan = this.html.createElement('span', {
       'class':             'rp-user-tag',
       'data-rp-user-tags': username,
       'text':              tags !== -1 ? tags.join(', ') : ''
     });
     tagWrap.appendChild(tagSpan);
-    insertAfter(tagIcon, tagWrap);
+    this.html.insertAfter(tagIcon, tagWrap);
   }
 
   /**
@@ -167,7 +166,7 @@ export default class UserTaggerModule extends Module {
 
         tx.oncomplete = () => {
           this.tags[username] = tags;
-          querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
+          this.html.querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
             el.innerText = tags.join(', ');
             el.parentElement.classList.remove('rp-user-tag-wrap-empty');
           });
@@ -178,7 +177,7 @@ export default class UserTaggerModule extends Module {
       } else {
         store.delete(username);
         this.tags[username] = -1;
-        querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
+        this.html.querySelectorEach(`[data-rp-user-tags="${username}"]`, (el) => {
           el.innerText = '';
           el.parentElement.classList.add('rp-user-tag-wrap-empty');
         });

@@ -1,5 +1,4 @@
 import Module from './Module';
-import { querySelectorEach } from '../utils/web';
 
 /**
  * Opens posts in a new tab.
@@ -55,7 +54,7 @@ export default class HideVotedPostsModule extends Module {
    *
    */
   removeCards = () => {
-    querySelectorEach('.posts .card', (card) => {
+    this.html.querySelectorEach('.posts .card', (card) => {
       if (card.classList.contains('upvoted') || card.classList.contains('downvoted')) {
         card.remove();
       }

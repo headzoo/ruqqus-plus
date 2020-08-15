@@ -1,7 +1,6 @@
 import Module from './Module';
 import ThemeModuleSettings from './ThemeModule/ThemeModuleSettings';
 import firstTemplate from './ThemeModule/spacey.json';
-import { injectCSS } from '../utils/web';
 import { isDarkMode } from '../utils/ruqqus';
 
 /**
@@ -85,9 +84,9 @@ export default class ThemeModule extends Module {
     port.postMessage({ event: 'rq.getActiveTheme' });
     port.onMessage.addListener((msg) => {
       if (msg.event && msg.event === 'rq.getActiveTheme') {
-        injectCSS(msg.css);
+        this.html.injectCSS(msg.css);
         if (msg.dark_css && isDarkMode()) {
-          injectCSS(msg.dark_css);
+          this.html.injectCSS(msg.dark_css);
         }
       }
     });

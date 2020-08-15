@@ -1,5 +1,4 @@
 import Module from './Module';
-import { createElement, querySelectorEach, hasParentClass } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
 import loader from '../utils/loader';
 
@@ -99,7 +98,7 @@ export default class PopupPostsModule extends Module {
    *
    */
   wireupCards = () => {
-    querySelectorEach('.card-title a', (a) => {
+    this.html.querySelectorEach('.card-title a', (a) => {
       if (!a.getAttribute('rp-popup-post-wired')) {
         a.setAttribute('rp-popup-post-wired', true);
         a.addEventListener('click', this.handleTitleClick, false);
@@ -145,21 +144,21 @@ export default class PopupPostsModule extends Module {
         col.classList.add('rp-popup-posts-col');
         col.querySelector('.guild-border-top').classList.add('rp-popup-posts-guild');
 
-        const mask = createElement('div', {
+        const mask = this.html.createElement('div', {
           'class': 'rp-popup-posts-mask'
         });
         body.appendChild(mask);
-        const container = createElement('div', {
+        const container = this.html.createElement('div', {
           'class': 'rp-popup-posts-container'
         });
         body.append(container);
-        const post = createElement('div', {
+        const post = this.html.createElement('div', {
           'class': 'rp-popup-posts-post'
         });
         container.append(post);
         post.append(col);
         post.querySelector('#voting').classList.add('mt-0');
-        querySelectorEach(post, '.post-filter .dropdown-item', (a) => {
+        this.html.querySelectorEach(post, '.post-filter .dropdown-item', (a) => {
           a.addEventListener('click', this.handlePostFilterClick, false);
         });
 
@@ -173,7 +172,7 @@ export default class PopupPostsModule extends Module {
          * @param {Event} e
          */
         const handleContainerClick = (e) => {
-          if (!hasParentClass(e.target, 'rp-popup-posts-post')) {
+          if (!this.html.hasParentClass(e.target, 'rp-popup-posts-post')) {
             container.removeEventListener('click', handleContainerClick, false);
             container.remove();
             mask.remove();
@@ -210,7 +209,7 @@ export default class PopupPostsModule extends Module {
         const commentSection = html.querySelector('.comment-section');
         const oldSection     = document.querySelector('.comment-section');
         oldSection.parentNode.replaceChild(commentSection, oldSection);
-        querySelectorEach('.post-filter .dropdown-item', (a) => {
+        this.html.querySelectorEach('.post-filter .dropdown-item', (a) => {
           a.addEventListener('click', this.handlePostFilterClick, false);
         });
       })

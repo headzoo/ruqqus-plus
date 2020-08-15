@@ -1,5 +1,4 @@
 import Module from './Module';
-import { querySelectorEach, createElement, insertAfter, insertBefore, injectCSS } from '../utils/web';
 import storage from '../utils/storage';
 import SettingsModal from './VoteScoreModule/SettingsModal';
 
@@ -49,7 +48,7 @@ export default class VoteScoreModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    injectCSS(`
+    this.html.injectCSS(`
       .rp-vote-score-up { color: #805ad5; }
       .rp-vote-score-down { color: #38b2ac; }
     `);
@@ -66,31 +65,31 @@ export default class VoteScoreModule extends Module {
       .then((display) => {
         this.display = display;
 
-        querySelectorEach('.posts .card', (card) => {
+        this.html.querySelectorEach('.posts .card', (card) => {
           const voting = card.querySelector('.voting *[data-original-title]');
           if (voting && !voting.getAttribute('data-rp-vote-score-wired')) {
             const score = parseInt(card.querySelector('.score').innerText, 10);
             const title = voting.getAttribute('data-original-title');
             const metas = card.querySelectorAll('.post-meta-guild');
             const span  = this.createSpan(title, score);
-            insertAfter(metas[1], span);
+            this.html.insertAfter(metas[1], span);
             voting.setAttribute('data-rp-vote-score-wired', 'true');
           }
         });
 
-        querySelectorEach('.comment', (comment) => {
+        this.html.querySelectorEach('.comment', (comment) => {
           const points = comment.querySelector('.points');
           if (points && !points.getAttribute('data-rp-vote-score-wired')) {
             const score     = parseInt(comment.querySelector('.score').innerText, 10);
             const title     = points.getAttribute('data-original-title');
             const timeStamp = comment.querySelector('.time-stamp');
             const span      = this.createSpan(title, score, false);
-            insertBefore(timeStamp, span);
+            this.html.insertBefore(timeStamp, span);
             points.setAttribute('data-rp-vote-score-wired', 'true');
           }
         });
 
-        querySelectorEach('.rp-popup-posts-post .card', (card) => {
+        this.html.querySelectorEach('.rp-popup-posts-post .card', (card) => {
           const voting = card.querySelector('.voting *[data-original-title]');
           if (voting && !voting.getAttribute('data-rp-vote-score-wired')) {
             const score = parseInt(card.querySelector('.score').innerText, 10);
@@ -113,7 +112,7 @@ export default class VoteScoreModule extends Module {
   createSpan = (title, score, dotsAfter = true) => {
     const parts = this.extractScore(title);
     if (this.display === 'score') {
-      return createElement('span', {
+      return this.html.createElement('span', {
         'html': `
         ${dotsAfter ? '' : '&nbsp;&middot;'}
         <span class="rp-vote-score-up">+${parts.up}</span>/<span class="rp-vote-score-down">-${parts.down}</span>
@@ -128,7 +127,7 @@ export default class VoteScoreModule extends Module {
       percent = Math.floor((score / parts.up) * 100);
     }
 
-    return createElement('span', {
+    return this.html.createElement('span', {
       'html': `
         ${dotsAfter ? '' : '&nbsp;&middot;'}
         (%${percent})

@@ -1,5 +1,4 @@
 import Module from './Module';
-import { injectCSS } from '../utils/web';
 
 /**
  * Makes the up/down vote buttons bigger
@@ -40,7 +39,7 @@ export default class BiggerButtonsModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    injectCSS(`
+    this.html.injectCSS(`
       .downvote-button::before,
       .upvote-button::before {
         font-size: 1.4rem;

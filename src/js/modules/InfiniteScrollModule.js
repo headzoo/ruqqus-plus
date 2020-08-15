@@ -1,5 +1,4 @@
 import queryString from 'query-string';
-import { insertAfter, createElement } from '../utils/web';
 import { getLoaderURL } from '../utils/loader';
 import Module from './Module';
 
@@ -96,7 +95,7 @@ export default class InfiniteScrollModule extends Module {
       this.loading = document.createElement('img');
       this.loading.setAttribute('src', getLoaderURL());
       this.loading.setAttribute('style', 'display: none;');
-      insertAfter(pageLinks[1], this.loading);
+      this.html.insertAfter(pageLinks[1], this.loading);
 
       const parsed = queryString.parse(href);
       this.page    = parseInt(parsed.page || 0, 10);
@@ -141,7 +140,7 @@ export default class InfiniteScrollModule extends Module {
       fetch(`https://ruqqus.com${document.location.pathname}?sort=${this.sort}&page=${this.page}&t=${this.type}&q=${this.q}`)
         .then((resp) => resp.text())
         .then((text) => {
-          const template = createElement('template', {
+          const template = this.html.createElement('template', {
             'html': text
           });
 

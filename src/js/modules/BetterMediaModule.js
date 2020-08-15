@@ -1,7 +1,6 @@
 import Module from './Module';
-import { createElement, injectScript, querySelectorEach } from '../utils/web';
 import { isPostPage } from '../utils/ruqqus';
-import { getLoaderURL } from '../utils/loader';
+import loader, { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
 /**
@@ -108,7 +107,7 @@ export default class BetterMediaModule extends Module {
    *
    */
   wireupCards = () => {
-    querySelectorEach('.card-header a', (a) => {
+    this.html.querySelectorEach('.card-header a', (a) => {
       const href = a.getAttribute('href');
       if (href && href.indexOf('http') === 0) {
         const supportedMediaHosts = {
@@ -158,6 +157,7 @@ export default class BetterMediaModule extends Module {
     if (src) {
       e.preventDefault();
 
+      loader(true);
       fetch(src, {
         headers: {
           'Authorization': 'Client-ID 92b389723993e50'
@@ -183,6 +183,9 @@ export default class BetterMediaModule extends Module {
               img.click();
             }, 100);
           }
+        })
+        .finally(() => {
+          loader(false);
         });
     }
   };
@@ -287,19 +290,19 @@ export default class BetterMediaModule extends Module {
 
     if (id) {
       const src       = getLoaderURL();
-      const container = createElement('blockquote', {
+      const container = this.html.createElement('blockquote', {
         'class':   'imgur-embed-pub rp-better-media-blockquote',
         'data-id': id,
         'lang':    'en',
         'html':    `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
       });
-      const anchor = createElement('a', {
+      const anchor = this.html.createElement('a', {
         'href': `https://imgur.com/${id}`
       });
       container.appendChild(anchor);
       postBody.appendChild(container);
 
-      injectScript('//s.imgur.com/min/embed.js');
+      this.html.injectScript('//s.imgur.com/min/embed.js');
     }
   };
 
@@ -321,18 +324,18 @@ export default class BetterMediaModule extends Module {
    * @param {URL} mediaUrl
    */
   createTwitter = (postBody, mediaUrl) => {
-    const container = createElement('blockquote', {
+    const container = this.html.createElement('blockquote', {
       'class': 'twitter-tweet rp-better-media-blockquote',
       'lang':  'en',
       'html':  `<img class="rp-better-media-load" src="${getLoaderURL()}" alt="Load" />`
     });
-    const anchor = createElement('a', {
+    const anchor = this.html.createElement('a', {
       'href': mediaUrl.toString().replace('mobile.', '')
     });
     container.appendChild(anchor);
     postBody.appendChild(container);
 
-    injectScript('//platform.twitter.com/widgets.js');
+    this.html.injectScript('//platform.twitter.com/widgets.js');
   };
 
   /**
@@ -366,10 +369,10 @@ export default class BetterMediaModule extends Module {
    */
   createFrameContainer = (attribs) => {
     const src       = getLoaderURL();
-    const container = createElement('div', {
+    const container = this.html.createElement('div', {
       'html': `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
     });
-    const iframe = createElement('iframe', attribs);
+    const iframe = this.html.createElement('iframe', attribs);
     iframe.style.display = 'none';
     iframe.addEventListener('load', () => {
       container.querySelector('.rp-better-media-load').remove();
@@ -385,11 +388,11 @@ export default class BetterMediaModule extends Module {
    * @returns {HTMLElement}
    */
   createImageContainer = (mediaUrl) => {
-    const outer     = createElement('div', {
+    const outer     = this.html.createElement('div', {
       'class': 'd-flex flex-column',
       'style': 'max-width: 250px'
     });
-    const container = createElement('a', {
+    const container = this.html.createElement('a', {
       'class':  'rp-better-media-image-container rp-better-media-collapsed',
       'href':   mediaUrl.toString(),
       'target': '_blank',
@@ -404,7 +407,7 @@ export default class BetterMediaModule extends Module {
       const outerRect = outer.getBoundingClientRect();
 
       if (img.clientHeight > outerRect.height) {
-        const overflow = createElement('div', {
+        const overflow = this.html.createElement('div', {
           'class': 'rp-better-media-overflow post-title',
           'text':  'Click To Expand'
         });
@@ -432,7 +435,7 @@ export default class BetterMediaModule extends Module {
         break;
       }
     }
-    const attrib = createElement('div', {
+    const attrib = this.html.createElement('div', {
       'class': 'rp-better-media-attrib',
       'html':  icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
     });
@@ -448,15 +451,15 @@ export default class BetterMediaModule extends Module {
     const body = document.querySelector('body');
     body.style.overflow = 'hidden';
 
-    const mask = createElement('div', {
+    const mask = this.html.createElement('div', {
       'class': 'rp-better-media-mask'
     });
     body.appendChild(mask);
-    const container = createElement('div', {
+    const container = this.html.createElement('div', {
       'class': 'rp-better-media-popup-container'
     });
     body.append(container);
-    const content = createElement('div', {
+    const content = this.html.createElement('div', {
       'class': 'rp-better-media-popup-content'
     });
     container.appendChild(content);

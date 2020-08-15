@@ -1,7 +1,6 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchUser } from '../utils/ruqqus';
-import { createElement, setHTML, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import { getLoaderURL } from '../utils/loader';
 import userTemplate from './UserInfoModule/user-template.html';
@@ -53,7 +52,7 @@ export default class UserInfoModule extends Module {
    *
    */
   wireupUserNames = () => {
-    querySelectorEach('.user-name', (el) => {
+    this.html.querySelectorEach('.user-name', (el) => {
       if (!el.getAttribute('data-rp-user-info')) {
         el.setAttribute('data-rp-user-info', 'true');
         el.addEventListener('mouseenter', this.handleMouseEnter, false);
@@ -75,7 +74,7 @@ export default class UserInfoModule extends Module {
       existingBox.setAttribute('style', `top: ${rect.top + 20}px; left: ${rect.left}px`);
       existingBox.style.display = 'block';
     } else {
-      const box  = createElement('div', {
+      const box  = this.html.createElement('div', {
         'class':                  'rp-user-info-box',
         'style':                  `top: ${rect.top + 20}px; left: ${rect.left}px`,
         'html':                   `<img src="${getLoaderURL()}" alt="Loading" />`,
@@ -93,7 +92,7 @@ export default class UserInfoModule extends Module {
           user.joined = moment(parseInt(user.created_utc, 10) * 1000).format('D MMM YYYY');
           user.rep    = parseInt(user.post_rep, 10) + parseInt(user.comment_rep, 10);
           const html  = parseTemplate(userTemplate, user);
-          setHTML(box, html);
+          this.html.setHTML(box, html);
         });
     }
   };
@@ -102,7 +101,7 @@ export default class UserInfoModule extends Module {
    *
    */
   handleMouseLeave = () => {
-    querySelectorEach('.rp-user-info-box', (el) => {
+    this.html.querySelectorEach('.rp-user-info-box', (el) => {
       el.style.display = 'none';
     });
   };

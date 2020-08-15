@@ -1,5 +1,4 @@
 import Module from './Module';
-import { querySelectorEach, querySelectorAttribs } from '../utils/web';
 
 /**
  * Opens posts in a new tab.
@@ -55,21 +54,21 @@ export default class NewTabModule extends Module {
       hrefs.push(link.getAttribute('href'));
     });
     hrefs.forEach((href) => {
-      querySelectorAttribs(`a[href="${href}"]`, {
+      this.html.querySelectorAttribs(`a[href="${href}"]`, {
         'target': '_blank'
       });
     });
 
-    querySelectorAttribs('.user-name', {
+    this.html.querySelectorAttribs('.user-name', {
       'target': '_blank'
     });
-    querySelectorAttribs('.comment-text a', {
+    this.html.querySelectorAttribs('.comment-text a', {
       'target': '_blank'
     });
-    querySelectorAttribs('.post-meta-guild a', {
+    this.html.querySelectorAttribs('.post-meta-guild a', {
       'target': '_blank'
     });
-    querySelectorEach('.comment-actions a', (link) => {
+    this.html.querySelectorEach('.comment-actions a', (link) => {
       if (link.innerText === 'Context') {
         link.setAttribute('target', '_blank');
       }

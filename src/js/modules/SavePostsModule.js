@@ -1,7 +1,6 @@
 import moment from 'moment';
 import Module from './Module';
 import { fetchPost, fetchMe } from '../utils/ruqqus';
-import { setHTML, createElement, createTemplateContent, querySelectorEach } from '../utils/web';
 import { parseTemplate } from '../utils/templates';
 import { getLoaderURL } from '../utils/loader';
 import postTemplate from './SavePostsModule/post-template.html';
@@ -78,7 +77,7 @@ export default class SavePostsModule extends Module {
    *
    */
   wireupCards = () => {
-    querySelectorEach('.post-actions ul', (el) => {
+    this.html.querySelectorEach('.post-actions ul', (el) => {
       const card = el.closest('.card');
       if (!card || (card && card.querySelector('a[data-rp-saved]'))) {
         return;
@@ -87,10 +86,10 @@ export default class SavePostsModule extends Module {
       const id = card.getAttribute('id').replace('post-', '');
       this.isSaved(id)
         .then((isSaved) => {
-          const item = createElement('li', {
+          const item = this.html.createElement('li', {
             'class': 'list-inline-item'
           });
-          const anchor = createElement('a', {
+          const anchor = this.html.createElement('a', {
             'href':          'javascript:void(0)', // eslint-disable-line
             'title':         isSaved ? 'UnSave this post' : 'Save this post',
             'html':          isSaved ? '<i class="fas fa-save"></i> UnSave' : '<i class="fas fa-save"></i> Save',
@@ -127,7 +126,7 @@ export default class SavePostsModule extends Module {
               } else {
                 const link = document.querySelector(`a[data-rp-saved="${id}"]`);
                 if (link) {
-                  setHTML(link, '<i class="fas fa-save"></i> Save');
+                  this.html.setHTML(link, '<i class="fas fa-save"></i> Save');
                 }
               }
             };
@@ -145,7 +144,7 @@ export default class SavePostsModule extends Module {
                     this.toastSuccess('Post saved!');
                     const link = document.querySelector(`a[data-rp-saved="${id}"]`);
                     if (link) {
-                      setHTML(link, '<i class="fas fa-save"></i> UnSave');
+                      this.html.setHTML(link, '<i class="fas fa-save"></i> UnSave');
                     }
                   };
                   req.onerror = (ev) => {
@@ -165,7 +164,7 @@ export default class SavePostsModule extends Module {
     let item;
     const nav = document.querySelector('.settings-nav');
     if (nav && !nav.querySelector('.rp-nav-link')) {
-      item = createElement('li', {
+      item = this.html.createElement('li', {
         'class': 'nav-item',
         'html':  `<img src="${getLoaderURL()}" alt="Loading" style="margin-top: 5px" />`
       });
@@ -176,7 +175,7 @@ export default class SavePostsModule extends Module {
       .then(({ username }) => {
         if (username && document.location.pathname === `/@${username}`) {
           if (item) {
-            const anchor = createElement('a', {
+            const anchor = this.html.createElement('a', {
               'class': 'nav-link rp-nav-link',
               'href':  '#',
               'text':  'Saved Posts',
@@ -185,7 +184,7 @@ export default class SavePostsModule extends Module {
               }
             });
 
-            setHTML(item, '');
+            this.html.setHTML(item, '');
             item.appendChild(anchor);
           }
         } else if (item) {
@@ -219,12 +218,12 @@ export default class SavePostsModule extends Module {
       const { result } = ev.target;
 
       const posts = document.querySelector('.posts');
-      setHTML(posts, '');
+      this.html.setHTML(posts, '');
       result.forEach((record) => {
         const u     = new URL(record.url);
         record.host = u.hostname;
         record.date = moment(parseInt(record.created_utc, 10) * 1000).format('D MMM YYYY');
-        const post  = createTemplateContent(
+        const post  = this.html.createTemplateContent(
           parseTemplate(postTemplate, record)
         );
         posts.appendChild(post);

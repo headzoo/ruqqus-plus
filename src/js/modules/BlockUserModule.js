@@ -1,5 +1,4 @@
 import Module from './Module';
-import { createElement, querySelectorEach } from '../utils/web';
 
 /**
  * Adds a block user button to posts and comments
@@ -76,11 +75,11 @@ export default class BlockUserModule extends Module {
 
       const posts = document.querySelector('.posts');
       if (posts) {
-        querySelectorEach(posts, '.card', this.wireupCard);
+        this.html.querySelectorEach(posts, '.card', this.wireupCard);
       }
       const comments = document.querySelector('.comment-section');
       if (comments) {
-        querySelectorEach(comments, '.comment', this.wireupComment);
+        this.html.querySelectorEach(comments, '.comment', this.wireupComment);
       }
     });
   }
@@ -121,10 +120,10 @@ export default class BlockUserModule extends Module {
    */
   createBlockLink = (card, type) => {
     const id   = card.getAttribute('id').replace(`${type}-`, '');
-    const item = createElement('li', {
+    const item = this.html.createElement('li', {
       'class': 'list-inline-item'
     });
-    const anchor = createElement('a', {
+    const anchor = this.html.createElement('a', {
       'href':                 'javascript:void(0)', // eslint-disable-line
       'title':                "Block user's content",
       'html':                 '<i class="fas fa-ban"></i> Block User',
@@ -169,12 +168,12 @@ export default class BlockUserModule extends Module {
    * @param {string} username
    */
   removeUserCards = (username) => {
-    querySelectorEach('.posts .card', (card) => {
+    this.html.querySelectorEach('.posts .card', (card) => {
       if (card.querySelector('.user-name').innerText.trim() === username) {
         card.remove();
       }
     });
-    querySelectorEach('.comment', (comment) => {
+    this.html.querySelectorEach('.comment', (comment) => {
       if (comment.querySelector('.user-name').innerText.trim() === username) {
         comment.remove();
       }

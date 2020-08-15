@@ -1,6 +1,5 @@
 import Module from './Module';
 import { extractGuildName } from '../utils/ruqqus';
-import { injectCSS, insertAfter, createElement } from '../utils/web';
 
 /**
  * Removes the "create post" input
@@ -41,7 +40,7 @@ export default class RemoveCreatePostModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    injectCSS(`
+    this.html.injectCSS(`
       .pseudo-submit-form { display: none; }
       .guild-border-top .text-small.font-weight-bold { white-space: nowrap; }
     `);
@@ -58,7 +57,7 @@ export default class RemoveCreatePostModule extends Module {
         const sub     = document.querySelector('#button-sub:not(.d-none)');
         const actions = top.querySelectorAll('.dropdown-actions');
         if (unsub || (actions && actions.length > 1)) {
-          const button  = createElement('a', {
+          const button  = this.html.createElement('a', {
             'href':  `/submit?guild=${guild}`,
             'class': 'btn btn-primary btn-block',
             'html':  '<i class="fas fa-pen mr-1"></i> Create Post'
@@ -66,13 +65,13 @@ export default class RemoveCreatePostModule extends Module {
 
           if (sub) {
             sub.classList.add('mr-2');
-            insertAfter(sub, button);
+            this.html.insertAfter(sub, button);
           } else if (unsub) {
             unsub.classList.add('mr-2');
-            insertAfter(unsub, button);
+            this.html.insertAfter(unsub, button);
           } else {
             actions[1].classList.add('mr-2');
-            insertAfter(actions[1], button);
+            this.html.insertAfter(actions[1], button);
           }
         }
       }

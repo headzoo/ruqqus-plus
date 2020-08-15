@@ -1,5 +1,4 @@
 import Module from './Module';
-import { querySelectorEach, getSelectionText } from '../utils/web';
 
 /**
  * Automatically quotes the selected text into a new reply
@@ -54,7 +53,7 @@ export default class CopyQuoteReplyModule extends Module {
       return;
     }
 
-    querySelectorEach(comments, '.comment-actions span', (span) => {
+    this.html.querySelectorEach(comments, '.comment-actions span', (span) => {
       if (span.textContent === 'Reply') {
         const link = span.closest('a');
         if (link) {
@@ -78,7 +77,7 @@ export default class CopyQuoteReplyModule extends Module {
     const commentId = currentTarget.getAttribute('data-rp-copy-quote-reply-id');
     if (commentId) {
       setTimeout(() => {
-        const text = getSelectionText();
+        const text = this.html.getSelectionText();
         const textarea = document.querySelector(`#reply-to-${commentId} .comment-box`);
         if (textarea) {
           if (text) {

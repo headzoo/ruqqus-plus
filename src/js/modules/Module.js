@@ -1,9 +1,15 @@
 import Controller from '../controllers/Controller';
+import * as html from '../utils/web';
 
 /**
  * Parent module class
  */
 export default class Module extends Controller {
+  /**
+   * @type {{hasParentClass?, setAttributes?: function(HTMLElement, {}): HTMLElement, injectScript?: function(string): void, createTemplateContent?: function(string): DocumentFragment, querySelectorEach?: function((Element|DocumentFragment|string), (string|Function), Function=): void, injectCSS?: function(string): void, insertBefore?: function(Element, Element): void, getSelectionText?: function(): *, insertAfter?: function(Element, Element): void, createElement?: function(string, {}): HTMLElement, injectStyleLink?: function(string): void, setHTML?: function(Element, string): Element, querySelectorAttribs?: function((Element|string), (string|*), {}=): void}}
+   */
+  html = html;
+
   /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.

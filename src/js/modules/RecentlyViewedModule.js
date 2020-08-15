@@ -1,5 +1,4 @@
 import Module from './Module';
-import { insertAfter, createElement } from '../utils/web';
 import { searchByObjectKey } from '../utils/arrays';
 import { truncateString } from '../utils/strings';
 import storage from '../utils/storage';
@@ -66,7 +65,7 @@ export default class RecentlyViewedModule extends Module {
     if (sidebar) {
       storage.get('RecentlyViewedModule.history', [])
         .then((history) => {
-          const section = createElement('div', {
+          const section = this.html.createElement('div', {
             'class': 'sidebar-section rp-recently-viewed-sidebar',
             'html':  `
                 <div class="title">
@@ -74,15 +73,15 @@ export default class RecentlyViewedModule extends Module {
                 </div>
               `
           });
-          const body = createElement('div', {
+          const body = this.html.createElement('div', {
             'class': 'body'
           });
           section.appendChild(body);
-          const ul = createElement('ul', {
+          const ul = this.html.createElement('ul', {
             'class': 'rp-recently-viewed-list'
           });
           history.forEach((item) => {
-            const li = createElement('li', {
+            const li = this.html.createElement('li', {
               'class': 'mb-2',
               'html':  `
                     <h5 class="card-title post-title text-left">
@@ -101,7 +100,7 @@ export default class RecentlyViewedModule extends Module {
             ul.appendChild(li);
           });
           body.appendChild(ul);
-          const clear = createElement('div', {
+          const clear = this.html.createElement('div', {
             'class': 'btn btn-sm btn-secondary mr-1',
             'title': 'Clear history',
             'text':  'Clear',
@@ -110,7 +109,7 @@ export default class RecentlyViewedModule extends Module {
             }
           });
           body.appendChild(clear);
-          const settings = createElement('div', {
+          const settings = this.html.createElement('div', {
             'class': 'btn btn-sm btn-secondary',
             'title': 'Settings',
             'html':  `
@@ -123,7 +122,7 @@ export default class RecentlyViewedModule extends Module {
           body.appendChild(settings);
 
           const sections = sidebar.querySelectorAll('.sidebar-section');
-          insertAfter(sections[sections.length - 1], section);
+          this.html.insertAfter(sections[sections.length - 1], section);
         });
     }
   };

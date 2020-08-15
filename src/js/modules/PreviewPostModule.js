@@ -1,7 +1,6 @@
 import marked from 'marked';
 import Module from './Module';
 import { isDarkMode } from '../utils/ruqqus';
-import { createElement, setHTML } from '../utils/web';
 
 /**
  * Adds a preview pane to the post submit page
@@ -64,7 +63,7 @@ export default class PreviewPostModule extends Module {
     this.onDOMReady(() => {
       const label   = document.querySelector('label[for="body"]');
       this.textarea = document.getElementById('post-text');
-      this.link     = createElement('a', {
+      this.link     = this.html.createElement('a', {
         'style': 'float: right;',
         'class': 'mt-3',
         'href':  'javascript:void(0)', // eslint-disable-line
@@ -87,7 +86,7 @@ export default class PreviewPostModule extends Module {
       const container = this.textarea.closest('.input-group');
       const html      = marked(this.textarea.value);
 
-      const div = createElement('div', {
+      const div = this.html.createElement('div', {
         'class': 'rp-preview-post-container rounded',
         'html':  html
       });
@@ -99,12 +98,12 @@ export default class PreviewPostModule extends Module {
       container.appendChild(div);
 
       this.isPreviewing = true;
-      setHTML(this.link, '<i class="fas fa-edit"></i> Edit');
+      this.html.setHTML(this.link, '<i class="fas fa-edit"></i> Edit');
     } else {
       document.querySelector('.rp-preview-post-container').remove();
       this.isPreviewing           = false;
       this.textarea.style.display = 'block';
-      setHTML(this.link, '<i class="fas fa-eye"></i> Preview');
+      this.html.setHTML(this.link, '<i class="fas fa-eye"></i> Preview');
     }
   };
 }
