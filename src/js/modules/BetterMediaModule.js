@@ -121,10 +121,16 @@ export default class BetterMediaModule extends Module {
         const handler  = supportedMediaHosts[mediaUrl.hostname];
         if (handler !== undefined) {
           a.addEventListener('click', handler, false);
+          a.removeAttribute('data-toggle');
+          a.removeAttribute('data-target');
+          this.html.query(a, 'img').removeAttribute('onclick');
         } else {
           const ext = mediaUrl.pathname.split('.').pop().toLowerCase();
           if (['jpg', 'jpeg', 'png', 'gif'].indexOf(ext) !== -1) {
             a.addEventListener('click', this.handleAnchorImage, false);
+            a.removeAttribute('data-toggle');
+            a.removeAttribute('data-target');
+            this.html.query(a, 'img').removeAttribute('onclick');
           }
         }
       }
@@ -188,17 +194,9 @@ export default class BetterMediaModule extends Module {
               link = json.data.images[0].link;
             }
 
-            currentTarget.setAttribute('href', link);
-            currentTarget.setAttribute('data-target', '#expandImageModal');
-            currentTarget.setAttribute('data-toggle', 'modal');
-            const img = currentTarget.querySelector('img');
-            img.setAttribute(
-              'onclick',
-              `if (!window.__cfRLUnblockHandlers) return false; expandDesktopImage('${link}','${link}')`
-            );
-            setTimeout(() => {
-              img.click();
-            }, 100);
+            const popup = this.createPopup();
+            const img   = this.createImageContainer(new URL(link));
+            popup.appendChild(img);
           }
         })
         .finally(() => {
@@ -414,7 +412,7 @@ export default class BetterMediaModule extends Module {
       'style': 'max-width: 250px'
     });
     const container = this.html.createElement('a', {
-      'class':  'rp-better-media-image-container rp-better-media-collapsed',
+      'class':  'rp-better-media-image-container rp-better-media-collapsed text-center',
       'href':   mediaUrl.toString(),
       'target': '_blank',
       'rel':    'nofollow noreferrer',

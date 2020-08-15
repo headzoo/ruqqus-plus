@@ -15,6 +15,7 @@ export const favIcons = {
   'ibb.co':            'https://simgbb.com/images/favicon.png',
   'wikimedia.org':     'https://www.wikimedia.org/static/images/project-logos/enwiki.png',
   'redgifs.com':       'https://www.redgifs.com/assets/favicon-32x32.png',
-  'gfycat.com':        'https://gfycat.com/assets/favicons/favicon-32x32.png'
+  'gfycat.com':        'https://gfycat.com/assets/favicons/favicon-32x32.png',
+  'i.imgur.com':       'https://s.imgur.com/images/favicon-32x32.png'
 };
 export const favIconsKeys = Object.keys(favIcons);

@@ -144,6 +144,25 @@ export const querySelectorAttribs = (context, selector, attribs = {}) => {
 };
 
 /**
+ * @param {Element|string} context
+ * @param {string} selector
+ * @returns {HTMLDivElement}
+ */
+export const query = (context, selector = '') => {
+  let el;
+  if (typeof context === 'object') {
+    el = context.querySelector(selector);
+  } else {
+    el = document.querySelector(context);
+  }
+  if (!el) {
+    el = document.createElement('div');
+  }
+
+  return el;
+}
+
+/**
  * @param {HTMLElement|Node} element
  * @param {string} className
  * @param {boolean} returnParent

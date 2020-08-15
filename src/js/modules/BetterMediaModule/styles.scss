@@ -20,8 +20,12 @@ $height-header: 48px;
     max-height: 600px;
   }
 
-  img {
+  img:not(.rp-better-media-load) {
     max-width: 100%;
+  }
+
+  img.rp-better-media-load {
+    display: inline-block;
   }
 
   &:hover {
