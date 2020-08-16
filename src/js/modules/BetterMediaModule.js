@@ -3,14 +3,13 @@ import { isPostPage } from '../utils/ruqqus';
 import loader, { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
 /**
  * Enhances the way media (images, videos) are displayed on the site
  */
 export default class BetterMediaModule extends Module {
-  /**
-   * @type {string}
-   */
-  lastHref = '';
+  imgurCache = {};
 
   /**
    * Returns whether the module should be enabled by default. Should
@@ -114,23 +113,22 @@ export default class BetterMediaModule extends Module {
           'imgur.com':       this.handleAnchorImgur,
           'www.redgifs.com': this.handleAnchorRedGifs,
           'redgifs.com':     this.handleAnchorRedGifs,
-          'gfycat.com':      this.handleAnchorGfycat
+          'gfycat.com':      this.handleAnchorGfycat,
+          'i.ruqqus.com':    this.handleAnchorImage
         };
 
-        const mediaUrl = new URL(href);
-        const handler  = supportedMediaHosts[mediaUrl.hostname];
-        if (handler !== undefined) {
-          a.addEventListener('click', handler, false);
+        const mediaUrl  = new URL(href);
+        const extension = mediaUrl.pathname.split('.').pop().toLowerCase();
+        const handler   = supportedMediaHosts[mediaUrl.hostname];
+        if (handler || imageExtensions.indexOf(extension) !== -1) {
           a.removeAttribute('data-toggle');
           a.removeAttribute('data-target');
           this.html.query(a, 'img').removeAttribute('onclick');
-        } else {
-          const ext = mediaUrl.pathname.split('.').pop().toLowerCase();
-          if (['jpg', 'jpeg', 'png', 'gif'].indexOf(ext) !== -1) {
+
+          if (handler !== undefined) {
+            a.addEventListener('click', handler, false);
+          } else if (imageExtensions.indexOf(extension) !== -1) {
             a.addEventListener('click', this.handleAnchorImage, false);
-            a.removeAttribute('data-toggle');
-            a.removeAttribute('data-target');
-            this.html.query(a, 'img').removeAttribute('onclick');
           }
         }
       }
@@ -144,7 +142,7 @@ export default class BetterMediaModule extends Module {
     const mediaUrl = this.getClickedAnchorURL(e);
     if (mediaUrl) {
       const popup = this.createPopup();
-      const img   = this.createImageContainer(mediaUrl);
+      const img   = this.createImageContainer(mediaUrl, false);
       popup.appendChild(img);
     }
   };
@@ -157,11 +155,6 @@ export default class BetterMediaModule extends Module {
 
     let src;
     const href = currentTarget.getAttribute('href');
-    if (this.lastHref === href) {
-      return;
-    }
-    this.lastHref = href;
-
     let match  = href.match(/^https:\/\/imgur.com\/a\/(.*)/);
     if (match) {
       src = `https://api.imgur.com/3/album/${match[1]}.json`;
@@ -180,28 +173,37 @@ export default class BetterMediaModule extends Module {
     if (src) {
       e.preventDefault();
 
-      loader(true);
-      fetch(src, {
-        headers: {
-          'Authorization': 'Client-ID 92b389723993e50'
-        }
-      })
-        .then((resp) => resp.json())
-        .then((json) => {
-          if (json.success) {
-            let { link } = json.data;
-            if (json.data.images) {
-              link = json.data.images[0].link;
-            }
+      const displayImage = (link) => {
+        const popup = this.createPopup();
+        const img   = this.createImageContainer(new URL(link), false);
+        popup.appendChild(img);
+      };
 
-            const popup = this.createPopup();
-            const img   = this.createImageContainer(new URL(link));
-            popup.appendChild(img);
+      if (this.imgurCache[href]) {
+        displayImage(this.imgurCache[href]);
+      } else {
+        loader(true);
+        fetch(src, {
+          headers: {
+            'Authorization': 'Client-ID 92b389723993e50'
           }
         })
-        .finally(() => {
-          loader(false);
-        });
+          .then((resp) => resp.json())
+          .then((json) => {
+            if (json.success) {
+              let { link } = json.data;
+              if (json.data.images) {
+                link = json.data.images[0].link;
+              }
+
+              displayImage(link);
+              this.imgurCache[href] = link;
+            }
+          })
+          .finally(() => {
+            loader(false);
+          });
+      }
     }
   };
 
@@ -234,12 +236,8 @@ export default class BetterMediaModule extends Module {
   getClickedAnchorURL = (e) => {
     const { currentTarget } = e;
 
-    const href = currentTarget.getAttribute('href');
-    if (this.lastHref === href) {
-      return null;
-    }
-    this.lastHref = href;
     e.preventDefault();
+    const href = currentTarget.getAttribute('href');
 
     return new URL(href);
   }
@@ -404,9 +402,10 @@ export default class BetterMediaModule extends Module {
 
   /**
    * @param {URL} mediaUrl
+   * @param {boolean} collapsed
    * @returns {HTMLElement}
    */
-  createImageContainer = (mediaUrl) => {
+  createImageContainer = (mediaUrl, collapsed = true) => {
     const outer     = this.html.createElement('div', {
       'class': 'd-flex flex-column',
       'style': 'max-width: 250px'
@@ -425,7 +424,7 @@ export default class BetterMediaModule extends Module {
       container.querySelector('.rp-better-media-load').remove();
       const outerRect = outer.getBoundingClientRect();
 
-      if (img.clientHeight > outerRect.height) {
+      if (collapsed && img.clientHeight > outerRect.height) {
         const overflow = this.html.createElement('div', {
           'class': 'rp-better-media-overflow post-title',
           'text':  'Click To Expand'
