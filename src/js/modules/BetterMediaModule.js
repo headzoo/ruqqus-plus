@@ -2,13 +2,22 @@ import Module from './Module';
 import { isPostPage } from '../utils/ruqqus';
 import loader, { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
+import SettingsModal from './BetterMediaModule/SettingsModal';
+import storage from '../utils/storage';
 
+const defaultSettings = {
+  watchPosts:  true,
+  watchThumbs: true
+};
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
 /**
  * Enhances the way media (images, videos) are displayed on the site
  */
 export default class BetterMediaModule extends Module {
+  /**
+   * @type {{}}
+   */
   imgurCache = {};
 
   /**
@@ -40,6 +49,13 @@ export default class BetterMediaModule extends Module {
   };
 
   /**
+   * Returns a react component that will be displayed in a modal
+   */
+  getSettingsModal = () => {
+    return SettingsModal;
+  };
+
+  /**
    * Called from the content script
    *
    * The content script has access to the chrome extension API but does not
@@ -55,11 +71,15 @@ export default class BetterMediaModule extends Module {
    *
    */
   wireup = () => {
-    if (isPostPage()) {
-      this.wireupPost();
-    } else {
-      this.wireupCards();
-    }
+    storage.get('BetterMediaModule.settings', defaultSettings)
+      .then((settings) => {
+        this.settings = settings;
+        if (settings.watchPosts && isPostPage()) {
+          this.wireupPost();
+        } else if (settings.watchThumbs) {
+          this.wireupCards();
+        }
+      });
   };
 
   /**
