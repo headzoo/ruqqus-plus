@@ -210,6 +210,25 @@ export default class Module {
    */
   onInstalled = () => {
   }
+
+  /**
+   * Called when the user exports the extension data
+   *
+   * Should return all values that have been saved by the controller or module. Should
+   * return a falsy value when the controller/module has nothing to export.
+   */
+  exportData = () => {
+  }
+
+  /**
+   * Called when the user imports extension data
+   *
+   * Will receive the values saved for the controller or module.
+   *
+   * @param {*} data
+   */
+  importData = (data) => {
+  };
 }
 ```
 

@@ -20,6 +20,23 @@ class Storage {
   };
 
   /**
+   * @param {string} ns
+   * @param {*} values
+   * @returns {Promise<any>}
+   */
+  setNamespace = (ns, values) => {
+    return new Promise((resolve) => {
+      const promises = [];
+      Object.keys(values).forEach((key) => {
+        promises.push(this.set(`${ns}.${key}`, values[key]));
+      });
+
+      Promise.all(promises)
+        .then(resolve);
+    });
+  };
+
+  /**
    * @param {string} key          Retrieve value saved using this key
    * @param {*}      defaultValue Value to resolve when the key is not set
    * @returns {Promise}
@@ -32,26 +49,67 @@ class Storage {
           return;
         }
 
-        const stored = resp[key];
-        const { _expiration, _time, _values, ...rest } = stored;
-        if (_expiration !== undefined && _time !== undefined && _expiration !== 0) {
-          const diff = (new Date()).getTime() - _time;
-          if (diff >= _expiration) {
-            chrome.storage.sync.remove(key, () => {
-              resolve(defaultValue);
-            });
-            return;
-          }
-        }
-
-        if (_values !== undefined) {
-          resolve(_values);
-        } else if (rest) {
-          resolve(rest);
-        } else {
-          resolve(defaultValue);
-        }
+        this.getValueFromResponse(resp, key, defaultValue)
+          .then(resolve);
       });
+    });
+  };
+
+  /**
+   * @param {string} ns
+   * @returns {Promise<any>}
+   */
+  getNamespace = (ns) => {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(null, (resp) => {
+        const promises = [];
+        const keys     = Object.keys(resp);
+        keys.forEach((key) => {
+          if (key.indexOf(ns) === 0) {
+            promises.push(this.getValueFromResponse(resp, key));
+          }
+        });
+
+        Promise.all(promises)
+          .then((done) => {
+            const values = {};
+            keys.forEach((key) => {
+              if (key.indexOf(ns) === 0) {
+                values[key.split('.', 2).pop()] = done.shift();
+              }
+            });
+            resolve(values);
+          });
+      });
+    });
+  };
+
+  /**
+   * @param {*} resp
+   * @param {string} key
+   * @param {*} defaultValue
+   */
+  getValueFromResponse = (resp, key, defaultValue = undefined) => {
+    return new Promise((resolve) => {
+      const stored = resp[key];
+      const { _expiration, _time, _values, ...rest } = stored;
+      if (_expiration !== undefined && _time !== undefined && _expiration !== 0) {
+        const diff = (new Date()).getTime() - _time;
+        if (diff >= _expiration) {
+          chrome.storage.sync.remove(key, () => {
+            resolve(defaultValue);
+          });
+          return;
+        }
+      }
+
+      if (_values !== undefined) {
+        resolve(_values);
+      } else if (rest) {
+        resolve(rest);
+      } else {
+        resolve(defaultValue);
+      }
     });
   };
 

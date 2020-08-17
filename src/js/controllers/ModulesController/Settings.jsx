@@ -76,16 +76,23 @@ const Settings = () => {
             />
             <label className="custom-control-label" htmlFor={`setting-${key}`}>
               {loaded[key].getLabel()}
-              {loaded[key].getSettingsModal() && (
+            </label>
+            <div className="text-muted">{loaded[key].getHelp()}</div>
+            {loaded[key].getSettingsModal() && (
+              <span
+                className="btn btn-secondary btn-sm mt-2"
+                role="button"
+                tabIndex={0}
+                onClick={(e) => handleSettingsClick(e, key)}
+              >
                 <Icon
                   name="cog"
                   title="Settings"
-                  className="ml-2 text-muted settings-cog-icon"
-                  onClick={(e) => handleSettingsClick(e, key)}
+                  className="settings-cog-icon mr-2"
                 />
-              )}
-            </label>
-            <div className="text-muted">{loaded[key].getHelp()}</div>
+                settings
+              </span>
+            )}
           </div>
         ))}
       </div>

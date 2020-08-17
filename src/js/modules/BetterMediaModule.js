@@ -10,6 +10,7 @@ const defaultSettings = {
   watchThumbs: true
 };
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+const videoExtensions = ['mp4', 'webm', 'gifv'];
 
 /**
  * Enhances the way media (images, videos) are displayed on the site
@@ -53,6 +54,30 @@ export default class BetterMediaModule extends Module {
    */
   getSettingsModal = () => {
     return SettingsModal;
+  };
+
+  /**
+   * Called when the user exports the extension data
+   *
+   * Should return all values that have been saved by the controller or module. Should
+   * return a falsy value when the controller/module has nothing to export.
+   *
+   * @returns {Promise}
+   */
+  exportData = async () => {
+    return storage.getNamespace('BetterMediaModule');
+  };
+
+  /**
+   * Called when the user imports extension data
+   *
+   * Will receive the values saved for the controller or module.
+   *
+   * @param {*} data
+   * @returns {Promise}
+   */
+  importData = async (data) => {
+    return storage.setNamespace('BetterMediaModule', data);
   };
 
   /**
@@ -140,7 +165,7 @@ export default class BetterMediaModule extends Module {
         const mediaUrl  = new URL(href);
         const extension = mediaUrl.pathname.split('.').pop().toLowerCase();
         const handler   = supportedMediaHosts[mediaUrl.hostname];
-        if (handler || imageExtensions.indexOf(extension) !== -1) {
+        if (handler || imageExtensions.indexOf(extension) !== -1 || videoExtensions.indexOf(extension) !== -1) {
           a.removeAttribute('data-toggle');
           a.removeAttribute('data-target');
           this.html.query(a, 'img').removeAttribute('onclick');
@@ -149,6 +174,8 @@ export default class BetterMediaModule extends Module {
             a.addEventListener('click', handler, false);
           } else if (imageExtensions.indexOf(extension) !== -1) {
             a.addEventListener('click', this.handleAnchorImage, false);
+          } else {
+            a.addEventListener('click', this.handleAnchorVideo, false);
           }
         }
       }
@@ -163,6 +190,18 @@ export default class BetterMediaModule extends Module {
     if (mediaUrl) {
       const popup = this.createPopup();
       const img   = this.createImageContainer(mediaUrl, false);
+      popup.appendChild(img);
+    }
+  };
+
+  /**
+   * @param {*} e
+   */
+  handleAnchorVideo = (e) => {
+    const mediaUrl = this.getClickedAnchorURL(e);
+    if (mediaUrl) {
+      const popup = this.createPopup();
+      const img   = this.createVideoContainer(mediaUrl);
       popup.appendChild(img);
     }
   };
@@ -463,9 +502,43 @@ export default class BetterMediaModule extends Module {
 
     img.addEventListener('load', handleImageLoad, false);
     img.src = mediaUrl.toString();
+
     container.appendChild(img);
     outer.appendChild(container);
+    const attrib = this.createAttribute(mediaUrl);
+    outer.appendChild(attrib);
 
+    return outer;
+  };
+
+  /**
+   * @param {URL} mediaUrl
+   */
+  createVideoContainer = (mediaUrl) => {
+    const outer = this.html.createElement('div', {
+      'class': 'd-flex flex-column'
+    });
+    const container = this.html.createElement('a', {
+      'class':  'rp-better-media-video-container text-center',
+      'href':   mediaUrl.toString(),
+      'target': '_blank',
+      'rel':    'nofollow noreferrer',
+      'html':   `<img class="rp-better-media-load" src="${getLoaderURL()}" alt="Load" />`
+    });
+    const video = this.html.createElement('video', {
+      'autoplay': 'true',
+      'loop':     'loop',
+      'controls': 'controls'
+    });
+
+    const handleVideoLoad = () => {
+      container.querySelector('.rp-better-media-load').remove();
+    };
+    video.addEventListener('loadstart', handleVideoLoad, false);
+    video.src = mediaUrl.toString();
+
+    container.appendChild(video);
+    outer.appendChild(container);
     const attrib = this.createAttribute(mediaUrl);
     outer.appendChild(attrib);
 

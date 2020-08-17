@@ -54,7 +54,9 @@ export default class SettingsModal extends React.Component {
 
     return (
       <div>
-        <h6>Vote Score Settings</h6>
+        <h6 className="mb-2">
+          Vote Score Settings
+        </h6>
         <div className="form-group">
           <div className="custom-control custom-radio">
             <input

@@ -1,6 +1,7 @@
 import React from 'react';
 import toastr from 'toastr';
 import { themes } from 'ruqqus-plus-shared';
+import { promptToDownloadFile } from '../../utils/web';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { Icon } from '../../components';
@@ -486,17 +487,8 @@ export default class ThemeModuleSettings extends React.PureComponent {
       delete newTheme.is_uploaded;
       newTheme.__ruqqus_plus_theme = true;
 
-      const name   = `${this.createSlug(theme.name)}.json`;
-      const data   = JSON.stringify(newTheme);
-      const url    = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-      const anchor = document.createElement('a');
-      anchor.setAttribute('href', url);
-      anchor.setAttribute('download', name);
-      anchor.setAttribute('style', 'display: none;');
-      document.querySelector('body').appendChild(anchor);
-      anchor.click();
-      URL.revokeObjectURL(url);
-      anchor.remove();
+      const data = JSON.stringify(newTheme, null, 2);
+      promptToDownloadFile(`${this.createSlug(theme.name)}.json`, data, 'application/json');
     };
 
     /**

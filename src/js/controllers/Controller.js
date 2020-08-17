@@ -1,4 +1,4 @@
-import toastr from 'toastr';
+import * as toast from '../utils/toast';
 import events from '../utils/events';
 
 /**
@@ -62,6 +62,30 @@ export default class Controller {
   }
 
   /**
+   * Called when the user exports the extension data
+   *
+   * Should return all values that have been saved by the controller or module. Should
+   * return a falsy value when the controller/module has nothing to export.
+   *
+   * @returns {Promise}
+   */
+  exportData = () => {
+    return Promise.resolve(false);
+  }
+
+  /**
+   * Called when the user imports extension data
+   *
+   * Will receive the values saved for the controller or module.
+   *
+   * @param {*} data
+   * @returns {Promise}
+   */
+  importData = (data) => {
+    return Promise.resolve(true);
+  };
+
+  /**
    * Wrapper around the DOMContentLoaded event
    *
    * @param {Function} callback
@@ -102,19 +126,13 @@ export default class Controller {
    * @param {string} message
    */
   toastError = (message) => {
-    toastr.error(message, '', {
-      closeButton:   true,
-      positionClass: 'toast-bottom-center'
-    });
+    toast.toastError(message);
   };
 
   /**
    * @param {string} message
    */
   toastSuccess = (message) => {
-    toastr.success(message, '', {
-      closeButton:   true,
-      positionClass: 'toast-bottom-center'
-    });
+    toast.toastSuccess(message);
   };
 }

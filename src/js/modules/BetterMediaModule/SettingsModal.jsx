@@ -1,4 +1,5 @@
 import React from 'react';
+import { toastSuccess } from '../../utils/toast';
 import storage from '../../utils/storage';
 
 const defaultSettings = {
@@ -39,6 +40,7 @@ export default class SettingsModal extends React.Component {
     storage.set('BetterMediaModule.settings', newSettings)
       .then(() => {
         this.setState({ settings: newSettings });
+        toastSuccess('Settings saved.');
       });
   };
 
@@ -50,7 +52,9 @@ export default class SettingsModal extends React.Component {
 
     return (
       <div>
-        <h6>Change Home Link Settings</h6>
+        <h6 className="mb-4">
+          Better Media Settings
+        </h6>
         <div className="form-group">
           <div className="custom-control custom-checkbox mr-4">
             <input

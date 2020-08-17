@@ -33,6 +33,24 @@ $height-header: 48px;
   }
 }
 
+.rp-better-media-video-container {
+  display: block;
+  position: relative;
+  width: 500px;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #7b7b7b;
+  font-size: 0;
+
+  video {
+    width: 100%;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 .rp-better-media-overflow {
   position: absolute;
   bottom: 0;

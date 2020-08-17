@@ -36,6 +36,30 @@ export default class RecentlyViewedModule extends Module {
   };
 
   /**
+   * Called when the user exports the extension data
+   *
+   * Should return all values that have been saved by the controller or module. Should
+   * return a falsy value when the controller/module has nothing to export.
+   *
+   * @returns {Promise}
+   */
+  exportData = async () => {
+    return storage.getNamespace('RecentlyViewedModule');
+  };
+
+  /**
+   * Called when the user imports extension data
+   *
+   * Will receive the values saved for the controller or module.
+   *
+   * @param {*} data
+   * @returns {Promise}
+   */
+  importData = async (data) => {
+    return storage.setNamespace('RecentlyViewedModule', data);
+  };
+
+  /**
    * Called from the content script
    *
    * The content script has access to the chrome extension API but does not

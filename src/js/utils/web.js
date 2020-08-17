@@ -168,7 +168,7 @@ export const query = (context, selector = '') => {
  * @param {boolean} returnParent
  * @returns {boolean|HTMLElement|Node}
  */
-export function hasParentClass(element, className, returnParent = false) {
+export const hasParentClass = (element, className, returnParent = false) => {
   do {
     if (element.classList && element.classList.contains(className)) {
       if (returnParent) {
@@ -182,6 +182,9 @@ export function hasParentClass(element, className, returnParent = false) {
   return false;
 }
 
+/**
+ * @returns {string}
+ */
 export const getSelectionText = () => {
   let text = '';
   const activeEl = document.activeElement;
@@ -198,3 +201,20 @@ export const getSelectionText = () => {
 
   return text;
 }
+
+/**
+ * @param {string} fileName
+ * @param {*} data
+ * @param {string} type
+ */
+export const promptToDownloadFile = (fileName, data, type) => {
+  const url    = URL.createObjectURL(new Blob([data], { type }));
+  const anchor = document.createElement('a');
+  anchor.setAttribute('href', url);
+  anchor.setAttribute('download', fileName);
+  anchor.setAttribute('style', 'display: none;');
+  document.querySelector('body').appendChild(anchor);
+  anchor.click();
+  URL.revokeObjectURL(url);
+  anchor.remove();
+};
