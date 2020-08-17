@@ -44,7 +44,7 @@ export default class HideGuildModule extends Module {
 
       const formkey = window.formkey();
       if (!formkey) {
-        this.toastError('Error, unable to block user.');
+        this.toastError('Error, unable to hide guild.');
         return;
       }
 
