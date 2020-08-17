@@ -479,7 +479,11 @@ export default class BetterMediaModule extends Module {
     const img = new Image();
     const handleImageLoad = () => {
       outer.style.maxWidth = 'none';
-      outer.style.width    = `${img.width}px`;
+      if (img.naturalWidth < (window.innerWidth - 400)) {
+        outer.style.width = `${img.naturalWidth}px`;
+      } else {
+        outer.style.width = `${img.width}px`;
+      }
       container.querySelector('.rp-better-media-load').remove();
       const outerRect = outer.getBoundingClientRect();
 
