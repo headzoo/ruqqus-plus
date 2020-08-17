@@ -3,6 +3,7 @@
 - Improvements to BetterMediaModule
 - Adds FixCrossPostModule
 - Adds HideGuildModule
+- Adds JoinGuildModule
 
 0.0.3
 - Adds PopupPostsModule
