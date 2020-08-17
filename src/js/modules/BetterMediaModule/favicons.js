@@ -16,6 +16,7 @@ export const favIcons = {
   'wikimedia.org':     'https://www.wikimedia.org/static/images/project-logos/enwiki.png',
   'redgifs.com':       'https://www.redgifs.com/assets/favicon-32x32.png',
   'gfycat.com':        'https://gfycat.com/assets/favicons/favicon-32x32.png',
-  'i.imgur.com':       'https://s.imgur.com/images/favicon-32x32.png'
+  'i.imgur.com':       'https://s.imgur.com/images/favicon-32x32.png',
+  'spotify.com':       'https://www.scdn.co/i/_global/touch-icon-72.png'
 };
 export const favIconsKeys = Object.keys(favIcons);
