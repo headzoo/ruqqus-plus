@@ -71,8 +71,8 @@ const SettingsModal = ({ open, settings, onHidden, onChange }) => {
             ))}
           </ul>
         </div>
-        <div className="d-flex mb-4">
-          <div className="custom-control custom-checkbox mr-4">
+        <div className="d-flex mb-2">
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
             <input
               type="checkbox"
               id="settings-better-sidebar-show-badge-nsfw"
@@ -85,7 +85,7 @@ const SettingsModal = ({ open, settings, onHidden, onChange }) => {
               &nbsp;Show NSFW Badges
             </label>
           </div>
-          <div className="custom-control custom-checkbox mr-4">
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
             <input
               type="checkbox"
               id="settings-better-sidebar-show-create"
@@ -98,7 +98,7 @@ const SettingsModal = ({ open, settings, onHidden, onChange }) => {
               &nbsp;Show Create Button
             </label>
           </div>
-          <div className="custom-control custom-checkbox mr-4">
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
             <input
               type="checkbox"
               id="settings-better-sidebar-show-favorite"
@@ -112,8 +112,53 @@ const SettingsModal = ({ open, settings, onHidden, onChange }) => {
             </label>
           </div>
         </div>
-        <button type="button" className="btn btn-secondary" onClick={handleClearCacheClick}>
-          Clear Cache
+        <div className="d-flex mb-4">
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
+            <input
+              type="checkbox"
+              id="settings-better-sidebar-show-browse"
+              name="showBrowse"
+              className="custom-control-input"
+              checked={settings.showBrowse}
+              onChange={handleChange}
+            />
+            <label className="custom-control-label" htmlFor="settings-better-sidebar-show-browse">
+              &nbsp;Show Browse Link
+            </label>
+          </div>
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
+            <input
+              type="checkbox"
+              id="settings-better-sidebar-show-discover"
+              name="showDiscover"
+              className="custom-control-input"
+              checked={settings.showDiscover}
+              onChange={handleChange}
+            />
+            <label className="custom-control-label" htmlFor="settings-better-sidebar-show-discover">
+              &nbsp;Show Discover Link
+            </label>
+          </div>
+          <div className="custom-control custom-checkbox" style={{ width: '33%' }}>
+            <input
+              type="checkbox"
+              id="settings-better-sidebar-show-mod-queue"
+              name="showModQueue"
+              className="custom-control-input"
+              checked={settings.showModQueue}
+              onChange={handleChange}
+            />
+            <label className="custom-control-label" htmlFor="settings-better-sidebar-show-mod-queue">
+              &nbsp;Show Mod Queue Link
+            </label>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={handleClearCacheClick}
+        >
+          Clear Guild Cache
         </button>
       </div>
     </Modal>

@@ -13,6 +13,9 @@ const defaultSettings = {
   showBadgeNSFW: true,
   showCreate:    true,
   showFavorite:  true,
+  showBrowse:    true,
+  showDiscover:  true,
+  showModQueue:  true,
   sections:      [
     { name: 'ruqqus',      label: 'Ruqqus Feeds',   visible: true },
     { name: 'favorites',   label: 'Favorite Guilds', visible: true },
@@ -200,7 +203,7 @@ export default class Sidebar extends React.PureComponent {
    * @returns {*}
    */
   renderRuqqusFeeds = (isTop) => {
-    const { isCollapsed, filterValue } = this.state;
+    const { guilds, settings, isCollapsed, filterValue } = this.state;
 
     if (filterValue !== '') {
       return null;
@@ -209,6 +212,16 @@ export default class Sidebar extends React.PureComponent {
     let classes = 'd-flex justify-content-between align-items-center mb-3';
     if (isCollapsed) {
       classes = 'd-flex justify-content-center align-items-center mb-3';
+    }
+
+    let isMaster = false;
+    if (guilds) {
+      for (let i = 0; i < guilds.length; i++) {
+        if (guilds[i].isMaster) {
+          isMaster = true;
+          break;
+        }
+      }
     }
 
     return (
@@ -274,6 +287,54 @@ export default class Sidebar extends React.PureComponent {
               </div>
             </a>
           </li>
+          {settings.showBrowse && (
+            <li className="guild-recommendations-item rp-better-sidebar-item">
+              <a href="/mine" title="Browse your guilds">
+                <div className="d-flex">
+                  <div className="rp-better-sidebar-purple-icon">
+                    <Icon name="bahai" />
+                  </div>
+                  {!isCollapsed && (
+                    <div className="my-auto ml-2">
+                      <div className="text-black font-weight-normal">Browse</div>
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
+          )}
+          {settings.showDiscover && (
+            <li className="guild-recommendations-item rp-better-sidebar-item">
+              <a href="/browse" title="Discover guilds">
+                <div className="d-flex">
+                  <div className="rp-better-sidebar-purple-icon">
+                    <Icon name="bolt" />
+                  </div>
+                  {!isCollapsed && (
+                    <div className="my-auto ml-2">
+                      <div className="text-black font-weight-normal">Discover</div>
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
+          )}
+          {(isMaster && settings.showModQueue) && (
+            <li className="guild-recommendations-item rp-better-sidebar-item">
+              <a href="/mod/queue" title="Moderation queue">
+                <div className="d-flex">
+                  <div className="rp-better-sidebar-purple-icon">
+                    <Icon name="envelope" />
+                  </div>
+                  {!isCollapsed && (
+                    <div className="my-auto ml-2">
+                      <div className="text-black font-weight-normal">Mod Queue</div>
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     );
@@ -425,22 +486,6 @@ export default class Sidebar extends React.PureComponent {
             {loading && (
               <img src={getLoaderURL()} alt="Loading" />
             )}
-          </div>
-          <div className="d-flex">
-            <a href="/mine" className="btn btn-secondary btn-sm mr-1" title="Your guilds">
-              Browse
-            </a>
-            <a href="/browse" className="btn btn-secondary btn-sm mr-1" title="Discover guilds">
-              Discover
-            </a>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              title="Sidebar settings"
-              onClick={this.handleSettingsClick}
-            >
-              <Icon name="cog" />
-            </button>
           </div>
         </div>
         {settingsOpen && (
