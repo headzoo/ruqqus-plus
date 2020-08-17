@@ -1,9 +1,9 @@
 import Module from './Module';
 
 /**
- * Adds a block user button to posts and comments
+ * Adds a hide guild button to posts
  */
-export default class BlockUserModule extends Module {
+export default class HideGuildModule extends Module {
   /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
@@ -20,7 +20,7 @@ export default class BlockUserModule extends Module {
    * @returns {string}
    */
   getLabel = () => {
-    return 'Block User';
+    return 'Hide Guilds';
   };
 
   /**
@@ -29,7 +29,7 @@ export default class BlockUserModule extends Module {
    * @returns {string}
    */
   getHelp = () => {
-    return 'Makes it easier to block users by adding a block user button to posts and comments.';
+    return 'Makes it easier to hide guilds by adding a hide guild button to posts.';
   };
 
   /**
@@ -39,8 +39,8 @@ export default class BlockUserModule extends Module {
    * chrome extension API.
    */
   execWindowContext = () => {
-    this.listen('rq.blockUser', (data) => {
-      const { username } = data.detail;
+    this.listen('rp.blockGuild', (data) => {
+      const { guild } = data.detail;
 
       const formkey = window.formkey();
       if (!formkey) {
@@ -49,10 +49,10 @@ export default class BlockUserModule extends Module {
       }
 
       const formData = new FormData();
-      formData.append('username', username);
+      formData.append('board', guild.replace('+', ''));
       formData.append('formkey', formkey);
 
-      fetch('https://ruqqus.com/settings/block', {
+      fetch('https://ruqqus.com/settings/block_guild', {
         body:   formData,
         method: 'post'
       })
@@ -75,10 +75,6 @@ export default class BlockUserModule extends Module {
       if (posts) {
         this.html.querySelectorEach(posts, '.card', this.wireupCard);
       }
-      const comments = document.querySelector('.comment-section');
-      if (comments) {
-        this.html.querySelectorEach(comments, '.comment', this.wireupComment);
-      }
     };
 
     this.onDOMReady(() => {
@@ -91,48 +87,30 @@ export default class BlockUserModule extends Module {
    * @param {Element} card
    */
   wireupCard = (card) => {
-    if (card && card.querySelector('a[data-rp-blocked-id]')) {
+    if (card && card.querySelector('a[data-rp-blocked-guild-id]')) {
       return;
     }
 
-    const item    = this.createBlockLink(card, 'post');
+    const item    = this.createBlockLink(card);
     const actions = card.querySelector('.post-actions ul');
     actions.appendChild(item);
   };
 
   /**
-   * @param {Element} comment
-   */
-  wireupComment = (comment) => {
-    if (comment && comment.querySelector('a[data-rp-blocked-id]')) {
-      return;
-    }
-
-    const item     = this.createBlockLink(comment, 'comment');
-    const dropdown = comment.querySelector('.comment-actions ul .dropdown');
-    if (dropdown) {
-      const parent = dropdown.parentElement;
-      parent.parentElement.insertBefore(item, parent);
-    }
-  };
-
-  /**
    * @param {Element} card
-   * @param {string} type
    * @returns {Element}
    */
-  createBlockLink = (card, type) => {
-    const id   = card.getAttribute('id').replace(`${type}-`, '');
+  createBlockLink = (card) => {
+    const id   = card.getAttribute('id').replace('post-', '');
     const item = this.html.createElement('li', {
       'class': 'list-inline-item'
     });
     const anchor = this.html.createElement('a', {
-      'href':                 'javascript:void(0)', // eslint-disable-line
-      'title':                'Block user',
-      'html':                 '<i class="fas fa-ban"></i> Block User',
-      'data-rp-blocked-id':   id,
-      'data-rp-blocked-type': type,
-      'on':                   {
+      'href':                     'javascript:void(0)', // eslint-disable-line
+      'title':                    'Hide guild',
+      'html':                     '<i class="fas fa-ban"></i> Hide Guild',
+      'data-rp-blocked-guild-id': id,
+      'on':                       {
         click: this.handleBlockClick
       }
     });
@@ -148,37 +126,31 @@ export default class BlockUserModule extends Module {
     e.preventDefault();
 
     const { currentTarget } = e;
-    const id   = currentTarget.getAttribute('data-rp-blocked-id');
-    const type = currentTarget.getAttribute('data-rp-blocked-type');
-    const card = document.getElementById(`${type}-${id}`);
+    const id   = currentTarget.getAttribute('data-rp-blocked-guild-id');
+    const card = document.getElementById(`post-${id}`);
     if (!card) {
       return;
     }
 
-    const username = card.querySelector('.user-name').innerText.trim();
+    const guild = card.querySelector('.post-meta-guild a').getAttribute('href').replace('/', '');
     // eslint-disable-next-line no-alert
-    if (window.confirm(`Are you sure you want to block ${username}?`)) {
+    if (window.confirm(`Are you sure you want to block ${guild}?`)) {
       // Block needs to happen from the window context in order to access
       // the window.formkey() function. The window context is listening for
       // this event.
-      this.dispatch('rq.blockUser', { username });
-      this.removeUserCards(username);
-      this.toastSuccess(`User ${username} blocked.`);
+      this.dispatch('rp.blockGuild', { guild });
+      this.removeUserCards(guild);
+      this.toastSuccess(`${guild} hidden.`);
     }
   };
 
   /**
-   * @param {string} username
+   * @param {string} guild
    */
-  removeUserCards = (username) => {
+  removeUserCards = (guild) => {
     this.html.querySelectorEach('.posts .card', (card) => {
-      if (card.querySelector('.user-name').innerText.trim() === username) {
+      if (card.querySelector('.post-meta-guild a').getAttribute('href').replace('/', '') === guild) {
         card.remove();
-      }
-    });
-    this.html.querySelectorEach('.comment', (comment) => {
-      if (comment.querySelector('.user-name').innerText.trim() === username) {
-        comment.remove();
       }
     });
   }

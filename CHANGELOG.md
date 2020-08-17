@@ -2,6 +2,7 @@
 - Adds more settings to BetterSidebarModule
 - Improvements to BetterMediaModule
 - Adds FixCrossPostModule
+- Adds HideGuildModule
 
 0.0.3
 - Adds PopupPostsModule

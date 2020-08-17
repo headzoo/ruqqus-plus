@@ -92,7 +92,7 @@ export default class SavePostsModule extends Module {
           const anchor = this.html.createElement('a', {
             'href':          'javascript:void(0)', // eslint-disable-line
             'title':         isSaved ? 'UnSave this post' : 'Save this post',
-            'html':          isSaved ? '<i class="fas fa-save"></i> UnSave' : '<i class="fas fa-save"></i> Save',
+            'html':          isSaved ? '<i class="fas fa-save"></i> UnSave Post' : '<i class="fas fa-save"></i> Save Post',
             'data-rp-saved': id,
             'on':            {
               click: this.handleSaveClick
