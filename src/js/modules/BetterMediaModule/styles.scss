@@ -16,6 +16,10 @@ $height-header: 48px;
   border: 1px solid #7b7b7b;
   font-size: 0;
 
+  .post-body & {
+    max-width: 500px;
+  }
+
   &.rp-better-media-collapsed {
     max-height: 600px;
   }
