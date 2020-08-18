@@ -159,7 +159,9 @@ export default class BetterMediaModule extends Module {
           'www.redgifs.com': this.handleAnchorRedGifs,
           'redgifs.com':     this.handleAnchorRedGifs,
           'gfycat.com':      this.handleAnchorGfycat,
-          'i.ruqqus.com':    this.handleAnchorImage
+          'i.ruqqus.com':    this.handleAnchorImage,
+          'youtube.com':     this.handleAnchorYoutube,
+          'youtu.be':        this.handleAnchorYoutube
         };
 
         const mediaUrl  = new URL(href);
@@ -290,6 +292,17 @@ export default class BetterMediaModule extends Module {
 
   /**
    * @param {*} e
+   */
+  handleAnchorYoutube = (e) => {
+    const mediaUrl = this.getClickedAnchorURL(e);
+    if (mediaUrl) {
+      const popup = this.createPopup();
+      this.createYoutube(popup, mediaUrl, 1);
+    }
+  };
+
+  /**
+   * @param {*} e
    * @returns {URL}
    */
   getClickedAnchorURL = (e) => {
@@ -334,6 +347,29 @@ export default class BetterMediaModule extends Module {
       'allowfullscreen': 'allowfullscreen'
     });
     postBody.appendChild(frame);
+  };
+
+  /**
+   * @param {HTMLElement} postBody
+   * @param {URL} mediaUrl
+   * @param {number} autoplay
+   */
+  createYoutube = (postBody, mediaUrl, autoplay = 0) => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match  = mediaUrl.toString().match(regExp);
+    const id     = (match && match[7].length === 11) ? match[7] : false;
+    if (id) {
+      const frame = this.createFrameContainer(mediaUrl, {
+        'src':             `https://www.youtube.com/embed/${id}?autoplay=${autoplay}`,
+        'frameborder':     0,
+        'scrolling':       'no',
+        'width':           800,
+        'height':          450,
+        'class':           'rp-better-media-iframe',
+        'allowfullscreen': 'allowfullscreen'
+      });
+      postBody.appendChild(frame);
+    }
   };
 
   /**

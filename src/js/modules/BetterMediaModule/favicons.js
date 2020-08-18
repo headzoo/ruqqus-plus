@@ -17,6 +17,8 @@ export const favIcons = {
   'redgifs.com':       'https://www.redgifs.com/assets/favicon-32x32.png',
   'gfycat.com':        'https://gfycat.com/assets/favicons/favicon-32x32.png',
   'i.imgur.com':       'https://s.imgur.com/images/favicon-32x32.png',
-  'spotify.com':       'https://www.scdn.co/i/_global/touch-icon-72.png'
+  'spotify.com':       'https://www.scdn.co/i/_global/touch-icon-72.png',
+  'youtube.com':       'https://www.youtube.com/s/desktop/ea048e95/img/favicon_32.png',
+  'youtu.be':          'https://www.youtube.com/s/desktop/ea048e95/img/favicon_32.png'
 };
 export const favIconsKeys = Object.keys(favIcons);
