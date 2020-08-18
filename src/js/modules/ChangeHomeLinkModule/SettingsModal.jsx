@@ -47,8 +47,10 @@ export default class SettingsModal extends React.Component {
 
     return (
       <div>
-        <h6>Change Home Link Settings</h6>
-        <div className="form-group">
+        <h6 className="mb-3">
+          Change Home Link Settings
+        </h6>
+        <div className="rp-list-group">
           <label htmlFor="input-change-home-link-url">
             URL to open when ruqqus logo is clicked.
           </label>

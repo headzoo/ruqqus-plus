@@ -25,25 +25,19 @@ export default class SettingsModal extends React.Component {
   }
 
   /**
-   *
+   * @param {Event} e
    */
-  handleSaveClick = () => {
-    const { value } = this.state;
+  handleChange = (e) => {
+    const { value } = e.target;
 
     storage.set('VoteScoreModule.display', value)
       .then(() => {
+        this.setState({ value });
         toastr.success('Settings saved!', '', {
           closeButton:   true,
           positionClass: 'toast-bottom-center'
         });
       });
-  };
-
-  /**
-   * @param {Event} e
-   */
-  handleChange = (e) => {
-    this.setState({ value: e.target.value });
   };
 
   /**
@@ -54,10 +48,10 @@ export default class SettingsModal extends React.Component {
 
     return (
       <div>
-        <h6 className="mb-2">
+        <h6 className="mb-3">
           Vote Score Settings
         </h6>
-        <div className="form-group">
+        <div className="rp-list-group">
           <div className="custom-control custom-radio">
             <input
               type="radio"
@@ -83,11 +77,6 @@ export default class SettingsModal extends React.Component {
             <label className="custom-control-label" htmlFor="input-display-percent">
               Display % upvote percentage
             </label>
-          </div>
-          <div className="mt-2">
-            <button type="button" className="btn btn-primary" onClick={this.handleSaveClick}>
-              Save
-            </button>
           </div>
         </div>
       </div>

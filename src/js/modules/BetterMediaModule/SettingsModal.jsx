@@ -68,7 +68,7 @@ export default class SettingsModal extends React.Component {
 
     return (
       <div>
-        <h6 className="mb-2">
+        <h6 className="mb-3">
           Better Media Settings
         </h6>
         <div className="rp-list-group mb-2">
