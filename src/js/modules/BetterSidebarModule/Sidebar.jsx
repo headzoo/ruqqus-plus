@@ -8,6 +8,7 @@ import { searchByObjectKey } from '../../utils/arrays';
 import SettingsModal from './SettingsModal';
 import GuildList from './GuildList';
 import SidebarTools from './SidebarTools';
+import toastr from 'toastr';
 
 const defaultSettings = {
   showBadgeNSFW: true,
@@ -165,6 +166,24 @@ export default class Sidebar extends React.PureComponent {
     storage.get('BetterSidebarModule.settings', defaultSettings)
       .then((settings) => {
         this.setState({ settings });
+      });
+  };
+
+  /**
+   *
+   */
+  handleCacheCleared = () => {
+    storage.remove('BetterSidebarModule.guilds')
+      .then(() => {
+        this.setState({ guilds: [], loading: true });
+        fetchMyGuilds()
+          .then((g) => {
+            this.setState({
+              guilds:  this.sortGuilds(g),
+              loading: false
+            });
+            storage.set('BetterSidebarModule.guilds', g, 86400 * 1000);
+          });
       });
   };
 
@@ -493,6 +512,7 @@ export default class Sidebar extends React.PureComponent {
             settings={settings}
             onHidden={() => this.setState({ settingsOpen: false })}
             onChange={this.handleSettingsChange}
+            onCacheCleared={this.handleCacheCleared}
             open
           />
         )}
