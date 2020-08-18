@@ -517,7 +517,7 @@ export default class BetterMediaModule extends Module {
     const handleImageLoad = () => {
       outer.style.maxWidth = 'none';
       if (img.naturalWidth < (window.innerWidth - 400)) {
-        outer.style.width = `${img.naturalWidth}px`;
+        outer.style.width = `${img.naturalWidth < 801 ? img.naturalWidth : 800}px`;
       } else {
         outer.style.width = `${img.width}px`;
       }
