@@ -3,12 +3,9 @@ import { isPostPage } from '../utils/ruqqus';
 import loader, { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
 import SettingsModal from './BetterMediaModule/SettingsModal';
+import defaultSettings from './BetterMediaModule/defaultSettings';
 import storage from '../utils/storage';
 
-const defaultSettings = {
-  watchPosts:  true,
-  watchThumbs: true
-};
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 const videoExtensions = ['mp4', 'webm', 'gifv'];
 
@@ -98,7 +95,7 @@ export default class BetterMediaModule extends Module {
   wireup = () => {
     storage.get('BetterMediaModule.settings', defaultSettings)
       .then((settings) => {
-        this.settings = settings;
+        this.settings = { ...defaultSettings, ...settings };
         if (settings.watchPosts && isPostPage()) {
           this.wireupPost();
         } else if (settings.watchThumbs) {
@@ -151,17 +148,19 @@ export default class BetterMediaModule extends Module {
    *
    */
   wireupCards = () => {
+    const { popups } = this.settings;
+
     this.html.querySelectorEach('.card-header a', (a) => {
       const href = a.getAttribute('href');
       if (href && href.indexOf('http') === 0) {
         const supportedMediaHosts = {
-          'imgur.com':       this.handleAnchorImgur,
-          'www.redgifs.com': this.handleAnchorRedGifs,
-          'redgifs.com':     this.handleAnchorRedGifs,
-          'gfycat.com':      this.handleAnchorGfycat,
-          'i.ruqqus.com':    this.handleAnchorImage,
-          'youtube.com':     this.handleAnchorYoutube,
-          'youtu.be':        this.handleAnchorYoutube
+          'imgur.com':       popups.imgur.enabled ? this.handleAnchorImgur : null,
+          'www.redgifs.com': popups.redgifs.enabled ? this.handleAnchorRedGifs : null,
+          'redgifs.com':     popups.redgifs.enabled ? this.handleAnchorRedGifs : null,
+          'gfycat.com':      popups.gfycat.enabled ? this.handleAnchorGfycat : null,
+          'i.ruqqus.com':    popups.ruqqus.enabled ? this.handleAnchorImage : null,
+          'youtube.com':     popups.youtube.enabled ? this.handleAnchorYoutube : null,
+          'youtu.be':        popups.youtube.enabled ? this.handleAnchorYoutube : null
         };
 
         const mediaUrl  = new URL(href);
@@ -173,10 +172,12 @@ export default class BetterMediaModule extends Module {
           this.html.query(a, 'img').removeAttribute('onclick');
 
           if (handler !== undefined) {
-            a.addEventListener('click', handler, false);
-          } else if (imageExtensions.indexOf(extension) !== -1) {
+            if (handler !== null) {
+              a.addEventListener('click', handler, false);
+            }
+          } else if (popups.other.enabled && imageExtensions.indexOf(extension) !== -1) {
             a.addEventListener('click', this.handleAnchorImage, false);
-          } else {
+          } else if (popups.other.enabled) {
             a.addEventListener('click', this.handleAnchorVideo, false);
           }
         }
