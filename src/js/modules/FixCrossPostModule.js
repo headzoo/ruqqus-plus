@@ -40,13 +40,18 @@ export default class FixCrossPostModule extends Module {
    * have access to the ruqqus `window` object.
    */
   execContentContext = () => {
-    const post = document.querySelector('.post-body');
+    this.listen('rp.change', this.execContentContext);
+
+    const post = document.querySelector('#post-body');
     if (post) {
       const iframe = post.querySelector('iframe');
       if (iframe && iframe.src.indexOf('https://ruqqus.com/embed/post') === 0) {
         const img = new Image();
         img.src   = getLoaderURL();
-        this.html.insertBefore(document.querySelector('.embed-responsive'), img);
+
+        const responsive = document.querySelector('.embed-responsive');
+        this.html.insertBefore(responsive, img);
+        responsive.classList.remove('embed-responsive-16by9');
 
         iframe.style.display = 'none';
         iframe.classList.add('rp-fix-cross-post-iframe');
@@ -55,8 +60,11 @@ export default class FixCrossPostModule extends Module {
 
           // Fix the height of the iframe.
           doc.addEventListener('DOMContentLoaded', () => {
-            iframe.height       = `${doc.body.scrollHeight + 15}px`;
-            iframe.style.height = iframe.height;
+            setTimeout(() => {
+              iframe.height       = `${doc.body.scrollHeight + 15}px`;
+              iframe.style.height = iframe.height;
+              responsive.style.height = iframe.height;
+            }, 150);
           }, false);
 
           // Fixes dark mode not being honored in the iframe.
