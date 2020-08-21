@@ -77,7 +77,7 @@ export default class CopyQuoteReplyModule extends Module {
     const commentId = currentTarget.getAttribute('data-rp-copy-quote-reply-id');
     if (commentId) {
       setTimeout(() => {
-        const text = this.html.getSelectionText();
+        const text     = this.html.getSelectionText();
         const textarea = document.querySelector(`#reply-to-${commentId} .comment-box`);
         if (textarea) {
           if (text) {

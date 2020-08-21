@@ -19,6 +19,7 @@ import VoteScoreModule from './VoteScoreModule';
 import CopyQuoteReplyModule from './CopyQuoteReplyModule';
 import ChangeHomeLinkModule from './ChangeHomeLinkModule';
 import FixCrossPostModule from './FixCrossPostModule';
+import DefaultSortModule from './DefaultSortModule';
 
 export default {
   InfiniteScrollModule,
@@ -41,5 +42,6 @@ export default {
   // JoinGuildModule,
   CopyQuoteReplyModule,
   ThemeModule,
-  FixCrossPostModule
+  FixCrossPostModule,
+  DefaultSortModule
 };

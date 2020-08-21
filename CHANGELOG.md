@@ -4,6 +4,7 @@
 - Adds FixCrossPostModule
 - Adds HideGuildModule
 - Adds JoinGuildModule
+- Adds DefaultSortModule
 
 0.0.3
 - Adds PopupPostsModule
