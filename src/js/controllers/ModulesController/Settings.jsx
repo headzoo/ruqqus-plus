@@ -63,36 +63,38 @@ const Settings = () => {
 
   return (
     <form className="pt-2">
-      <div className="mb-4">
+      <div className="row mb-4">
         {Object.keys(loaded).map((key) => (
-          <div key={key} className="custom-control custom-checkbox mb-2">
-            <input
-              type="checkbox"
-              name={key}
-              id={`setting-${key}`}
-              className="custom-control-input"
-              checked={!!modules[key]}
-              onChange={handleCheckChange}
-            />
-            <label className="custom-control-label" htmlFor={`setting-${key}`}>
-              {loaded[key].getLabel()}
-            </label>
-            <div className="text-muted">{loaded[key].getHelp()}</div>
-            {loaded[key].getSettingsModal() && (
-              <span
-                className="btn btn-secondary btn-sm mt-2"
-                role="button"
-                tabIndex={0}
-                onClick={(e) => handleSettingsClick(e, key)}
-              >
-                <Icon
-                  name="cog"
-                  title="Settings"
-                  className="settings-cog-icon mr-2"
-                />
-                settings
-              </span>
-            )}
+          <div key={key} className="col-12 col-sm-12 col-md-6">
+            <div className="custom-control custom-checkbox mb-2">
+              <input
+                type="checkbox"
+                name={key}
+                id={`setting-${key}`}
+                className="custom-control-input"
+                checked={!!modules[key]}
+                onChange={handleCheckChange}
+              />
+              <label className="custom-control-label d-flex align-items-center" htmlFor={`setting-${key}`}>
+                {loaded[key].getLabel()}
+                {loaded[key].getSettingsModal() && (
+                  <span
+                    className="btn btn-secondary btn-sm ml-2"
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => handleSettingsClick(e, key)}
+                  >
+                    <Icon
+                      name="cog"
+                      title="Settings"
+                      className="settings-cog-icon mr-2"
+                    />
+                    settings
+                  </span>
+                )}
+              </label>
+              <div className="text-muted">{loaded[key].getHelp()}</div>
+            </div>
           </div>
         ))}
       </div>
