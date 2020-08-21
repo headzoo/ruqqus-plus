@@ -29,7 +29,7 @@ export default class CopyQuoteReplyModule extends Module {
    * @returns {string}
    */
   getHelp = () => {
-    return 'Automatically quotes the selected text into a new reply';
+    return 'Automatically quotes the selected text into a new reply.';
   };
 
   /**
