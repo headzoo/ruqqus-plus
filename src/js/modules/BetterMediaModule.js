@@ -125,6 +125,7 @@ export default class BetterMediaModule extends Module {
           'i.ruqqus.com':       this.createRuqqus,
           'open.spotify.com':   this.createSpotify,
           'twitter.com':        this.createTwitter,
+          'www.twitter.com':    this.createTwitter,
           'mobile.twitter.com': this.createTwitter
         };
 
@@ -189,10 +190,10 @@ export default class BetterMediaModule extends Module {
    * @param {*} e
    */
   handleAnchorImage = (e) => {
-    const mediaUrl = this.getClickedAnchorURL(e);
+    const { mediaUrl, voting } = this.getClickedAnchorURL(e);
     if (mediaUrl) {
-      const popup = this.createPopup();
-      const img   = this.createImageContainer(mediaUrl, false);
+      const popup = this.createPopup(voting);
+      const img   = this.createImagePopupContainer(mediaUrl);
       popup.appendChild(img);
     }
   };
@@ -201,9 +202,9 @@ export default class BetterMediaModule extends Module {
    * @param {*} e
    */
   handleAnchorVideo = (e) => {
-    const mediaUrl = this.getClickedAnchorURL(e);
+    const { mediaUrl, voting } = this.getClickedAnchorURL(e);
     if (mediaUrl) {
-      const popup = this.createPopup();
+      const popup = this.createPopup(voting);
       const img   = this.createVideoContainer(mediaUrl);
       popup.appendChild(img);
     }
@@ -216,7 +217,10 @@ export default class BetterMediaModule extends Module {
     const { currentTarget } = e;
 
     let src;
-    const href = currentTarget.getAttribute('href');
+    const href   = currentTarget.getAttribute('href');
+    const card   = currentTarget.closest('.card');
+    const voting = card.querySelector('.voting');
+
     let match  = href.match(/^https:\/\/imgur.com\/a\/(.*)/);
     if (match) {
       src = `https://api.imgur.com/3/album/${match[1]}.json`;
@@ -236,8 +240,8 @@ export default class BetterMediaModule extends Module {
       e.preventDefault();
 
       const displayImage = (link) => {
-        const popup = this.createPopup();
-        const img   = this.createImageContainer(new URL(link), false);
+        const popup = this.createPopup(voting);
+        const img   = this.createImagePopupContainer(new URL(link));
         popup.appendChild(img);
       };
 
@@ -273,9 +277,9 @@ export default class BetterMediaModule extends Module {
    * @param {*} e
    */
   handleAnchorRedGifs = (e) => {
-    const mediaUrl = this.getClickedAnchorURL(e);
+    const { mediaUrl, voting } = this.getClickedAnchorURL(e);
     if (mediaUrl) {
-      const popup = this.createPopup();
+      const popup = this.createPopup(voting);
       this.createRedGifs(popup, mediaUrl);
     }
   };
@@ -284,9 +288,9 @@ export default class BetterMediaModule extends Module {
    * @param {*} e
    */
   handleAnchorGfycat = (e) => {
-    const mediaUrl = this.getClickedAnchorURL(e);
+    const { mediaUrl, voting } = this.getClickedAnchorURL(e);
     if (mediaUrl) {
-      const popup = this.createPopup();
+      const popup = this.createPopup(voting);
       this.createGfycat(popup, mediaUrl);
     }
   };
@@ -295,9 +299,9 @@ export default class BetterMediaModule extends Module {
    * @param {*} e
    */
   handleAnchorYoutube = (e) => {
-    const mediaUrl = this.getClickedAnchorURL(e);
+    const { mediaUrl, voting } = this.getClickedAnchorURL(e);
     if (mediaUrl) {
-      const popup = this.createPopup();
+      const popup = this.createPopup(voting);
       this.createYoutube(popup, mediaUrl, 1);
     }
   };
@@ -310,9 +314,14 @@ export default class BetterMediaModule extends Module {
     const { currentTarget } = e;
 
     e.preventDefault();
-    const href = currentTarget.getAttribute('href');
+    const href   = currentTarget.getAttribute('href');
+    const card   = currentTarget.closest('.card');
+    const voting = card.querySelector('.voting');
 
-    return new URL(href);
+    return {
+      mediaUrl: new URL(href),
+      voting
+    };
   }
 
   /**
@@ -498,10 +507,33 @@ export default class BetterMediaModule extends Module {
 
   /**
    * @param {URL} mediaUrl
-   * @param {boolean} collapsed
    * @returns {HTMLElement}
    */
-  createImageContainer = (mediaUrl, collapsed = true) => {
+  createImagePopupContainer = (mediaUrl) => {
+    const outer = this.html.createElement('div', {
+      'class': 'rp-better-media-img-outer',
+      'html':  `<img class="rp-better-media-load" src="${getLoaderURL()}" alt="Load" />`
+    });
+
+    const img = new Image();
+    img.addEventListener('load', () => {
+      outer.querySelector('.rp-better-media-load').remove();
+      outer.appendChild(img);
+
+      const attrib = this.createAttribute(mediaUrl);
+      outer.appendChild(attrib);
+    }, false);
+    img.classList.add('rp-better-media-img-center');
+    img.src = mediaUrl.toString();
+
+    return outer;
+  }
+
+  /**
+   * @param {URL} mediaUrl
+   * @returns {HTMLElement}
+   */
+  createImageContainer = (mediaUrl) => {
     const outer     = this.html.createElement('div', {
       'class': 'd-flex flex-column',
       'style': 'max-width: 250px'
@@ -524,7 +556,7 @@ export default class BetterMediaModule extends Module {
       container.querySelector('.rp-better-media-load').remove();
       const outerRect = outer.getBoundingClientRect();
 
-      if (collapsed && img.clientHeight > outerRect.height) {
+      if (img.clientHeight > outerRect.height) {
         const overflow = this.html.createElement('div', {
           'class': 'rp-better-media-overflow post-title',
           'text':  'Click To Expand'
@@ -587,9 +619,10 @@ export default class BetterMediaModule extends Module {
   };
 
   /**
+   * @param {HTMLElement} voting
    * @returns {HTMLElement}
    */
-  createPopup = () => {
+  createPopup = (voting) => {
     const body = document.querySelector('body');
     body.style.overflow = 'hidden';
 
@@ -597,13 +630,23 @@ export default class BetterMediaModule extends Module {
       'class': 'rp-better-media-mask'
     });
     body.appendChild(mask);
+
     const container = this.html.createElement('div', {
       'class': 'rp-better-media-popup-container'
     });
     body.append(container);
+
     const content = this.html.createElement('div', {
       'class': 'rp-better-media-popup-content'
     });
+
+    const votingContainer = this.html.createElement('div', {
+      'class': 'rp-better-media-popup-voting'
+    });
+    votingContainer.appendChild(voting.cloneNode(true));
+    votingContainer.querySelector('.arrow-up').addEventListener('click', this.handleVoting, false);
+    votingContainer.querySelector('.arrow-down').addEventListener('click', this.handleVoting, false);
+    content.appendChild(votingContainer);
 
     container.appendChild(content);
     container.addEventListener('click', () => {
@@ -636,4 +679,50 @@ export default class BetterMediaModule extends Module {
       'html':   icon ? `<img src="${icon}" class="mr-2" alt="Icon" /> ${mediaUrl.hostname}` : mediaUrl.hostname
     });
   };
+
+  /**
+   * @param {*} e
+   */
+  handleVoting = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { currentTarget } = e;
+
+    if (currentTarget.classList.contains('arrow-up')) {
+      const id = currentTarget.getAttribute('data-id-up');
+      this.dispatch('rp.BetterMediaModule.vote', { dir: 'up', id });
+    } else {
+      const id = currentTarget.getAttribute('data-id-down');
+      this.dispatch('rp.BetterMediaModule.vote', { dir: 'down', id });
+    }
+  };
+
+  /**
+   * Called from the script injected into the page
+   *
+   * Code from here has access to the ruqqus `window` object but not the
+   * chrome extension API.
+   */
+  execWindowContext = () => {
+    this.listen('rp.BetterMediaModule.vote', ({ detail }) => {
+      const { upvote, downvote } = window;
+
+      const mockEvent = {
+        target: {
+          dataset: {
+            contentType: 'post'
+          }
+        }
+      };
+
+      if (detail.dir === 'up') {
+        mockEvent.target.dataset.idUp = detail.id;
+        upvote(mockEvent);
+      } else {
+        mockEvent.target.dataset.idDown = detail.id;
+        downvote(mockEvent);
+      }
+    });
+  }
 }

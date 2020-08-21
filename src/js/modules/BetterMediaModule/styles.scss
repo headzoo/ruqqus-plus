@@ -119,3 +119,50 @@ $height-header: 48px;
   transform: translateX(-50%);
   z-index: 1002;
 }
+
+.rp-better-media-img-outer {
+  display: grid;
+  height: 100%;
+  padding: 10px;
+  background-color: #FFF;
+  border-radius: 0.25rem;
+
+  .rp-dark-mode & {
+    background-color: #1F2023;
+    border: 1px solid #252525;
+  }
+}
+
+.rp-better-media-img-center {
+  max-width: 100%;
+  max-height: 100vh;
+  margin: auto auto 5px auto;
+
+  .rp-dark-mode & {
+    border: 1px solid #252525;
+  }
+}
+
+.rp-better-media-popup-voting {
+  position: absolute;
+  left: -44px;
+  border-radius: 0.25rem;
+  background-color: #FFF;
+
+  .voting {
+    padding-right: 0 !important;
+
+    .arrow-up:not(.active)::before {
+      color: #696969;
+    }
+
+    .arrow-down:not(.active)::before {
+      color: #696969;
+    }
+  }
+
+  .rp-dark-mode & {
+    background-color: #1F2023;
+    border: 1px solid #252525;
+  }
+}
