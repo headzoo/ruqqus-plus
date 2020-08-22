@@ -45,6 +45,7 @@ $height-header: 48px;
   overflow: hidden;
   border: 1px solid #7b7b7b;
   font-size: 0;
+  margin-bottom: 5px;
 
   video {
     width: 100%;
@@ -70,7 +71,6 @@ $height-header: 48px;
 }
 
 .rp-better-media-attrib {
-  padding-top: 6px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -79,6 +79,10 @@ $height-header: 48px;
     height: 20px;
     width: 20px;
     border-radius: 50%;
+  }
+
+  .post-body & {
+    padding-top: 6px;
   }
 }
 
@@ -123,7 +127,7 @@ $height-header: 48px;
 .rp-better-media-img-outer {
   display: grid;
   height: 100%;
-  padding: 10px;
+  padding: 5px;
   background-color: #FFF;
   border-radius: 0.25rem;
 
@@ -145,12 +149,13 @@ $height-header: 48px;
 
 .rp-better-media-popup-voting {
   position: absolute;
-  left: -44px;
+  left: -34px;
   border-radius: 0.25rem;
   background-color: #FFF;
 
   .voting {
     padding-right: 0 !important;
+    min-width: 30px;
 
     .arrow-up:not(.active)::before {
       color: #696969;

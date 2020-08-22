@@ -7,7 +7,7 @@ import defaultSettings from './BetterMediaModule/defaultSettings';
 import storage from '../utils/storage';
 
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-const videoExtensions = ['mp4', 'webm', 'gifv'];
+const videoExtensions = ['mp4', 'webm'];
 
 /**
  * Enhances the way media (images, videos) are displayed on the site
@@ -99,7 +99,7 @@ export default class BetterMediaModule extends Module {
         if (settings.watchPosts && isPostPage()) {
           this.wireupPost();
         } else if (settings.watchThumbs) {
-          this.wireupCards();
+          this.wireupThumbs();
         }
       });
   };
@@ -119,17 +119,17 @@ export default class BetterMediaModule extends Module {
 
         const supportedMediaHosts = {
           'gfycat.com':         this.createGfycat,
-          'www.redgifs.com':    this.createRedGifs,
+          'redgifs.com':        this.createRedGifs,
           'i.imgur.com':        this.createImgur,
           'imgur.com':          this.createImgur,
           'i.ruqqus.com':       this.createRuqqus,
           'open.spotify.com':   this.createSpotify,
           'twitter.com':        this.createTwitter,
-          'www.twitter.com':    this.createTwitter,
           'mobile.twitter.com': this.createTwitter
         };
 
-        const handler = supportedMediaHosts[mediaUrl.hostname];
+        const handler = supportedMediaHosts[mediaUrl.hostname]
+          || supportedMediaHosts[mediaUrl.hostname.replace('www.', '')];
         if (handler !== undefined) {
           handler.call(this, postBody, mediaUrl);
         } else {
@@ -148,25 +148,26 @@ export default class BetterMediaModule extends Module {
   /**
    *
    */
-  wireupCards = () => {
+  wireupThumbs = () => {
     const { popups } = this.settings;
 
     this.html.querySelectorEach('.card-header a', (a) => {
       const href = a.getAttribute('href');
       if (href && href.indexOf('http') === 0) {
         const supportedMediaHosts = {
-          'imgur.com':       popups.imgur.enabled ? this.handleAnchorImgur : null,
-          'www.redgifs.com': popups.redgifs.enabled ? this.handleAnchorRedGifs : null,
-          'redgifs.com':     popups.redgifs.enabled ? this.handleAnchorRedGifs : null,
-          'gfycat.com':      popups.gfycat.enabled ? this.handleAnchorGfycat : null,
-          'i.ruqqus.com':    popups.ruqqus.enabled ? this.handleAnchorImage : null,
-          'youtube.com':     popups.youtube.enabled ? this.handleAnchorYoutube : null,
-          'youtu.be':        popups.youtube.enabled ? this.handleAnchorYoutube : null
+          'imgur.com':    popups.imgur.enabled ? this.handleAnchorImgur : null,
+          'i.imgur.com':  popups.imgur.enabled ? this.handleAnchorImgur : null,
+          'redgifs.com':  popups.redgifs.enabled ? this.handleAnchorRedGifs : null,
+          'gfycat.com':   popups.gfycat.enabled ? this.handleAnchorGfycat : null,
+          'i.ruqqus.com': popups.ruqqus.enabled ? this.handleAnchorImage : null,
+          'youtube.com':  popups.youtube.enabled ? this.handleAnchorYoutube : null,
+          'youtu.be':     popups.youtube.enabled ? this.handleAnchorYoutube : null
         };
 
         const mediaUrl  = new URL(href);
         const extension = mediaUrl.pathname.split('.').pop().toLowerCase();
-        const handler   = supportedMediaHosts[mediaUrl.hostname];
+        const handler   = supportedMediaHosts[mediaUrl.hostname]
+          || supportedMediaHosts[mediaUrl.hostname.replace('www.', '')];
         if (handler || imageExtensions.indexOf(extension) !== -1 || videoExtensions.indexOf(extension) !== -1) {
           a.removeAttribute('data-toggle');
           a.removeAttribute('data-target');
@@ -221,17 +222,17 @@ export default class BetterMediaModule extends Module {
     const card   = currentTarget.closest('.card');
     const voting = card.querySelector('.voting');
 
-    let match  = href.match(/^https:\/\/imgur.com\/a\/(.*)/);
+    let match  = href.match(/^https:\/\/(i\.)?imgur.com\/a\/(.*)/);
     if (match) {
-      src = `https://api.imgur.com/3/album/${match[1]}.json`;
+      src = `https://api.imgur.com/3/album/${match[2]}.json`;
     } else {
-      match = href.match(/^https:\/\/imgur.com\/gallery\/(.*)/);
+      match = href.match(/^https:\/\/(i\.)?imgur.com\/gallery\/(.*)/);
       if (match) {
-        src = `https://api.imgur.com/3/gallery/${match[1]}.json`;
+        src = `https://api.imgur.com/3/gallery/${match[2]}.json`;
       } else {
-        match = href.match(/^https:\/\/imgur.com\/(.*)/);
+        match = href.match(/^https:\/\/(i\.)?imgur.com\/(.*)/);
         if (match) {
-          src = `https://api.imgur.com/3/image/${match[1]}.json`;
+          src = `https://api.imgur.com/3/image/${match[2]}.json`;
         }
       }
     }
@@ -241,15 +242,20 @@ export default class BetterMediaModule extends Module {
 
       const displayImage = (link) => {
         const popup = this.createPopup(voting);
-        const img   = this.createImagePopupContainer(new URL(link));
-        popup.appendChild(img);
+        if (href.indexOf('.gifv') !== -1) {
+          const video = this.createVideoContainer(new URL(link));
+          popup.appendChild(video);
+        } else {
+          const img = this.createImagePopupContainer(new URL(link));
+          popup.appendChild(img);
+        }
       };
 
       if (this.imgurCache[href]) {
         displayImage(this.imgurCache[href]);
       } else {
         loader(true);
-        fetch(src, {
+        fetch(src.replace(/\.gifv?/, ''), {
           headers: {
             'Authorization': 'Client-ID 92b389723993e50'
           }
@@ -405,7 +411,7 @@ export default class BetterMediaModule extends Module {
         }
       }
     }
-
+console.log('id', id);
     if (id) {
       const src       = getLoaderURL();
       const container = this.html.createElement('blockquote', {
