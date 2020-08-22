@@ -689,7 +689,9 @@ export default class BetterMediaModule extends Module {
       this.dispatch('rp.BetterMediaModule.vote', { dir: 'down', id });
     }
     if (this.popupContainer) {
-      this.popupContainer.click();
+      setTimeout(() => {
+        this.popupContainer.click();
+      }, 500);
     }
   };
 
