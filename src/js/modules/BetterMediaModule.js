@@ -2,6 +2,7 @@ import Module from './Module';
 import { isPostPage } from '../utils/ruqqus';
 import loader, { getLoaderURL } from '../utils/loader';
 import { favIcons, favIconsKeys } from './BetterMediaModule/favicons';
+import { getImgurInfo, fetchImgurURL } from './BetterMediaModule/utils';
 import SettingsModal from './BetterMediaModule/SettingsModal';
 import defaultSettings from './BetterMediaModule/defaultSettings';
 import storage from '../utils/storage';
@@ -221,32 +222,21 @@ export default class BetterMediaModule extends Module {
   handleAnchorImgur = (e) => {
     const { currentTarget } = e;
 
-    let src;
-    const href   = currentTarget.getAttribute('href');
-    const card   = currentTarget.closest('.card');
-    const voting = card.querySelector('.voting');
+    const href     = currentTarget.getAttribute('href');
+    const mediaUrl = new URL(href);
+    const card     = currentTarget.closest('.card');
+    const voting   = card.querySelector('.voting');
+    const info     = getImgurInfo(mediaUrl);
 
-    let match  = href.match(/^https:\/\/(i\.)?imgur.com\/a\/([^.]+)/);
-    if (match) {
-      src = `https://api.imgur.com/3/album/${match[2]}.json`;
-    } else {
-      match = href.match(/^https:\/\/(i\.)?imgur.com\/gallery\/([^.]+)/);
-      if (match) {
-        src = `https://api.imgur.com/3/gallery/${match[2]}.json`;
-      } else {
-        match = href.match(/^https:\/\/(i\.)?imgur.com\/([^.]+)/);
-        if (match) {
-          src = `https://api.imgur.com/3/image/${match[2]}.json`;
-        }
-      }
-    }
-
-    if (src) {
+    if (info) {
       e.preventDefault();
 
+      /**
+       * @param {string} link
+       */
       const displayImage = (link) => {
         const popup = this.createPopup(voting);
-        if (href.indexOf('.gifv') !== -1 || link.indexOf('.mp4') !== -1) {
+        if (info.isVideo && link.indexOf('.gif') === -1) {
           const video = this.createVideoContainer(new URL(link));
           popup.appendChild(video);
         } else {
@@ -255,26 +245,16 @@ export default class BetterMediaModule extends Module {
         }
       };
 
-      if (this.imgurCache[href]) {
+      if (info.ext && info.ext !== '.gifv') {
+        displayImage(href);
+      } else if (this.imgurCache[href]) {
         displayImage(this.imgurCache[href]);
       } else {
         loader(true);
-        fetch(src, {
-          headers: {
-            'Authorization': 'Client-ID 92b389723993e50'
-          }
-        })
-          .then((resp) => resp.json())
-          .then((json) => {
-            if (json.success) {
-              let { link } = json.data;
-              if (json.data.images) {
-                link = json.data.images[0].link;
-              }
-
-              displayImage(link);
-              this.imgurCache[href] = link;
-            }
+        fetchImgurURL(info)
+          .then((link) => {
+            displayImage(link);
+            this.imgurCache[href] = link;
           })
           .finally(() => {
             loader(false);
@@ -397,40 +377,36 @@ export default class BetterMediaModule extends Module {
    * @param {URL} mediaUrl
    */
   createImgur = (postBody, mediaUrl) => {
-    // @see https://help.imgur.com/hc/en-us/articles/211273743-Embed-Unit
-    let id;
-    let match = mediaUrl.toString().match(/^https:\/\/i.imgur.com\/(.*?)\./);
-    if (match) {
-      // eslint-disable-next-line prefer-destructuring
-      id = match[1];
-    } else {
-      match = mediaUrl.toString().match(/^https:\/\/imgur.com\/(a|gallery)\/(.*)/);
-      if (match) {
-        id = `a/${match[2]}`;
-      } else {
-        match = mediaUrl.toString().match(/^https:\/\/imgur.com\/(.*)/);
-        if (match) {
-          // eslint-disable-next-line prefer-destructuring
-          id = match[1];
-        }
-      }
-    }
-console.log('id', id);
-    if (id) {
-      const src       = getLoaderURL();
-      const container = this.html.createElement('blockquote', {
-        'class':   'imgur-embed-pub rp-better-media-blockquote',
-        'data-id': id,
-        'lang':    'en',
-        'html':    `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
-      });
-      const anchor = this.html.createElement('a', {
-        'href': `https://imgur.com/${id}`
-      });
-      container.appendChild(anchor);
-      postBody.appendChild(container);
+    const info = getImgurInfo(mediaUrl);
 
-      this.html.injectScript('//s.imgur.com/min/embed.js');
+    /**
+     * @param {string} link
+     */
+    const displayImage = (link) => {
+      if (info.isVideo) {
+        const video = this.createVideoContainer(new URL(link));
+        postBody.appendChild(video);
+      } else {
+        const img = this.createImageContainer(new URL(link));
+        postBody.appendChild(img);
+      }
+    };
+
+    const href = mediaUrl.toString();
+    if (info.ext) {
+      displayImage(href);
+    } else if (this.imgurCache[href]) {
+      displayImage(this.imgurCache[href]);
+    } else {
+      loader(true);
+      fetchImgurURL(info)
+        .then((link) => {
+          displayImage(link);
+          this.imgurCache[href] = link;
+        })
+        .finally(() => {
+          loader(false);
+        });
     }
   };
 

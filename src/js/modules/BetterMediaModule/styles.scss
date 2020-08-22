@@ -13,7 +13,6 @@ $height-header: 48px;
   position: relative;
   max-width: 100%;
   overflow: hidden;
-  border: 1px solid #7b7b7b;
   font-size: 0;
 
   .post-body & {
@@ -123,6 +122,10 @@ $height-header: 48px;
   margin-bottom: 100px;
   transform: translateX(-50%);
   z-index: 1002;
+
+  iframe {
+    margin-bottom: 5px;
+  }
 }
 
 .rp-better-media-img-outer {
