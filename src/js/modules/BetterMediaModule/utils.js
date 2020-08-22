@@ -1,4 +1,4 @@
-const imgurRegex = new RegExp('^https:\\/\\/(i\\.)?imgur\\.com\\/(a\\/|gallery\\/)?([^\\/.]+)(\\.[a-zA-Z]{3,4})?$');
+const imgurRegex = new RegExp('^https:\\/\\/(i\\.)?imgur\\.com\\/(a\\/|gallery\\/)?([^\\/.]+)(\\.[a-zA-Z4]{3,4})?$');
 
 /**
  * @param {URL} mediaUrl
