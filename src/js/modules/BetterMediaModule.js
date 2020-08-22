@@ -222,15 +222,15 @@ export default class BetterMediaModule extends Module {
     const card   = currentTarget.closest('.card');
     const voting = card.querySelector('.voting');
 
-    let match  = href.match(/^https:\/\/(i\.)?imgur.com\/a\/(.*)/);
+    let match  = href.match(/^https:\/\/(i\.)?imgur.com\/a\/([^.]+)/);
     if (match) {
       src = `https://api.imgur.com/3/album/${match[2]}.json`;
     } else {
-      match = href.match(/^https:\/\/(i\.)?imgur.com\/gallery\/(.*)/);
+      match = href.match(/^https:\/\/(i\.)?imgur.com\/gallery\/([^.]+)/);
       if (match) {
         src = `https://api.imgur.com/3/gallery/${match[2]}.json`;
       } else {
-        match = href.match(/^https:\/\/(i\.)?imgur.com\/(.*)/);
+        match = href.match(/^https:\/\/(i\.)?imgur.com\/([^.]+)/);
         if (match) {
           src = `https://api.imgur.com/3/image/${match[2]}.json`;
         }
@@ -255,7 +255,7 @@ export default class BetterMediaModule extends Module {
         displayImage(this.imgurCache[href]);
       } else {
         loader(true);
-        fetch(src.replace(/\.gifv?/, ''), {
+        fetch(src, {
           headers: {
             'Authorization': 'Client-ID 92b389723993e50'
           }
