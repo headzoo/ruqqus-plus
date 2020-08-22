@@ -8,6 +8,7 @@
 @import "../js/modules/BetterSidebarModule/styles";
 @import "../js/modules/BetterMediaModule/styles";
 @import "../js/modules/FixCrossPostModule/styles";
+@import "../js/modules/PreviewPostModule/styles";
 
 .rp-pointer {
   cursor: pointer;
@@ -40,12 +41,6 @@
   img {
     max-width: 100%;
   }
-}
-
-.rp-preview-post-container-dark {
-  color: #aaa;
-  background-color: #383838;
-  border-color: #292929;
 }
 
 .rp-loader {
