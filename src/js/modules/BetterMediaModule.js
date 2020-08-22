@@ -172,6 +172,10 @@ export default class BetterMediaModule extends Module {
           a.removeAttribute('data-toggle');
           a.removeAttribute('data-target');
           this.html.query(a, 'img').removeAttribute('onclick');
+          const icon = this.html.createElement('i', {
+            'class': 'fas fa-image rp-better-media-thumb-icon'
+          });
+          a.appendChild(icon);
 
           if (handler !== undefined) {
             if (handler !== null) {
@@ -242,7 +246,7 @@ export default class BetterMediaModule extends Module {
 
       const displayImage = (link) => {
         const popup = this.createPopup(voting);
-        if (href.indexOf('.gifv') !== -1) {
+        if (href.indexOf('.gifv') !== -1 || link.indexOf('.mp4') !== -1) {
           const video = this.createVideoContainer(new URL(link));
           popup.appendChild(video);
         } else {

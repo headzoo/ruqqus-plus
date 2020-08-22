@@ -20,6 +20,7 @@ export const favIcons = {
   'spotify.com':       'https://www.scdn.co/i/_global/touch-icon-72.png',
   'youtube.com':       'https://www.youtube.com/s/desktop/ea048e95/img/favicon_32.png',
   'youtu.be':          'https://www.youtube.com/s/desktop/ea048e95/img/favicon_32.png',
-  'amazonaws.com':     'https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico'
+  'amazonaws.com':     'https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico',
+  'bbcode0.com':       'https://bbcode0.com/favicon.ico'
 };
 export const favIconsKeys = Object.keys(favIcons);
