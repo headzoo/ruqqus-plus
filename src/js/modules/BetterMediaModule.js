@@ -20,6 +20,11 @@ export default class BetterMediaModule extends Module {
   imgurCache = {};
 
   /**
+   * @type {HTMLElement}
+   */
+  popupContainer = null;
+
+  /**
    * Returns whether the module should be enabled by default. Should
    * return a truthy or falsy value.
    *
@@ -634,6 +639,7 @@ export default class BetterMediaModule extends Module {
     votingContainer.querySelector('.arrow-down').addEventListener('click', this.handleVoting, false);
     content.appendChild(votingContainer);
 
+    this.popupContainer = container;
     container.appendChild(content);
     container.addEventListener('click', () => {
       content.remove();
@@ -681,6 +687,9 @@ export default class BetterMediaModule extends Module {
     } else {
       const id = currentTarget.getAttribute('data-id-down');
       this.dispatch('rp.BetterMediaModule.vote', { dir: 'down', id });
+    }
+    if (this.popupContainer) {
+      this.popupContainer.click();
     }
   };
 
