@@ -91,7 +91,7 @@ export default class CopyQuoteReplyModule extends Module {
             textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
           }, 0);
         }
-      }, 100);
+      }, 200);
     }
   };
 }
