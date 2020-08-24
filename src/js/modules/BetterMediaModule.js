@@ -475,8 +475,10 @@ export default class BetterMediaModule extends Module {
   createFrameContainer = (mediaUrl, attribs) => {
     const src       = getLoaderURL();
     const container = this.html.createElement('div', {
-      'html': `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
+      'class': 'rp-better-media-img-outer',
+      'html':  `<img class="rp-better-media-load" src="${src}" alt="Loading" />`
     });
+
     const iframe = this.html.createElement('iframe', attribs);
     iframe.style.display = 'none';
     iframe.addEventListener('load', () => {
