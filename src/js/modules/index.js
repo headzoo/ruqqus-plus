@@ -39,7 +39,7 @@ export default {
   ChangeHomeLinkModule,
   BlockUserModule,
   HideGuildModule,
-  // JoinGuildModule,
+  JoinGuildModule,
   CopyQuoteReplyModule,
   ThemeModule,
   FixCrossPostModule,
